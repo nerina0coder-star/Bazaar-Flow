@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %} ثبت‌نام {% endblock %}
+
+{% block content %}
+
+<main class="d-flex align-items-center justify-content-center min-vh-100 bg-light">
+  <div class="card shadow border-0" style="width: 100%; max-width: 480px;">
+    <div class="card-body p-4 p-md-5">
+      <h2 class="card-title text-center mb-4 fw-bold">ساخت حساب‌کاربری {{ userError }}</h2>
+
+      <p class="" id="higherPasswordMatch" role="alert"><small id="passwordMatch">{% if passwordError %} رمز عبور اشتباه می‌باشد {% endif %}</small></p>
+      <p class="" id="higherEtcError" role="alert"><small id="etcError"></small></p>
+      <form action="{{ url_for('auth.register') }}" method="POST" onsubmit="return validateForm()">
+        <div class="mb-3">
+          <label for="username" class="form-label">نام کاربری</label>
+          <input type="text" class="form-control" id="username" name="username" placeholder="علیرضا گیمر" maxlength="63" required autofocus>
+        </div>
+        <div class="mb-3">
+          <label for="email" class="form-label">ایمیل</label>
+          <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required>
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">رمزعبور</label>
+          <input type="password" class="form-control" id="password" name="password" minlength="8" required>
+          <div class="form-text">حداقل ۸ کاراکتر</div>
+        </div>
+        <div class="mb-3">
+          <label for="confirmPassword" class="form-label">تایید رمزعبور</label>
+          <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" minlength="8" required>
+        </div>
+        <div class="mb-4 form-check">
+          <input type="checkbox" class="form-check-input" id="termsCheck" name="termsCheck" required>
+          <label class="form-check-label" for="termsCheck">من <a href="#" class="text-decoration-none">قوانین و مقررات</a> را کامل میپذیرم.</label>
+        </div>
+        <button type="submit" class="btn btn-primary w-100 py-2">ثبت‌نام</button>
+        <div class="text-center mt-4">
+          <span class="text-muted">ثبت‌نام کردی؟</span>
+          <a href="/auth/login" class="text-decoration-none ms-1 fw-semibold">ورود</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>
+
+{% endblock %}
+
+{% block script %}
+<script src="/static/js/register.js">
+</script>
+{% endblock %}

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <title>{% block title %} {% endblock %}</title>
+    {% include 'includes/head.html' %}
+</head>
+<body class="d-flex flex-column min-vh-100">
+  {% include 'includes/navbar.html' %}
+  
+  <main class="flex-grow-1">
+    {% block content %} {% endblock %}
+  </main>
+  
+  {% block footer %}
+  {% include 'includes/footer.html' %}
+  {% endblock %}
+
+  <script src="/static/js/script.js"></script>
+  <script src="/static/js/bootstrap.bundle.min.js"></script>
+  {% block script %}
+  {% endblock %}
+</body>
+</html>

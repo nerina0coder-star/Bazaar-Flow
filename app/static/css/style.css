@@ -1,0 +1,38 @@
+a {
+    text-decoration: none!important;
+}
+a:hovered {
+    text-decoration: none!important;
+}
+a:active {
+    text-decoration: none!important;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vm;
+}
+
+nav {
+    background-color: #1e293b;
+    color: #f8fafc;
+    padding: 1rem 2rem;
+    box-shadow: 0 4px 6px rgb(0 0 0 / 0.1);
+}
+footer {
+	background: #0f172a;
+	color: #94a3b8;
+	padding: 1.5rem;
+	border-top: 1px solid #334155;
+}
+
+main {
+	 box-shadow: 0 1px 3px rgb(0 0 0 / 0.05);
+	 border-radius: 0.5rem;
+    flex: 1;
+}
+
+body {
+    font-family: Vazirmatn!important;
+}
