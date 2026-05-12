@@ -19,6 +19,7 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(64))
     is_active = db.Column(db.Boolean, default=True)
 
+    credits = db.Column(db.Integer, default=0, nullable=False)
 
     # On-to-many
 
