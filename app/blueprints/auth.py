@@ -71,9 +71,11 @@ def register():
     return render_template('auth/register.html')
 
 
-@auth_bp.route('/logout')
+@auth_bp.route('/logout', methods=['GET', 'POST'])
 @login_required
 def logout():
-    logout_user()
-    flash('You have been logged out.', 'info')
-    return redirect(url_for('home'))
+    if request.method == 'POST':
+        logout_user()
+        flash('You have been logged out.', 'info')
+        return redirect(url_for('home'))
+    return render_template('auth/logout.html')

@@ -27,6 +27,10 @@
                         <span class="text-muted">اعتبار</span>
                         <span class="fw-semibold text-success">{{ current_user.credits }} تومان</span>
                     </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent px-0">
+                        <span class="text-muted">تاریخ ورود</span>
+                        <span class="fw-semibold text-success">{{ current_user.time_joined.strftime('%B %d, %Y') }} تومان</span>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -63,6 +67,9 @@
                     </a>
                     <a href="#" class="btn btn-outline-secondary rounded-pill py-2">
                         <i class="bi bi-gear me-2"></i> تنظیمات پرونده
+                    </a>
+                    <a href="#" class="btn btn-danger rounded-pill py-2">
+                        <i class="bi bi-gear me-2"></i>خروج از حساب
                     </a>
                 </div>
             </div>

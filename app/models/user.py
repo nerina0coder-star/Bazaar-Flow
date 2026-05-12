@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from app.extensions import db, login_manager
 from flask_login import UserMixin
 from .participants import participants
@@ -17,6 +19,9 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(128))
     username = db.Column(db.String(64))
+
+    time_joined = db.Column(db.DateTime, default=datetime.now)
+
     is_active = db.Column(db.Boolean, default=True)
 
     credits = db.Column(db.Integer, default=0, nullable=False)
