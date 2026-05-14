@@ -1,5 +1,5 @@
 from app.extensions import db
-from .participants import participants
+from .participant import Participant
 
 class Chamber(db.Model):
     __tablename__ = 'chamber'
@@ -7,9 +7,19 @@ class Chamber(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
 
-    # many-to-many
+    entrance_code = db.Column(db.String(100), nullable=False)
 
-    users = db.relationship('User', secondary=participants, back_populates='chambers', lazy='dynamic')
+    # many-to-many
+    participants = db.relationship('Participant', back_populates='chamber', lazy='dynamic')
+
+    users = db.relationship(
+        'User',
+        secondary='participants',
+        primaryjoin='Chamber.id == Participant.chamber_id',
+        secondaryjoin='Participant.user_id == User.id',
+        viewonly=True,
+        lazy='dynamic'
+    )
 
     # one-to-many
 

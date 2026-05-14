@@ -1,3 +1,4 @@
+from app.models.participant import Participant
 from app.models.user import User
 from app.extensions import db
 
@@ -29,3 +30,8 @@ class UserRepository:
             if hasattr(user, key) and key != 'id':
                 setattr(user, key, value)
         db.session.commit()
+
+    @staticmethod
+    def is_owner(chamber_id, user_id):
+        owner = Participant.query.filter_by(chamber_id=chamber_id, user_id=user_id, role='owner').first()
+        return owner is not None

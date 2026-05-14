@@ -29,7 +29,7 @@
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent px-0">
                         <span class="text-muted">تاریخ ورود</span>
-                        <span class="fw-semibold text-success">{{ current_user.time_joined.strftime('%B %d, %Y') }} تومان</span>
+                        <span class="fw-semibold">{{ current_user.time_joined.strftime('%B %d, %Y') }}</span>
                     </li>
                 </ul>
             </div>
@@ -59,14 +59,17 @@
                     <i class="bi bi-grid-3x3-gap-fill me-2"></i> عملیات سریع
                 </h5>
                 <div class="d-grid gap-3">
-                    <a href="#" class="btn btn-outline-primary rounded-pill py-2">
-                        <i class="bi bi-chat-dots me-2"></i> ورود به مجلس
+                    <a href="/chamber/dashboard" class="btn btn-outline-primary rounded-pill py-2">
+                        <i class="bi bi-chat-dots me-2"></i> ورود به مدریت تالار
                     </a>
-                    <a href="#" class="btn btn-outline-success rounded-pill py-2">
-                        <i class="bi bi-wallet2 me-2"></i> کیف پول
+                    <a href="/chamber/join" class="btn btn-outline-secondary rounded-pill py-2">
+                        <i class="bi bi-chat-dots me-2"></i> عضویت در یک تالار
                     </a>
                     <a href="#" class="btn btn-outline-secondary rounded-pill py-2">
                         <i class="bi bi-gear me-2"></i> تنظیمات پرونده
+                    </a>
+                    <a href="#" class="btn btn-outline-success rounded-pill py-2">
+                        <i class="bi bi-wallet2 me-2"></i> کیف پول
                     </a>
                     <a href="#" class="btn btn-danger rounded-pill py-2">
                         <i class="bi bi-gear me-2"></i>خروج از حساب

@@ -2,7 +2,7 @@ from datetime import datetime
 
 from app.extensions import db, login_manager
 from flask_login import UserMixin
-from .participants import participants
+from .participant import Participant
 
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -33,7 +33,16 @@ class User(UserMixin, db.Model):
 
     # Many-to-many
 
-    chambers = db.relationship('Chamber', secondary=participants ,back_populates='users', lazy='dynamic')
+    participants = db.relationship('Participant', back_populates='user', lazy='dynamic')
+
+    chambers = db.relationship(
+        'Chamber',
+        secondary='participants',  # table name
+        primaryjoin='User.id == Participant.user_id',
+        secondaryjoin='Participant.chamber_id == Chamber.id',
+        viewonly=True,
+        lazy='dynamic'
+    )
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)

@@ -1,6 +1,7 @@
 from datetime import datetime
 from app.extensions import db
 
+
 class Message(db.Model):
     __tablename__ = 'message'
     id = db.Column(db.Integer, primary_key=True)

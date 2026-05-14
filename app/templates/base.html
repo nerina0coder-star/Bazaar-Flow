@@ -4,6 +4,7 @@
 <head>
     <title>{% block title %} {% endblock %}</title>
     {% include 'includes/head.html' %}
+    {% block style %} {% endblock %}
 </head>
 <body class="d-flex flex-column min-vh-100">
   {% include 'includes/navbar.html' %}
@@ -18,6 +19,7 @@
 
   <script src="/static/js/script.js"></script>
   <script src="/static/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ url_for('static', filename='/js/socket.io.js') }}"></script>
   {% block script %}
   {% endblock %}
 </body>

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %} عضویت در تالار {% endblock %}
+
+{% block content %}
+<div class="join-chamber-container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-body p-4">
+                    <h2 class="h4 mb-4 text-center">پیوستن به تالار {{ message }}</h2>
+                    <form method="POST" action="/chamber/join">
+                        <div class="mb-4">
+                            <label for="code" class="form-label">کد ورود تالار</label>
+                            <input type="text" class="form-control" id="code" name="code" placeholder="مثلاً JS2025" required autofocus>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 rounded-pill py-2">ورود به تالار</button>
+                    </form>
+                    <div class="text-center mt-3">
+                        <a href="/chamber/dashboard" class="text-decoration-none small">بازگشت</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block style %}
+
+<style>
+.join-chamber-container {
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+</style>
+
+{% endblock %}

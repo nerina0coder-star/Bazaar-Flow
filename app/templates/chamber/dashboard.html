@@ -1,0 +1,229 @@
+{% extends 'base.html' %}
+
+{% block title %} مدیریت تالارها {% endblock %}
+
+{% block content %}
+
+<div class="chambers-container">
+    <!-- Header with back button and create button -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <a href="{{ url_for('profile.dashboard') }}" class="btn btn-outline-secondary rounded-pill">
+            <i class="bi bi-arrow-right me-1"></i> بازگشت به خاطر
+        </a>
+        <a href="/chamber/create" class="btn btn-primary rounded-pill">
+            <i class="bi bi-plus-lg me-1"></i> ایجاد تالار جدید
+        </a>
+    </div>
+
+    <!-- List of chambers -->
+    <div class="row g-4">
+        <!-- 10 mock chambers -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card chamber-card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title mb-0">مجلس توسعه‌دهندگان</h5>
+                        <span class="badge bg-success">۳ عضو آنلاین</span>
+                    </div>
+                    <p class="card-text text-muted small">گفتگو درباره‌ی فنی و رفع اشکال</p>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <small class="text-muted">آخرین فعالیت: ۵ دقیقه پیش</small>
+                        <a href="#" class="btn btn-sm btn-outline-primary rounded-pill">
+                            ورود <i class="bi bi-box-arrow-in-left me-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Repeat for 9 more chambers (or loop in Flask) -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card chamber-card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title mb-0">مجلس طراحی UI/UX</h5>
+                        <span class="badge bg-success">۵ عضو آنلاین</span>
+                    </div>
+                    <p class="card-text text-muted small">بحث در مورد تجربه کاربری و رابط</p>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <small class="text-muted">آخرین فعالیت: ۱۲ دقیقه پیش</small>
+                        <a href="#" class="btn btn-sm btn-outline-primary rounded-pill">
+                            ورود <i class="bi bi-box-arrow-in-left me-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <div class="card chamber-card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title mb-0">مجلس هوش مصنوعی</h5>
+                        <span class="badge bg-success">۲ عضو آنلاین</span>
+                    </div>
+                    <p class="card-text text-muted small">بحث درباره مدل‌ها و APIها</p>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <small class="text-muted">آخرین فعالیت: ۲ دقیقه پیش</small>
+                        <a href="#" class="btn btn-sm btn-outline-primary rounded-pill">
+                            ورود <i class="bi bi-box-arrow-in-left me-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <div class="card chamber-card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title mb-0">مجلس بازی‌سازی</h5>
+                        <span class="badge bg-success">۴ عضو آنلاین</span>
+                    </div>
+                    <p class="card-text text-muted small">توسعه بازی با Godot و Unity</p>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <small class="text-muted">آخرین فعالیت: ۲۰ دقیقه پیش</small>
+                        <a href="#" class="btn btn-sm btn-outline-primary rounded-pill">
+                            ورود <i class="bi bi-box-arrow-in-left me-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <div class="card chamber-card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title mb-0">مجلس بک‌اند و دیتابیس</h5>
+                        <span class="badge bg-secondary">۰ عضو آنلاین</span>
+                    </div>
+                    <p class="card-text text-muted small">پستگرس، SQL و معماری سرور</p>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <small class="text-muted">آخرین فعالیت: ۱ ساعت پیش</small>
+                        <a href="#" class="btn btn-sm btn-outline-primary rounded-pill">
+                            ورود <i class="bi bi-box-arrow-in-left me-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <div class="card chamber-card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title mb-0">مجلس فرانت‌اند</h5>
+                        <span class="badge bg-success">۷ عضو آنلاین</span>
+                    </div>
+                    <p class="card-text text-muted small">React، Vue، و طراحی وب</p>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <small class="text-muted">آخرین فعالیت: ۳ دقیقه پیش</small>
+                        <a href="#" class="btn btn-sm btn-outline-primary rounded-pill">
+                            ورود <i class="bi bi-box-arrow-in-left me-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <div class="card chamber-card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title mb-0">مجلس ادبیات فارسی</h5>
+                        <span class="badge bg-secondary">۰ عضو آنلاین</span>
+                    </div>
+                    <p class="card-text text-muted small">بحث شعر و نثر فارسی</p>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <small class="text-muted">آخرین فعالیت: روز گذشته</small>
+                        <a href="#" class="btn btn-sm btn-outline-primary rounded-pill">
+                            ورود <i class="bi bi-box-arrow-in-left me-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <div class="card chamber-card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title mb-0">مجلس رباتیک</h5>
+                        <span class="badge bg-success">۳ عضو آنلاین</span>
+                    </div>
+                    <p class="card-text text-muted small">آردوینو، ROS و هوش مصنوعی</p>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <small class="text-muted">آخرین فعالیت: ۱۰ دقیقه پیش</small>
+                        <a href="#" class="btn btn-sm btn-outline-primary rounded-pill">
+                            ورود <i class="bi bi-box-arrow-in-left me-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <div class="card chamber-card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title mb-0">مجلس کارآفرینی</h5>
+                        <span class="badge bg-secondary">۰ عضو آنلاین</span>
+                    </div>
+                    <p class="card-text text-muted small">ایده‌های استارتاپی و بازاریابی</p>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <small class="text-muted">آخرین فعالیت: ۲ روز پیش</small>
+                        <a href="#" class="btn btn-sm btn-outline-primary rounded-pill">
+                            ورود <i class="bi bi-box-arrow-in-left me-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <div class="card chamber-card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title mb-0">مجلس رفع اشکال عمومی</h5>
+                        <span class="badge bg-success">۸ عضو آنلاین</span>
+                    </div>
+                    <p class="card-text text-muted small">سوالات برنامه‌نویسی و IT</p>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <small class="text-muted">آخرین فعالیت: ۱ دقیقه پیش</small>
+                        <a href="#" class="btn btn-sm btn-outline-primary rounded-pill">
+                            ورود <i class="bi bi-box-arrow-in-left me-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block style %}
+
+<style>
+.chambers-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.chamber-card {
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+}
+.chamber-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+.card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+.badge {
+    font-size: 0.7rem;
+    padding: 0.35rem 0.65rem;
+}
+.btn-outline-secondary i, .btn-primary i {
+    vertical-align: middle;
+}
+</style>
+
+{% endblock %}
