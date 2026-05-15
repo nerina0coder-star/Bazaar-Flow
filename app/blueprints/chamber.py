@@ -37,23 +37,20 @@ def join():
 
         # id|entrance code
 
-        print(code)
 
         chamber_id = int(code[0:code.rindex('|')])
         chamber_entrance_code = code[code.index('|') + 1:]
 
-        print(chamber_entrance_code)
 
 
         chamber = ChamberRepository.find_by_id(chamber_id)
-        print(chamber.entrance_code)
         if chamber is None:
             return render_template('chamber/join.html', message='شکست خورد٬ تالار یافت نشد')
 
         if chamber.entrance_code != chamber_entrance_code:
             return render_template('chamber/join.html', message='شکست خورد٬ رمز ورود اشتباه است')
 
-        ChamberService.add_user(chamber_id, current_user.id)
+        ParticipantRepository.add_to_chamber(current_user.id, chamber_id)
 
         return redirect(url_for('chamber.chamber', data=chamber_id))
 
@@ -75,6 +72,7 @@ def chamber(data):
 
     session['chamber'] = chamber.id
 
+
     if UserRepository.is_owner(chamber.id, current_user.id):
         return render_template('chamber/chamber.html', chamber_id=chamber.id, copyEntryCode = True)
     else:
@@ -95,7 +93,7 @@ def create():
         except Exception:
             return render_template('chamber/create.html', custom_message="شکست خورد٬ این تالار قبلا ساخته شده")
 
-        ParticipantRepository.add_to_chamber(user_id=current_user.id, chamber_id=chamber.id)
+        ParticipantRepository.add_to_chamber(user_id=current_user.id, chamber_id=chamber.id, role='owner')
 
         return redirect(url_for('chamber.chamber', data=chamber.id))
 
@@ -132,7 +130,7 @@ def handle_msg(data):
 
 @socket_io.on('get_entrance_code')
 def get_code():
-    emit('entrance_code', {'code' : ChamberRepository.find_by_id(session['chamber']).entrance_code}, to=str(session['chamber']))
+    emit('entrance_code', {'code' : f"{session['chamber']}|{ChamberRepository.find_by_id(session['chamber']).entrance_code}"}, to=str(session['chamber']))
 
 @socket_io.on('connect')
 @login_required

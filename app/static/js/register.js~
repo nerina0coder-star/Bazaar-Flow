@@ -52,9 +52,7 @@ function validateEtc() {
 			err.innerText =
 			"ایمیل خالی است";
 		}
-		return false;
 	}
-	return true;
 }
 
 function validateForm () {
