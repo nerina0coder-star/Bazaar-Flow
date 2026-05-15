@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %} خطای {{ type }} {% endblock %}
+
+{% block content %}
+
+<div class="d-flex flex-column align-items-center justify-content-center vh-100">
+    <h1 class="display-4 text-danger mb-5">خطای {{ type }}</h1>
+    <h4 class="display-6 text-danger">{{ message }}</h4>
+</div>
+
+{% endblock %}
