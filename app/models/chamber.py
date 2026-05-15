@@ -1,4 +1,5 @@
 from app.extensions import db
+from .message import Message
 from .participant import Participant
 
 class Chamber(db.Model):
@@ -6,6 +7,8 @@ class Chamber(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
+
+    description = db.Column(db.String(50), nullable=False)
 
     entrance_code = db.Column(db.String(100), nullable=False)
 
@@ -24,3 +27,6 @@ class Chamber(db.Model):
     # one-to-many
 
     messages = db.relationship('Message', back_populates='chamber', lazy='dynamic')
+
+    async def get_last_message(self):
+        return self.messages.query.order_by(Message.timestamp.desc()).first()

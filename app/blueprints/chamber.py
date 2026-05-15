@@ -18,7 +18,8 @@ chamber_bp = Blueprint('chamber', __name__)
 @chamber_bp.route('/dashboard')
 @login_required
 def dashboard():
-    return render_template('chamber/dashboard.html')
+    chambers = current_user.chambers.all()
+    return render_template('chamber/dashboard.html', chambers=chambers)
 
 @chamber_bp.route('/join', methods=['GET', 'POST'])
 def join():
@@ -83,21 +84,22 @@ def chamber(data):
 def create():
 
     if request.method == 'POST':
-        if request.form.get('name') is None or request.form.get('entrance_code') is None:
+        if request.form.get('name') is None or request.form.get('description') is None or request.form.get('entrance_code') is None:
             return render_template('chamber/create.html')
 
         name = request.form.get('name')
         entrance_code = request.form.get('entrance_code')
+
+        description = request.form.get('description')
 
         if len(entrance_code) > 99:
             return render_template('chamber/create.html', custom_message='شکست خورد٬ کد ورود نباید بیش از ۹۹ کاراکتر باشد.')
         if len(name) > 99:
             return render_template('chamber/create.html', custom_message='شکست خورد٬ نام تالار نباید بیش از ۹۹ کاراکتر باشد')
 
-        try:
-            chamber = ChamberService.create_chamber(name, entrance_code)
-        except Exception:
-            return render_template('chamber/create.html', custom_message="شکست خورد٬ این تالار قبلا ساخته شده")
+
+        chamber = ChamberService.create_chamber(name, entrance_code, description)
+
 
         ParticipantRepository.add_to_chamber(user_id=current_user.id, chamber_id=chamber.id, role='owner')
 

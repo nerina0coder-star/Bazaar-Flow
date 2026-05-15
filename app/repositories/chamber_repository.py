@@ -15,8 +15,8 @@ class ChamberRepository:
         return Chamber.query.filter_by(name=name).first()
 
     @staticmethod
-    def create_chamber(name: str, entrance_code: str) -> Chamber:
-        chamber = Chamber(name=name, entrance_code=entrance_code)
+    def create_chamber(name: str, entrance_code: str, description: str) -> Chamber:
+        chamber = Chamber(name=name, entrance_code=entrance_code, description=description)
         db.session.add(chamber)
         db.session.commit()
         return chamber

@@ -6,12 +6,8 @@ from app.repositories.user_repository import UserRepository
 class ChamberService:
 
     @staticmethod
-    def create_chamber(name: str, entrance_code: str) -> Chamber:
-        exists = ChamberRepository.find_by_name(name)
-
-        if exists:
-            raise ValueError("Chamber already exists")
-        return ChamberRepository.create_chamber(name, entrance_code)
+    def create_chamber(name: str, entrance_code: str, description: str = '') -> Chamber:
+        return ChamberRepository.create_chamber(name, entrance_code, description)
 
     @staticmethod
     def rename_chamber(chamber_id: int, name: str) -> Chamber:
