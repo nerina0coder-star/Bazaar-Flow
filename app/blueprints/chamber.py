@@ -105,6 +105,7 @@ def chamber(data):
         return abort(403)
 
     session['chamber'] = chamber.id
+    session['render_messages'] = True
 
 
     if UserRepository.is_owner(chamber.id, current_user.id):
@@ -193,19 +194,20 @@ def handle_joined():
     join_room(str(session['chamber']))
     if ChamberRepository.find_by_id(session['chamber']) is None:
         return abort(404)
+    if session['render_messages']:
+        for i in ChamberRepository.find_by_id(session['chamber']).messages:
+            content = i.content
+            hour_timestamp = i.timestamp.astimezone(iran_tz).strftime('%H:%M')
+            month_timestamp = i.timestamp.astimezone(iran_tz).strftime('%d %b, ')
+            author = i.author.username
 
-    for i in ChamberRepository.find_by_id(session['chamber']).messages:
-        content = i.content
-        hour_timestamp = i.timestamp.astimezone(iran_tz).strftime('%H:%M')
-        month_timestamp = i.timestamp.astimezone(iran_tz).strftime('%d %b, ')
-        author = i.author.username
-
-        emit('message_from_server', {
-            'message' : content,
-            'timehourminute' : hour_timestamp,
-            'timemonthday' : month_timestamp,
-            'author' : author,
-        }, to=str(session['chamber']))
+            emit('message_from_server', {
+                'message' : content,
+                'timehourminute' : hour_timestamp,
+                'timemonthday' : month_timestamp,
+                'author' : author,
+            }, to=str(session['chamber']))
+        session['render_messages'] = False
 
 
     if ChamberRepository.find_by_id(session['chamber']) not in current_user.chambers:
