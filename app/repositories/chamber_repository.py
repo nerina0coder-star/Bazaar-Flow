@@ -28,9 +28,11 @@ class ChamberRepository:
         db.session.commit()
 
     @staticmethod
-    def edit_chamber(chamber_id: int, name: str) -> Chamber:
+    def edit_chamber(chamber_id: int, name: str, entrance_code: str, description: str) -> Chamber:
         chamber = Chamber.query.get(chamber_id)
         chamber.name = name
+        chamber.entrance_code = entrance_code
+        chamber.description = description
         db.session.commit()
         return chamber
 

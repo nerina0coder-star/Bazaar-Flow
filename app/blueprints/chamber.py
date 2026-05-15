@@ -3,6 +3,7 @@ from datetime import datetime
 from flask import Blueprint, render_template, request, redirect, url_for, abort, session
 from flask_login import login_required, current_user
 from flask_socketio import emit, join_room, leave_room
+from sqlalchemy import custom_op
 
 from app.models import Participant
 from app.repositories.user_repository import UserRepository
@@ -19,9 +20,41 @@ chamber_bp = Blueprint('chamber', __name__)
 @login_required
 def dashboard():
     chambers = current_user.chambers.all()
-    return render_template('chamber/dashboard.html', chambers=chambers)
+    return render_template('chamber/dashboard.html', chambers=chambers, user_repo = UserRepository())
+
+@chamber_bp.route('/edit/<int:id>', methods=['GET', 'POST'])
+def edit(id):
+    if not UserRepository.is_owner(id, current_user.id):
+        return abort(400)
+    chamber = ChamberRepository.find_by_id(id)
+
+    if request.method == 'POST':
+
+        if request.form.get('name') is None or request.form.get('description')\
+                is None or request.form.get('entrance_code') is None or not request.form.get('name').strip()\
+                or not request.form.get('description').strip() or not request.form.get('entrance_code').strip():
+            return render_template('chamber/edit.html', custom_message='شکست خورد٬ یکی از موارد وارد شده خالی است', chamber=chamber)
+
+        name = request.form.get('name').strip()
+        entrance_code = request.form.get('entrance_code').strip()
+        description = request.form.get('description').strip()
+
+        if len(name) > 49:
+            return render_template('chamber/edit.html', custom_message='شکست خورد٬ نام تالار نمی‌تواند بیشتر از ۴۹ کاراکتر باشد', chamber=chamber)
+        if len(description) > 49:
+            return render_template('chamber/edit.html', custom_message='شکست خورد٬ توضیحات نمیتواند بیشتر از ۴۹ کاراکتر باشد', chamber=chamber)
+        if len(entrance_code) > 49:
+            return render_template('chamber/edit.html', custom_message='شکست خورد٬ کد ورود نمیتواند بیشتر از ۴۹ کاراکتر باشد', chamber=chamber)
+        ChamberRepository.edit_chamber(id, name, entrance_code, description)
+
+        return redirect(url_for('chamber.dashboard'))
+
+    return render_template('chamber/edit.html', chamber=chamber)
+
+
 
 @chamber_bp.route('/join', methods=['GET', 'POST'])
+@login_required
 def join():
 
     if request.method == 'POST':
@@ -87,17 +120,21 @@ def create():
         if request.form.get('name') is None or request.form.get('description') is None or request.form.get('entrance_code') is None:
             return render_template('chamber/create.html')
 
-        name = request.form.get('name')
-        entrance_code = request.form.get('entrance_code')
+        name = request.form.get('name').strip()
+        entrance_code = request.form.get('entrance_code').strip()
 
-        description = request.form.get('description')
+        description = request.form.get('description').strip()
+        if name or entrance_code or description == '':
+            return render_template('chamber/create.html', custom_message='شکست خورد٬ نام٬ کد ورود٬ یا توضیحات خالی است')
 
-        if len(entrance_code) > 99:
-            return render_template('chamber/create.html', custom_message='شکست خورد٬ کد ورود نباید بیش از ۹۹ کاراکتر باشد.')
-        if len(name) > 99:
-            return render_template('chamber/create.html', custom_message='شکست خورد٬ نام تالار نباید بیش از ۹۹ کاراکتر باشد')
-
-
+        if len(entrance_code) > 49:
+            return render_template('chamber/create.html', custom_message='شکست خورد٬ کد ورود نباید بیش از ۴۹ کاراکتر باشد.')
+        if len(name) > 49:
+            return render_template('chamber/create.html', custom_message='شکست خورد٬ نام تالار نباید بیش از ۴۹ کاراکتر باشد')
+        if len(entrance_code) < 4:
+            return render_template('chamber/create.html', custom_message='شکست خورد٬ کد ورود باید حداقل ۴ کاراکتر باشد')
+        if len(description) > 49:
+            return render_template('chamber/create.html', custom_message='شکست خورد٬ توضیحات نباید از ۴۹ کاراکتر بیشتر باشد')
         chamber = ChamberService.create_chamber(name, entrance_code, description)
 
 
@@ -139,8 +176,10 @@ def handle_msg(data):
     return None
 
 @socket_io.on('get_entrance_code')
+@login_required
 def get_code():
-    emit('entrance_code', {'code' : f"{session['chamber']}|{ChamberRepository.find_by_id(session['chamber']).entrance_code}"}, to=str(session['chamber']))
+    if UserRepository.is_owner(session['chamber'], current_user.id):
+        emit('entrance_code', {'code' : f"{session['chamber']}|{ChamberRepository.find_by_id(session['chamber']).entrance_code}"}, to=str(session['chamber']))
 
 @socket_io.on('connect')
 @login_required
@@ -180,6 +219,7 @@ def handle_joined():
         }, to=str(session['chamber']))
 
 @socket_io.on('disconnect')
+@login_required
 def handle_left():
     try:
         chamber = ChamberRepository.find_by_id(session['chamber'])
