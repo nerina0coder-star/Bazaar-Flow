@@ -88,6 +88,12 @@ def create():
 
         name = request.form.get('name')
         entrance_code = request.form.get('entrance_code')
+
+        if len(entrance_code) > 99:
+            return render_template('chamber/create.html', custom_message='شکست خورد٬ کد ورود نباید بیش از ۹۹ کاراکتر باشد.')
+        if len(name) > 99:
+            return render_template('chamber/create.html', custom_message='شکست خورد٬ نام تالار نباید بیش از ۹۹ کاراکتر باشد')
+
         try:
             chamber = ChamberService.create_chamber(name, entrance_code)
         except Exception:
@@ -118,7 +124,7 @@ def handle_msg(data):
 
     message = MessageRepository.create(message, chamber.id, current_user.id)
 
-    local_timestamp = message.timestamp.astimezone(iran_tz).strftime('%H:%M')
+    local_timestamp = message.timestamp.astimezone(iran_tz).strftime('%d %b, %H:%M')
 
     emit('message_from_server', {
         'message': data['message'],
@@ -145,15 +151,25 @@ def handle_joined():
     if ChamberRepository.find_by_id(session['chamber']) is None:
         return abort(404)
 
+    for i in ChamberRepository.find_by_id(session['chamber']).messages:
+        content = i.content
+        local_time = i.timestamp.astimezone(iran_tz).strftime('%d %b, %H:%M')
+        author = i.author.username
+
+        emit('message_from_server', {
+            'message' : content,
+            'timestamp' : local_time,
+            'author' : author,
+        }, to=str(session['chamber']))
 
 
     if ChamberRepository.find_by_id(session['chamber']) not in current_user.chambers:
 
-        current_user.chambers.append(ChamberRepository.find_by_id(session['chamber']))
+        ParticipantRepository.add_to_chamber(current_user.id, session['chamber'])
         emit('message_from_server', {
             'message' : f'کاربر {current_user.username} وارد تالار شد',
             'author' : 'سیستم',
-            'timestamp' : datetime.now().strftime('%H:%M')
+            'timestamp' : datetime.now().strftime('%d %b, %H:%M')
         }, to=str(session['chamber']))
 
 @socket_io.on('disconnect')
