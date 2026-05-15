@@ -54,6 +54,13 @@ def register():
             return render_template("auth/register.html", passwordError=False,
                                    userError="شکست خورد٬ رمز عبور با رمز عبور تاییدی مطابقت ندارد")
 
+        if len(username) > 63:
+            return render_template("auth/register.html", passwordError=False,
+                                   userError='شکست خورد٬ نام کاربری نباید بیشتر از ۶۳ کاراکتر باشد')
+        if len(email) > 119:
+            return render_template('auth/register.html', passwordError=False,
+                                   userError='شکست خورد٬ طول ایمیل نباید بیشتر از ۱۱۹ کاراکتر باشد')
+
         try:
             validate_email(email)
             UserService.register_user(email, password, username)
