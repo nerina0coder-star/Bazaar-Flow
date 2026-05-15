@@ -55,7 +55,8 @@
 
         const dt_message = e.message;
         const dt_author = e.author;
-        const dt_timestamp = e.timestamp;
+        const dt_timehourminute = e.timehourminute;
+        const dt_timemonthday = e.timemonthday;
 
         const message = document.createElement('div');
         const messageHeader = document.createElement('div');
@@ -63,6 +64,8 @@
 
         const author = document.createElement('span');
         const timestamp = document.createElement('span');
+        const timehourminute = document.createElement('span');
+        const timemonthday = document.createElement('span');
 
         message.className = 'message';
         messageHeader.className = 'message-header';
@@ -72,8 +75,13 @@
         timestamp.className = 'timestamp';
 
         author.innerText = dt_author;
-        timestamp.innerText = dt_timestamp;
         messageText.innerText = dt_message;
+
+        timehourminute.innerText = dt_timehourminute;
+        timemonthday.innerText = dt_timemonthday;
+
+        timestamp.appendChild(timemonthday);
+        timestamp.appendChild(timehourminute);
 
         messageHeader.appendChild(author);
         messageHeader.appendChild(timestamp);
@@ -171,6 +179,7 @@
 .timestamp {
     font-family: monospace;
     font-size: 0.7rem;
+    direction: ltr;
 }
 .message-text {
     font-size: 1rem;

@@ -124,12 +124,14 @@ def handle_msg(data):
 
     message = MessageRepository.create(message, chamber.id, current_user.id)
 
-    local_timestamp = message.timestamp.astimezone(iran_tz).strftime('%d %b, %H:%M')
+    hour_timestamp = message.timestamp.astimezone(iran_tz).strftime('%H:%M')
+    month_timestamp = message.timestamp.astimezone(iran_tz).strftime('%d %b, ')
 
     emit('message_from_server', {
         'message': data['message'],
         'author': current_user.username,
-        'timestamp' : local_timestamp
+        'timehourminute' : hour_timestamp,
+        'timemonthday' : month_timestamp
     }, to=str(chamber.id))
 
     return None
@@ -153,12 +155,14 @@ def handle_joined():
 
     for i in ChamberRepository.find_by_id(session['chamber']).messages:
         content = i.content
-        local_time = i.timestamp.astimezone(iran_tz).strftime('%d %b, %H:%M')
+        hour_timestamp = i.timestamp.astimezone(iran_tz).strftime('%H:%M')
+        month_timestamp = i.timestamp.astimezone(iran_tz).strftime('%d %b, ')
         author = i.author.username
 
         emit('message_from_server', {
             'message' : content,
-            'timestamp' : local_time,
+            'timehourminute' : hour_timestamp,
+            'timemonthday' : month_timestamp,
             'author' : author,
         }, to=str(session['chamber']))
 
@@ -169,7 +173,8 @@ def handle_joined():
         emit('message_from_server', {
             'message' : f'کاربر {current_user.username} وارد تالار شد',
             'author' : 'سیستم',
-            'timestamp' : datetime.now().strftime('%d %b, %H:%M')
+            'timehourminute' : datetime.now().strftime('%H:%M'),
+            'timemonthday' : datetime.now().strftime('%d %b, ')
         }, to=str(session['chamber']))
 
 @socket_io.on('disconnect')
