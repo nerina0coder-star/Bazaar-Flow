@@ -30,6 +30,7 @@ function validatePassword() {
 		).innerText = "رمز عبور تایید نشده است";
 		return false;
 	}
+	document.getElementById('higherPasswordMatch').className = ''
 	return true;
 }
 
@@ -54,6 +55,7 @@ function validateEtc() {
 		}
 		return false;
 	}
+	document.getElementById('higherEtcError').className = ''
 	return true;
 }
 

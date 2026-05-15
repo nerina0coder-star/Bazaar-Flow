@@ -27,9 +27,11 @@ class UserService:
         return None
 
     @staticmethod
-    def update_profile(user_id, username, email, password):
+    def update_profile(user_id: int, username: str, password: str | None):
         user = UserRepository.find_by_id(user_id)
         if not user:
             raise ValueError("User not found")
-        UserRepository.update(user, username=username, email=email, password=password)
+        if password is not None and password != "":
+            user.set_password(password)
+        UserRepository.update(user, username=username)
         return user

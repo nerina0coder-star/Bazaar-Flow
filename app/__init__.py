@@ -5,7 +5,6 @@ from .config import config
 from .extensions import db, login_manager, socket_io
 from .blueprints.auth import auth_bp
 from .blueprints.profile import profile_bp
-from .blueprints.main import main_bp
 from .blueprints.chamber import chamber_bp
 
 def create_app(config_name='default'):
@@ -32,7 +31,6 @@ def create_app(config_name='default'):
     # Register blueprints
     app.register_blueprint(auth_bp, url_prefix='/auth')
     app.register_blueprint(profile_bp, url_prefix='/profile')
-    app.register_blueprint(main_bp, url_prefix='/main')
     app.register_blueprint(chamber_bp, url_prefix='/chamber')
 
     # Simple home route

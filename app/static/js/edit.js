@@ -1,4 +1,4 @@
-var password1 = document.getElementById('password');
+var password1 = document.getElementById('new_password');
 var passwordC = document.getElementById('confirmPassword');
 
 function validatePassword() {
@@ -13,15 +13,7 @@ function validatePassword() {
 		).innerText =
 		"رمز عبور با رمز عبور تاییدی مطابقت ندارد ";
 		return false;
-	} else if (password1.value == '') {
-		document.getElementById(
-		"higherPasswordMatch"
-		).className = "alert alert-danger alert-dismissable fade show";
-		document.getElementById(
-		"passwordMatch"
-		).innerText = "رمز عبور وارد نشده است";
-		return false;
-	} else if (passwordC.value == '') {
+	} else if (passwordC.value == '' && password1.value !== '') {
 		document.getElementById(
 		"higherPasswordMatch"
 		).className = "alert alert-danger alert-dismissable fade show";
@@ -30,6 +22,7 @@ function validatePassword() {
 		).innerText = "رمز عبور تایید نشده است";
 		return false;
 	}
+	document.getElementById('higherPasswordMatch').className = ''
 	return true;
 }
 
@@ -54,6 +47,7 @@ function validateEtc() {
 		}
 		return false;
 	}
+	document.getElementById('higherEtcError').className = ''
 	return true;
 }
 
