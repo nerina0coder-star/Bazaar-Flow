@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %} اعضا {% endblock %}
+
+{% block content %}
+
+<main class="manage-members-container">
+    <!-- Header buttons: right (خروج) and left (ورود به تالار) -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <a href="#" class="btn btn-outline-primary rounded-pill px-4">
+            ورود به تالار
+        </a>
+        <a href="#" class="btn btn-outline-danger rounded-pill px-4">
+            خروج
+        </a>
+    </div>
+
+    <h2 class="h4 mb-3">مدیریت اعضا</h2>
+
+    <!-- Members list -->
+    <div class="members-list">
+        <div class="list-group">
+            {% for member in chamber.users %}
+            {% if member.id != current_user.id %}
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="fw-semibold">{{ member.username }}</span>
+                    {% if member.is_online() %}
+                    <span class="badge bg-success ms-2">
+                        آنلاین
+                        {% else %}
+                    <span class="badge bg-danger ms-2">
+                        آفلاین
+                        {% endif %}
+                    </span>
+                </div>
+                <div>
+                    <span class="text-muted small">نقش: {{ partrep.get(user_id=member.id, chamber_id=chamber.id).role|role2persian }}</span>
+                    <a class="btn btn-sm btn-outline-secondary ms-2 rounded-pill" href="/chamber/chambers/{{chamber.id}}/members/{{member.id}}">ویرایش</a>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</main>
+
+{% endblock %}
+
+{% block style %}
+
+<style>
+.manage-members-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+.list-group-item {
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
+    padding: 1rem 0.75rem;
+}
+.list-group-item:first-child {
+    border-top: none;
+}
+.list-group-item:hover {
+    background-color: #f8f9fa;
+}
+</style>
+
+{% endblock %}

@@ -22,6 +22,8 @@ class User(UserMixin, db.Model):
 
     time_joined = db.Column(db.DateTime, default=datetime.datetime.now)
 
+    last_seen = db.Column(db.DateTime, default=datetime.datetime.now)
+
     is_active = db.Column(db.Boolean, default=True)
 
     credits = db.Column(db.Integer, default=0, nullable=False)
@@ -51,7 +53,7 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
     def is_online(self):
-        if self.last_seen - datetime.datetime.now(datetime.timezone.utc) < datetime.timedelta(minutes=5):
+        if self.last_seen - datetime.datetime.now(datetime.UTC).replace(tzinfo=None) < datetime.timedelta(minutes=5):
             return True
         return False
 

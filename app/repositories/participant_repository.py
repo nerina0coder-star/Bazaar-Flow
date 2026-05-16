@@ -40,3 +40,15 @@ class ParticipantRepository:
         db.session.add_all(parts)
         db.session.commit()
         return len(parts)
+
+    @staticmethod
+    def get(user_id: int, chamber_id: int, role: str = None) -> Participant | None:
+        query = Participant.query.filter_by(chamber_id=chamber_id, user_id=user_id)
+        if role is not None:
+            query = query.filter_by(role=role)
+        return query.first()
+
+    @staticmethod
+    def remove(part: Participant):
+        db.session.delete(part)
+        db.session.commit()

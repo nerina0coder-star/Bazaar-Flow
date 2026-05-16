@@ -13,7 +13,7 @@ class UserRepository:
         return User.query.filter_by(username=username).first()
 
     @staticmethod
-    def find_by_id(user_id):
+    def find_by_id(user_id) -> User | None:
         return User.query.get(user_id)
 
     @staticmethod

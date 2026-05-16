@@ -14,8 +14,6 @@ class Chamber(db.Model):
 
     entrance_code = db.Column(db.String(100), nullable=False)
 
-    last_seen = db.Column(db.DateTime, nullable=False, default=lambda: datetime.datetime.now(datetime.UTC))
-
     # many-to-many
     participants = db.relationship('Participant', back_populates='chamber', lazy='dynamic')
 

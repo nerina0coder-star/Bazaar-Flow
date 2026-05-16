@@ -51,6 +51,49 @@ def edit(id):
 
     return render_template('chamber/edit.html', chamber=chamber)
 
+@chamber_bp.route('/chambers/<int:id>/members')
+@login_required
+def members(id):
+    if not UserRepository.is_owner(id, current_user.id):
+        return abort(400)
+    chamber = ChamberRepository.find_by_id(id)
+    if chamber is None:
+        return abort(404)
+
+    return render_template('chamber/members.html', chamber=chamber, partrep = ParticipantRepository())
+
+@chamber_bp.route('/chambers/<int:chamber_id>/members/<int:member_id>', methods=["GET", "POST"])
+@login_required
+def edit_member(chamber_id, member_id):
+    if not UserRepository.is_owner(chamber_id, current_user.id):
+        return abort(400)
+    part = ParticipantRepository.get(chamber_id=chamber_id, user_id=member_id)
+    if part is None:
+        return abort(404)
+
+    if request.method == 'POST':
+        ban = request.form.get('ban') == 'on'
+        role = request.form.get('role')
+
+        part = ParticipantRepository.get(member_id, chamber_id)
+
+        if ban:
+            ParticipantRepository.remove(part)
+            return redirect(url_for('chamber.dashboard'))
+        else:
+            #if role != part.role:
+            #    part.role = role
+            return redirect(url_for('chamber.dashboard'))
+
+
+
+    user = UserRepository.find_by_id(member_id)
+    chamber = ChamberRepository.find_by_id(chamber_id)
+
+    joined = user.time_joined.astimezone(tz=iran_tz).strftime('%d %b, %Y')
+
+    return render_template('chamber/edit_member.html', chamber=chamber, user = user, joined=joined,
+                           role=ParticipantRepository.get(member_id, chamber_id).role)
 
 
 @chamber_bp.route('/join', methods=['GET', 'POST'])
@@ -86,17 +129,17 @@ def join():
 
         ParticipantRepository.add_to_chamber(current_user.id, chamber_id)
 
-        return redirect(url_for('chamber.chamber', data=chamber_id))
+        return redirect(url_for('chamber.chamber', id=chamber_id))
 
 
 
 
     return render_template('chamber/join.html')
 
-@chamber_bp.route('/chambers/<int:data>')
+@chamber_bp.route('/chambers/<int:id>')
 @login_required
-def chamber(data):
-    chamber = ChamberRepository.find_by_id(data)
+def chamber(id):
+    chamber = ChamberRepository.find_by_id(id)
 
     if chamber is None:
         return abort(400)
@@ -125,7 +168,7 @@ def create():
         entrance_code = request.form.get('entrance_code').strip()
 
         description = request.form.get('description').strip()
-        if name or entrance_code or description == '':
+        if name == '' or entrance_code == '' or description == '':
             return render_template('chamber/create.html', custom_message='شکست خورد٬ نام٬ کد ورود٬ یا توضیحات خالی است')
 
         if len(entrance_code) > 49:
@@ -141,7 +184,7 @@ def create():
 
         ParticipantRepository.add_to_chamber(user_id=current_user.id, chamber_id=chamber.id, role='owner')
 
-        return redirect(url_for('chamber.chamber', data=chamber.id))
+        return redirect(url_for('chamber.chamber', id=chamber.id))
 
     return render_template('chamber/create.html')
 

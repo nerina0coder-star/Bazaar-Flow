@@ -7,6 +7,7 @@ from .blueprints.auth import auth_bp
 from .blueprints.profile import profile_bp
 from .blueprints.chamber import chamber_bp
 from .blueprints.errors import error_bp
+from .filters import *
 
 def create_app(config_name='default'):
 
@@ -34,6 +35,10 @@ def create_app(config_name='default'):
     app.register_blueprint(profile_bp, url_prefix='/profile')
     app.register_blueprint(chamber_bp, url_prefix='/chamber')
     app.register_blueprint(error_bp)
+
+    # filters
+    app.jinja_env.filters['role2persian'] = role_to_persian
+    app.jinja_env.filters['members_online'] = members_online
 
     # Simple home route
     @app.route('/')
