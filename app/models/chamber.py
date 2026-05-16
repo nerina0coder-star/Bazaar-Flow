@@ -1,3 +1,5 @@
+import datetime
+
 from app.extensions import db
 from .message import Message
 from .participant import Participant
@@ -11,6 +13,8 @@ class Chamber(db.Model):
     description = db.Column(db.String(50), nullable=False)
 
     entrance_code = db.Column(db.String(100), nullable=False)
+
+    last_seen = db.Column(db.DateTime, nullable=False, default=lambda: datetime.datetime.now(datetime.UTC))
 
     # many-to-many
     participants = db.relationship('Participant', back_populates='chamber', lazy='dynamic')

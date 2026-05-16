@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 
 from app.extensions import db, login_manager
 from flask_login import UserMixin
@@ -20,7 +20,7 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(300))
     username = db.Column(db.String(64))
 
-    time_joined = db.Column(db.DateTime, default=datetime.now)
+    time_joined = db.Column(db.DateTime, default=datetime.datetime.now)
 
     is_active = db.Column(db.Boolean, default=True)
 
@@ -49,6 +49,11 @@ class User(UserMixin, db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    def is_online(self):
+        if self.last_seen - datetime.datetime.now(datetime.timezone.utc) < datetime.timedelta(minutes=5):
+            return True
+        return False
 
     def __repr__(self):
         return f'<User {self.email}>'
