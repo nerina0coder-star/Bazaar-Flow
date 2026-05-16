@@ -31,7 +31,7 @@
                             ورود <i class="bi bi-box-arrow-in-left me-1"></i>
                         </a>
                         {% if user_repo.is_owner(chamber.id, current_user.id) %}
-                        <a class="btn btn-primary badge bg-success" href="/chamber/edit/{{ chamber.id }}">
+                        <a class="btn btn-primary badge bg-success" href="/chamber/chambers/{{ chamber.id }}/edit">
                             <i class="bi bi-box-arrow-in-right me-1"></i>
                              تغییر جزئیات
                         </a>

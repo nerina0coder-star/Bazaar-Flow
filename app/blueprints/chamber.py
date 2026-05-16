@@ -22,7 +22,7 @@ def dashboard():
     chambers = current_user.chambers.all()
     return render_template('chamber/dashboard.html', chambers=chambers, user_repo = UserRepository())
 
-@chamber_bp.route('/edit/<int:id>', methods=['GET', 'POST'])
+@chamber_bp.route('/chambers/<int:id>/edit', methods=['GET', 'POST'])
 def edit(id):
     if not UserRepository.is_owner(id, current_user.id):
         return abort(400)
