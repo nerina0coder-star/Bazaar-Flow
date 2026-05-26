@@ -16,7 +16,7 @@ def members_online(value: Chamber):
 
     actives = 0
     for member in chamber.users:
-        if member.is_online:
+        if member.is_online():
             actives += 1
 
     return actives
