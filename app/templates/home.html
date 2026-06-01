@@ -3,12 +3,23 @@
 {% block title %} بازار فلو {% endblock %}
 
 {% block content %}
+
+    <div class="position-fixed top-0 end-0 m-3" style="z-index: 1050;">
+        <button class="btn btn-light rounded-circle shadow-sm d-flex align-items-center justify-content-center"
+                style="width: 40px; height: 40px; padding: 0;"
+                title="Change Language"
+                onclick="toggleLanguage()">
+            🌐
+        </button>
+    </div>
+
+
     {% if not current_user.is_authenticated %}
     <div class="container">
         <div class="justify-content-center mb-3">
             <div id="lead">
                 <h1>
-                     <strong>
+                     <strong id="name">
                          بازار فلو
                      </strong>
                 </h1>
@@ -16,7 +27,7 @@
                 <br>
 
                 <h2>
-                    <b>
+                    <b id="small-intro">
                         از فروش کالا تا گپ زدنت با رفیقات و برگذاری جلسات مجازیت با ما!
                     </b>
                 </h2>
@@ -29,13 +40,13 @@
 
         <div class="px-1" id="full-explanation">
             بازار فلو به درد کسی میخوره که میخواهند محصولات خود را
-             به فروش برسانند یا هم چند رفیق می‌خواهن با هم مکالمه جمعی به صورت صوتی و یا تصویری داشته باشند.
+             به فروش برسانند یا هم چند رفیق می‌خواهند با هم مکالمه جمعی به صورت صوتی و یا تصویری داشته باشند.
         </div>
-        <div class="px-1" id="conversational-features">
+        <div class="px-1" id="chatting-features">
             این وبسایت خدماتی به نام "تالار" به شما ارائه میدهد٬ شما میتوانید در این تالارها انواع
             مدیا(عکس٬ فیلم٬ صوت) را بفرستید٬ همچنین میتوانید ارائه زنده یا "مجلس" را در تالار آغاز کنید.
         </div>
-        <div class="px-1">
+        <div class="px-1" id="ad-features">
             فروشندگان میتوانند یک تبلیغ یا
             Ad برای کالاهای خود انتخاب کنند که در صورت تمایل٬ با هزینه ناچیزی در وبسایت پخش کنند٬
             و یا هم لینک آن را کپی مرده و در سایت های دیگر مانند وبسایت یکتانت آنها را پخش کنند.
@@ -48,4 +59,9 @@
 
 
     {% endif %}
+{% endblock %}
+
+
+{% block script %}
+    <script src="/static/js/language.js"></script>
 {% endblock %}
