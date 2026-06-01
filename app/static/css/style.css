@@ -33,6 +33,10 @@ main {
     flex: 1;
 }
 
-body {
+body.persian {
     font-family: Vazirmatn!important;
+}
+
+body.english {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
 }
