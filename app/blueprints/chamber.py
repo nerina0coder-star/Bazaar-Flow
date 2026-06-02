@@ -6,6 +6,7 @@ from flask_socketio import emit, join_room, leave_room
 from sqlalchemy import custom_op
 
 from app.models import Participant
+from app.repositories.banned_user_repository import BannedUserRepository
 from app.repositories.user_repository import UserRepository
 from app.services.chamber_service import ChamberService
 from app.repositories.participant_repository import ParticipantRepository
@@ -79,6 +80,7 @@ def edit_member(chamber_id, member_id):
 
         if ban:
             ParticipantRepository.remove(part)
+            BannedUserRepository.ban_user(chamber_id, member_id)
             return redirect(url_for('chamber.dashboard'))
         else:
             #if role != part.role:
@@ -126,6 +128,9 @@ def join():
 
         if chamber.entrance_code != chamber_entrance_code:
             return render_template('chamber/join.html', message='شکست خورد٬ رمز ورود اشتباه است')
+
+        if BannedUserRepository.is_banned(current_user, current_user.id):
+            return render_template('chamber/join.html', message='شکست خورد٬ شما را از این تالار مسدود کرده‌اند')
 
         ParticipantRepository.add_to_chamber(current_user.id, chamber_id)
 
