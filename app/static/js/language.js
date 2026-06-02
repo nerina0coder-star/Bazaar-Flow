@@ -71,6 +71,8 @@
     document.body.classList.remove('persian', 'english');
     document.body.classList.add(lang);
     localStorage.setItem('lang', lang);
+    // It is the opposite so they can read if they are from the other language
+    document.getElementById('change-language-btn').title = lang === 'persian' ? 'Change Language' : 'تغییر زبان';
   }
 
   function toggleLanguage() {
