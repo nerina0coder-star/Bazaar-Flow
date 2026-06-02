@@ -36,6 +36,7 @@ class User(UserMixin, db.Model):
     # Many-to-many
 
     participants = db.relationship('Participant', back_populates='user', lazy='dynamic')
+    banned_from = db.relationship('BannedUser', back_populates='user', lazy='dynamic')
 
     chambers = db.relationship(
         'Chamber',
@@ -46,7 +47,7 @@ class User(UserMixin, db.Model):
         lazy='dynamic'
     )
 
-    banned_chambers = db.relationship(
+    banned = db.relationship(
         'Chamber',
         secondary='banned_user',
         primaryjoin='User.id == BannedUser.user_id',

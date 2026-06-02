@@ -16,6 +16,7 @@ class Chamber(db.Model):
 
     # many-to-many
     participants = db.relationship('Participant', back_populates='chamber', lazy='dynamic')
+    banned_users = db.relationship('BannedUser', back_populates='chamber', lazy='dynamic')
 
     users = db.relationship(
         'User',
@@ -26,8 +27,8 @@ class Chamber(db.Model):
         lazy='dynamic'
     )
 
-    banned_users = db.relationship(
-        'BannedUser',
+    banned = db.relationship(
+        'User',
         secondary='banned_user',
         primaryjoin='Chamber.id == BannedUser.chamber_id',
         secondaryjoin='BannedUser.user_id == User.id',
