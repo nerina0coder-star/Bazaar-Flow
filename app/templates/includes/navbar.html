@@ -2,7 +2,7 @@
     <div class="container">
         <!-- Brand / Logo -->
         <a class="navbar-brand fw-semibold" href="/">
-            <span class="border-end border-secondary pe-2 me-2">✦</span> بازارفلو
+            <span class="border-end border-secondary pe-2 me-2" id="navbar-star">✦</span> <span id="app-name">بازارفلو</span>
         </a>
         <!-- Mobile toggler button -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMainContent"
@@ -15,17 +15,17 @@
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 {% if not current_user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/auth/login">ورود یا ثبت‌نام</a>
+                    <a class="nav-link active" aria-current="page" href="/auth/login" id="login">ورود یا ثبت‌نام</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">قوانین و مقررات</a>
+                    <a href="#" class="nav-link" id="terms-and-conditions">قوانین و مقررات</a>
                 </li>
                 {% else %}
                 <li class="nav-item">
-                    <a href="/profile/dashboard" class="nav-link">خاطر</a>
+                    <a href="/profile/dashboard" class="nav-link" id="user-dashboard">خاطر</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/chamber/dashboard">تالارها</a>
+                    <a class="nav-link" href="/chamber/dashboard" id="chamber-dashboard">تالارها</a>
                 </li>
                 {% endif %}
                 <li class="nav-item dropdown">
