@@ -39,9 +39,18 @@ class User(UserMixin, db.Model):
 
     chambers = db.relationship(
         'Chamber',
-        secondary='participants',  # table name
+        secondary='participant',  # table name
         primaryjoin='User.id == Participant.user_id',
         secondaryjoin='Participant.chamber_id == Chamber.id',
+        viewonly=True,
+        lazy='dynamic'
+    )
+
+    banned_chambers = db.relationship(
+        'Chamber',
+        secondary='banned_user',
+        primaryjoin='User.id == BannedUser.user_id',
+        secondaryjoin='BannedUser.chamber_id == Chamber.id',
         viewonly=True,
         lazy='dynamic'
     )
