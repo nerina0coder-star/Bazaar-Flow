@@ -3,6 +3,7 @@ from datetime import datetime
 from flask import Blueprint, render_template, request, redirect, url_for, abort, session
 from flask_login import login_required, current_user
 from flask_socketio import emit, join_room, leave_room
+from flask_wtf.csrf import validate_csrf, CSRFError
 from sqlalchemy import custom_op
 
 from app.models import Participant
@@ -30,6 +31,11 @@ def edit(id):
     chamber = ChamberRepository.find_by_id(id)
 
     if request.method == 'POST':
+
+        try:
+            validate_csrf(request.form.get('csrf_token'))
+        except CSRFError:
+            return render_template('chamber/edit.html', csrfError=True)
 
         if request.form.get('name') is None or request.form.get('description')\
                 is None or request.form.get('entrance_code') is None or not request.form.get('name').strip()\
@@ -73,6 +79,12 @@ def edit_member(chamber_id, member_id):
         return abort(404)
 
     if request.method == 'POST':
+
+        try:
+            validate_csrf(request.form.get('csrf_token'))
+        except CSRFError:
+            return render_template('chamber/edit_member.html', csrfError=True)
+
         ban = request.form.get('ban') == 'on'
         role = request.form.get('role')
 
@@ -103,9 +115,15 @@ def edit_member(chamber_id, member_id):
 def join():
 
     if request.method == 'POST':
+
         try:
-            code = request.form.get('code')
-        except Exception:
+            validate_csrf(request.form.get('csrf_token'))
+        except CSRFError:
+            return render_template('chamber/join.html', csrfError=True)
+
+        try:
+            code = request.form['code']
+        except KeyError:
             return abort(400)
 
         if not code or code is None:
@@ -166,6 +184,13 @@ def chamber(id):
 def create():
 
     if request.method == 'POST':
+
+
+        try:
+            validate_csrf(request.form.get('csrf_token'))
+        except CSRFError:
+            return render_template('chamber/create.html', csrfError=True)
+
         if request.form.get('name') is None or request.form.get('description') is None or request.form.get('entrance_code') is None:
             return render_template('chamber/create.html')
 
@@ -200,7 +225,7 @@ def handle_msg(data):
     try:
         chamber = ChamberRepository.find_by_id(session['chamber'])
         message = data['message']
-    except Exception:
+    except KeyError:
         return abort(400)
 
     if chamber is None:
@@ -236,7 +261,7 @@ def handle_joined():
 
     try:
         ChamberRepository.find_by_id(session['chamber'])
-    except Exception:
+    except KeyError:
         return abort(400)
 
     join_room(str(session['chamber']))
@@ -273,7 +298,7 @@ def handle_joined():
 def handle_left():
     try:
         chamber = ChamberRepository.find_by_id(session['chamber'])
-    except Exception:
+    except KeyError:
         return abort(400)
 
     leave_room(str(chamber.id))

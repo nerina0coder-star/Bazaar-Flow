@@ -7,6 +7,12 @@
 <div class="edit-chamber-container">
     <h2 class="mb-4"> ویرایش تالار {{ custom_message }}</h2>
     <form method="POST" action="/chamber/edit/{{ chamber.id }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        {% if CsrfError %}
+          <p class="alert alert-danger alert-dismissable fade show" role="alert">
+            به مدت طولانی افلاین بودید٬ لطفا دوباره تلاش کنید
+          </p>
+        {% endif %}
         <!-- Chamber Name -->
         <div class="mb-3">
             <label class="form-label" for="name"> >نام تالار</label>

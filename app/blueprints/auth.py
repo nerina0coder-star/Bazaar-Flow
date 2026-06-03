@@ -1,5 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, login_required
+from flask_wtf.csrf import validate_csrf, CSRFError
+
 from app.services.user_service import UserService
 from email_validator import validate_email, EmailNotValidError
 
@@ -9,6 +11,12 @@ auth_bp = Blueprint('auth', __name__)
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
+
+        try:
+            validate_csrf(request.form.get('csrf_token'))
+        except CSRFError:
+            return render_template('auth/login.html', csrfError=True)
+
         email = request.form.get('email')
         password = request.form.get('password')
         username = request.form.get('username')
@@ -19,6 +27,7 @@ def login():
             "همم... به نظر می‌رسه ایمیل یا پسوردت خالیه...")
 
         user = UserService.authenticate(username, email, password)
+
         if user:
             login_user(user)
             flash('Logged in successfully.', 'success')
@@ -29,12 +38,18 @@ def login():
             return render_template('auth/login.html', customMessage=
             "ولی یا رمزت یا ایمیلت یا هم نام کاربریت اشتباهه..."
                                    )
+
     return render_template('auth/login.html')
 
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
+
+        try:
+            validate_csrf(request.form.get('csrf_token'))
+        except CSRFError:
+            return render_template('auth/register.html', csrfError=True)
 
         email = request.form.get('email')
         password = request.form.get('password')
@@ -82,6 +97,12 @@ def register():
 @login_required
 def logout():
     if request.method == 'POST':
+
+        try:
+            validate_csrf(request.form.get('csrf_token'))
+        except CSRFError:
+            return render_template('auth/logout.html', csrfError=True)
+
         logout_user()
         flash('You have been logged out.', 'info')
         return redirect(url_for('home'))

@@ -12,6 +12,12 @@
           خوش آمدی!
       {{ customMessage }}</h2>
       <form action="/auth/login" method="post">
+        {% if CsrfError %}
+          <p class="alert alert-danger alert-dismissable fade show" role="alert">
+            به مدت طولانی افلاین بودید٬ لطفا دوباره تلاش کنید
+          </p>
+        {% endif %}
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"></input>
         <div class="mb-3">
           <label for="username" class="form-label"></label>
           <input type="text" class="form-control" id="username" name="username" placeholder="علیرضا خفن">

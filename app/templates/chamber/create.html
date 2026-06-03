@@ -17,6 +17,12 @@
                     </div>
 
                     <form method="POST" action="/chamber/create">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        {% if CsrfError %}
+                        <p class="alert alert-danger alert-dismissable fade show" role="alert">
+                            به مدت طولانی افلاین بودید٬ لطفا دوباره تلاش کنید
+                        </p>
+                        {% endif %}
                         <!-- Name -->
                         <div class="mb-3">
                             <label for="name" class="form-label">نام تالار <span class="text-danger">*</span></label>

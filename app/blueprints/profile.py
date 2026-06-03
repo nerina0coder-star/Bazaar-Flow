@@ -16,6 +16,13 @@ def dashboard():
 @login_required
 def edit_profile():
     if request.method == 'POST':
+
+
+        try:
+            validate_csrf(request.form.get('csrf_token'))
+        except CSRFError:
+            return render_template('profile/edit.html', csrfError=True)
+
         if request.form.get('username') is None or request.form.get('password') is None:
             return render_template('profile/edit.html', custom_message='شکست خورد٬ به نظر میرسد نام‌کاربری یا رمزعبور وارد نشده')
         new_password = request.form.get('new_password')

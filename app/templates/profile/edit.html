@@ -11,6 +11,12 @@
     <p id="higherEtcError"><small id="etcError"></small></p>
     <p id="higherPasswordMatch" class="{% if passwordError %} alert alert-danger alert-dismissable fade show {% endif %}" role="alert"><small id="passwordMatch">{% if passwordError %} رمزعبور تاییدشده اشتباه است {% endif %}</small></p>
     <form method="POST" action="/profile/edit" onsubmit="return validatePassword()">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        {% if CsrfError %}
+          <p class="alert alert-danger alert-dismissable fade show" role="alert">
+            به مدت طولانی افلاین بودید٬ لطفا دوباره تلاش کنید
+          </p>
+        {% endif %}
         <!-- Username (editable) -->
         <div class="mb-3">
             <label class="form-label" for="username">نام کاربری</label>

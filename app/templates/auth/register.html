@@ -12,6 +12,12 @@
       <p class="" id="higherPasswordMatch" role="alert"><small id="passwordMatch">{% if passwordError %} رمز عبور اشتباه می‌باشد {% endif %}</small></p>
       <p class="" id="higherEtcError" role="alert"><small id="etcError"></small></p>
       <form action="{{ url_for('auth.register') }}" method="POST" onsubmit="return validateForm()">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        {% if CsrfError %}
+          <p class="alert alert-danger alert-dismissable fade show" role="alert">
+            به مدت طولانی افلاین بودید٬ لطفا دوباره تلاش کنید
+          </p>
+        {% endif %}
         <div class="mb-3">
           <label for="username" class="form-label">نام کاربری</label>
           <input type="text" class="form-control" id="username" name="username" placeholder="علیرضا گیمر" maxlength="63" required autofocus>

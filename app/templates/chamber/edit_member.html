@@ -38,6 +38,12 @@
 
     <!-- Edit role form -->
     <form method="POST" action="/chamber/chambers/{{chamber.id}}/members/{{user.id}}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        {% if CsrfError %}
+          <p class="alert alert-danger alert-dismissable fade show" role="alert">
+            به مدت طولانی افلاین بودید٬ لطفا دوباره تلاش کنید
+          </p>
+        {% endif %}
         <div class="mb-4">
             <label class="form-label fw-semibold">نقش کاربر</label>
             <select class="form-select form-select-lg" name="role">
