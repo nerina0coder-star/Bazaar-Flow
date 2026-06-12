@@ -2,7 +2,7 @@ import socketio
 from flask import Flask, render_template
 from flask_socketio import SocketIO
 from .config import config
-from .extensions import db, login_manager, socket_io, csrf
+from .extensions import db, login_manager, socket_io, csrf, captcha
 from .blueprints.auth import auth_bp
 from .blueprints.profile import profile_bp
 from .blueprints.chamber import chamber_bp
@@ -27,7 +27,7 @@ def create_app(config_name='default'):
     login_manager.init_app(app)
 
     csrf.init_app(app)
-
+    captcha.init_app(app)
     # starting db
 
     with app.app_context():

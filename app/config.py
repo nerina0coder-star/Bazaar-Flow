@@ -2,6 +2,8 @@ import dotenv
 
 class Config:
     SECRET_KEY = dotenv.get_key(key_to_get='SECRET_KEY', dotenv_path='.env')
+    HCAPTCHA_SITE_KEY = dotenv.get_key(key_to_get='HCAPTCHA_SITE', dotenv_path='.env')
+    HCAPTCHA_SECRET_KEY = dotenv.get_key(key_to_get='HCAPTCHA_SECRET', dotenv_path='.env')
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 

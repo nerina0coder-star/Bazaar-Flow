@@ -17,6 +17,11 @@
             به مدت طولانی افلاین بودید٬ لطفا دوباره تلاش کنید
           </p>
         {% endif %}
+        {% if CaptchaError %}
+          <p class="alert alert-danger alert-dismissable fade show" role="alert">
+            لطفا ربات نبودن خود را تایید کنید
+          </p>
+        {% endif %}
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"></input>
         <div class="mb-3">
           <label for="username" class="form-label"></label>
@@ -29,6 +34,9 @@
         <div class="mb-3">
           <label for="loginPassword" class="form-label">رمزعبور</label>
           <input type="password" class="form-control" id="loginPassword" name="password" required>
+        </div>
+        <div class="mb-3">
+          {{ hcaptcha }}
         </div>
         <div class="mb-3 d-flex justify-content-between align-items-center">
           <a href="#" class="text-decoration-none small">رمزتو فراموش کردی؟</a>
