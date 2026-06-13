@@ -2,81 +2,326 @@
 
 {% block title %} مدیریت تالارها {% endblock %}
 
-{% block content %}
+{% block style %}
+<style>
+    /* هدر داشبورد */
+    .dashboard-header {
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        border-radius: 1.5rem;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        border: 1px solid #e2e8f0;
+    }
 
-<div class="chambers-container">
-    <!-- Header with back button and create button -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <a href="{{ url_for('profile.dashboard') }}" class="btn btn-outline-secondary rounded-pill">
-            <i class="bi bi-arrow-right me-1"></i> بازگشت به خاطر
-        </a>
-        <a href="/chamber/create" class="btn btn-primary rounded-pill">
-            <i class="bi bi-plus-lg me-1"></i> ایجاد تالار جدید
-        </a>
+    .dashboard-header-content h2 {
+        font-weight: 800;
+        color: #0f172a;
+        margin-bottom: 0.25rem;
+        font-size: 1.75rem;
+    }
+
+    .dashboard-header-content p {
+        color: #64748b;
+        margin: 0;
+        font-size: 0.95rem;
+    }
+
+    .btn-create {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+        text-decoration: none;
+    }
+
+    .btn-create:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        color: white;
+    }
+
+    /* کارت‌های تالار */
+    .chamber-card {
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        border-radius: 1.25rem;
+        background: #fff;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        overflow: hidden;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .chamber-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+        border-color: rgba(59, 130, 246, 0.2);
+    }
+
+    .chamber-card-body {
+        padding: 1.5rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* هدر کارت (آواتار و اطلاعات) */
+    .chamber-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .chamber-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+        color: #4f46e5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+
+    .chamber-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .chamber-title {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 0 0 6px 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .online-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #16a34a;
+        background-color: #dcfce7;
+        padding: 4px 10px;
+        border-radius: 50px;
+    }
+
+    .online-dot {
+        width: 7px;
+        height: 7px;
+        background-color: #16a34a;
+        border-radius: 50%;
+        animation: pulse-dot 2s infinite;
+    }
+
+    @keyframes pulse-dot {
+        0% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7); }
+        70% { box-shadow: 0 0 0 8px rgba(22, 163, 74, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
+    }
+
+    .chamber-description {
+        color: #64748b;
+        font-size: 0.9rem;
+        line-height: 1.7;
+        margin-bottom: 1.5rem;
+        flex: 1;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    /* فوتر کارت (دکمه‌ها) */
+    .chamber-footer {
+        display: flex;
+        gap: 0.75rem;
+        margin-top: auto;
+        padding-top: 1rem;
+        border-top: 1px dashed #f1f5f9;
+    }
+
+    .btn-enter {
+        flex: 1;
+        background-color: #f1f5f9;
+        color: #475569;
+        border: none;
+        font-weight: 600;
+        padding: 0.65rem 1rem;
+        border-radius: 10px;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        text-decoration: none;
+        font-size: 0.9rem;
+    }
+
+    .btn-enter:hover {
+        background-color: #3b82f6;
+        color: #fff;
+        transform: translateX(-3px);
+    }
+
+    .btn-edit {
+        background-color: #fef3c7;
+        color: #d97706;
+        border: none;
+        font-weight: 600;
+        padding: 0.65rem 1rem;
+        border-radius: 10px;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        text-decoration: none;
+        font-size: 0.9rem;
+    }
+
+    .btn-edit:hover {
+        background-color: #fde68a;
+        color: #b45309;
+    }
+
+    /* حالت خالی (Empty State) */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: #fff;
+        border-radius: 1.5rem;
+        border: 2px dashed #e2e8f0;
+    }
+
+    .empty-state-icon {
+        width: 80px;
+        height: 80px;
+        background: #f1f5f9;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        color: #94a3b8;
+        font-size: 2.5rem;
+    }
+
+    .empty-state h4 {
+        color: #334155;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+        color: #64748b;
+        margin-bottom: 1.5rem;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4" dir="rtl">
+    
+    <!-- هدر داشبورد -->
+    <div class="dashboard-header">
+        <div class="dashboard-header-content">
+            <h2>مدیریت تالارها</h2>
+            <p>تالارهای گفتگوی خود را مدیریت کنید و به گفتگو بپیوندید.</p>
+        </div>
+        <div class="d-flex gap-2 align-items-center">
+            <a href="{{ url_for('profile.dashboard') }}" class="btn btn-outline-secondary rounded-pill px-3">
+                <i class="bi bi-arrow-right me-1"></i> بازگشت
+            </a>
+            <a href="/chamber/create" class="btn btn-create">
+                <i class="bi bi-plus-lg"></i> ایجاد تالار جدید
+            </a>
+        </div>
     </div>
 
-    <!-- List of chambers -->
+    <!-- لیست تالارها -->
+    {% if chambers %}
     <div class="row g-4">
         {% for chamber in chambers %}
         <div class="col-md-6 col-lg-4">
-            <div class="card chamber-card h-100">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                        <h5 class="card-title mb-0">{{ chamber.name }}</h5>
-                        <span class="badge bg-success">{{ chamber|members_online }} عضو آنلاین</span>
+            <div class="chamber-card">
+                <div class="chamber-card-body">
+                    <!-- هدر کارت -->
+                    <div class="chamber-header">
+                        <div class="chamber-avatar">
+                            {{ chamber.name[0] if chamber.name else 'ت' }}
+                        </div>
+                        <div class="chamber-info">
+                            <h5 class="chamber-title">{{ chamber.name }}</h5>
+                            <span class="online-badge">
+                                <span class="online-dot"></span>
+                                {{ chamber|members_online }} نفر آنلاین
+                            </span>
+                        </div>
                     </div>
-                    <p class="card-text text-muted small">{{ chamber.description }}</p>
-                    <div class="d-flex justify-content-between align-items-center mt-3">
-                        <a href="/chamber/chambers/{{ chamber.id }}" class="btn btn-sm btn-outline-primary rounded-pill">
-                            ورود <i class="bi bi-box-arrow-in-left me-1"></i>
+
+                    <!-- توضیحات -->
+                    <p class="chamber-description">{{ chamber.description }}</p>
+
+                    <!-- دکمه‌های اکشن -->
+                    <div class="chamber-footer">
+                        <a href="/chamber/chambers/{{ chamber.id }}" class="btn-enter">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M6 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 0-1 0v2A1.5 1.5 0 0 0 6.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-8A1.5 1.5 0 0 0 5 3.5v2a.5.5 0 0 0 1 0v-2z"/>
+                                <path fill-rule="evenodd" d="M4.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H14a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z"/>
+                            </svg>
+                            ورود به تالار
                         </a>
                         {% if user_repo.is_owner(chamber.id, current_user.id) %}
-                        <a class="btn btn-primary badge bg-success" href="/chamber/chambers/{{ chamber.id }}/edit">
-                            <i class="bi bi-box-arrow-in-right me-1"></i>
-                             تغییر جزئیات
+                        <a href="/chamber/chambers/{{ chamber.id }}/edit" class="btn-edit" title="تغییر جزئیات">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/>
+                                <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z"/>
+                            </svg>
                         </a>
                         {% endif %}
-
                     </div>
                 </div>
             </div>
         </div>
         {% endfor %}
     </div>
+    {% else %}
+    <!-- حالت خالی -->
+    <div class="empty-state">
+        <div class="empty-state-icon">
+            <i class="bi bi-chat-square-text"></i>
+        </div>
+        <h4>هنوز تالاری ایجاد نکرده‌اید!</h4>
+        <p>شما هنوز عضو هیچ تالاری نیستید یا تالاری ایجاد نکرده‌اید. اولین تالار خود را بسازید یا به یک تالار بپیوندید.</p>
+        <a href="/chamber/create" class="btn btn-create">
+            <i class="bi bi-plus-lg"></i> ایجاد اولین تالار
+        </a>
+    </div>
+    {% endif %}
+
 </div>
-
-{% endblock %}
-
-{% block style %}
-
-<style>
-.chambers-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 1rem;
-}
-
-.chamber-card {
-    border: none;
-    border-radius: 1rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    transition: all 0.2s ease;
-}
-.chamber-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-}
-.card-title {
-    font-size: 1.1rem;
-    font-weight: 600;
-}
-.badge {
-    font-size: 0.7rem;
-    padding: 0.35rem 0.65rem;
-}
-.btn-outline-secondary i, .btn-primary i {
-    vertical-align: middle;
-}
-</style>
-
 {% endblock %}
