@@ -1,29 +1,219 @@
 {% extends 'base.html' %}
 
-{% block title %} خروج  {% endblock %}
+{% block title %}خروج{% endblock %}
+
+{% block style %}
+<style>
+    /* کارت اصلی با افکت مشابه داشبورد */
+    .logout-card {
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        border: 1px solid rgba(0, 0, 0, 0.05) !important;
+        background-color: #fff;
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    .logout-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08) !important;
+    }
+
+    /* آیکون خروج با انیمیشن */
+    .logout-icon {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        animation: pulse 2s infinite ease-in-out;
+    }
+
+    .logout-icon svg {
+        color: #dc2626;
+        width: 48px;
+        height: 48px;
+    }
+
+    /* استایل پیام خطای CSRF */
+    .csrf-alert {
+        background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+        border: 1px solid #fecaca;
+        border-radius: 12px;
+        padding: 1rem 1.25rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        animation: slideDown 0.4s ease-out;
+    }
+
+    .csrf-alert-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background-color: #dc2626;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .csrf-alert-icon svg {
+        color: #fff;
+        width: 20px;
+        height: 20px;
+    }
+
+    .csrf-alert-content {
+        flex: 1;
+    }
+
+    .csrf-alert-title {
+        font-weight: 700;
+        color: #991b1b;
+        margin-bottom: 2px;
+        font-size: 0.95rem;
+    }
+
+    .csrf-alert-message {
+        color: #b91c1c;
+        font-size: 0.85rem;
+        margin: 0;
+    }
+
+    /* دکمه‌های خروج و بازگشت */
+    .btn-logout {
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        border: none;
+        color: #fff;
+        font-weight: 600;
+        padding: 0.9rem 2rem;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .btn-logout:hover {
+        background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(220, 38, 38, 0.35);
+        color: #fff;
+    }
+
+    .btn-back {
+        background-color: #f8f9fa;
+        border: 1.5px solid #e5e7eb;
+        color: #4b5563;
+        font-weight: 600;
+        padding: 0.9rem 2rem;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .btn-back:hover {
+        background-color: #f3f4f6;
+        border-color: #d1d5db;
+        color: #1f2937;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    /* انیمیشن‌ها */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.05);
+        }
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center">
+<div class="row justify-content-center" dir="rtl">
     <div class="col-md-6 col-lg-5">
-        <div class="card shadow-sm border-0 rounded-4">
-            <div class="card-body p-4 text-center">
-                <div class="mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="bi bi-box-arrow-right text-danger" viewBox="0 0 16 16">
+        <div class="card shadow-sm border-0 rounded-4 logout-card">
+            <div class="card-body p-5 text-center">
+                
+                <!-- آیکون خروج -->
+                <div class="logout-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
                         <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
                         <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
                     </svg>
                 </div>
-                <h3 class="h4 mb-3">خروج از حساب</h3>
-                <p class="text-muted mb-4">آیا مطمئن هستید که می‌خواهید خارج شوید؟</p>
+
+                <!-- عنوان و توضیحات -->
+                <h3 class="h4 mb-2 fw-bold text-dark">خروج از حساب کاربری</h3>
+                <p class="text-muted mb-4">آیا مطمئن هستید که می‌خواهید از حساب خود خارج شوید؟</p>
+
+                <!-- فرم خروج -->
                 <form method="POST" action="{{ url_for('auth.logout') }}">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    
+                    <!-- پیام خطای CSRF -->
                     {% if CsrfError %}
-                        <p class="alert alert-danger alert-dismissable fade show" role="alert">
-                            به مدت طولانی افلاین بودید٬ لطفا دوباره تلاش کنید
-                        </p>
+                        <div class="csrf-alert" role="alert">
+                            <div class="csrf-alert-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                                </svg>
+                            </div>
+                            <div class="csrf-alert-content">
+                                <div class="csrf-alert-title">خطای امنیتی</div>
+                                <p class="csrf-alert-message">به مدت طولانی آفلاین بودید، لطفاً دوباره تلاش کنید.</p>
+                            </div>
+                        </div>
                     {% endif %}
-                    <button type="submit" class="btn btn-danger btn-lg w-100 rounded-pill">بله، خارج شوم</button>
-                    <a href="{{ url_for('profile.dashboard') }}" class="btn btn-outline-secondary btn-lg w-100 rounded-pill mt-3">نه، بازگشت</a>
+
+                    <!-- دکمه‌ها -->
+                    <div class="d-grid gap-3">
+                        <button type="submit" class="btn btn-logout btn-lg w-100 rounded-pill">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
+                                <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+                            </svg>
+                            بله، خارج شوم
+                        </button>
+                        <a href="{{ url_for('profile.dashboard') }}" class="btn btn-back btn-lg w-100 rounded-pill">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+                            </svg>
+                            نه، بازگشت به خاطر
+                        </a>
+                    </div>
                 </form>
+
             </div>
         </div>
     </div>
