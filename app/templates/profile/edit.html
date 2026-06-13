@@ -1,81 +1,283 @@
 {% extends 'base.html' %}
 
-{% block title %}
-پرونده
+{% block title %}پرونده{% endblock %}
+
+{% block style %}
+<style>
+    /* کارت اصلی ویرایش پروفایل */
+    .profile-edit-card {
+        background: #ffffff;
+        border-radius: 1.5rem;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        padding: 2.5rem;
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* برچسب‌ها و آیکون‌ها */
+    .form-label {
+        font-weight: 600;
+        color: #334155;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.95rem;
+    }
+
+    .form-label svg {
+        opacity: 0.7;
+    }
+
+    /* فیلدهای ورودی */
+    .form-control {
+        border: 1.5px solid #e2e8f0;
+        border-radius: 0.75rem;
+        padding: 0.85rem 1rem;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+        background-color: #f8fafc;
+        color: #1e293b;
+    }
+
+    .form-control:focus {
+        border-color: #3b82f6;
+        background-color: #ffffff;
+        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        outline: none;
+    }
+
+    .form-control:disabled, .form-control[readonly] {
+        background-color: #f1f5f9;
+        color: #64748b;
+        border-color: #e2e8f0;
+        cursor: not-allowed;
+    }
+
+    .form-text {
+        font-size: 0.85rem;
+        color: #64748b;
+        margin-top: 0.4rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    /* پیام‌های خطا */
+    .custom-alert {
+        border-radius: 0.75rem;
+        padding: 1rem 1.25rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        line-height: 1.5;
+    }
+
+    .alert-danger-custom {
+        background-color: #fef2f2;
+        border: 1px solid #fecaca;
+        color: #991b1b;
+    }
+
+    .alert-danger-custom svg {
+        color: #dc2626;
+        flex-shrink: 0;
+        width: 20px;
+        height: 20px;
+    }
+
+    /* دکمه‌ها */
+    .btn-submit {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 0.85rem 1.5rem;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 1rem;
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+        color: white;
+    }
+
+    .btn-cancel {
+        background-color: #f8fafc;
+        border: 1.5px solid #e2e8f0;
+        color: #475569;
+        font-weight: 600;
+        padding: 0.85rem 1.5rem;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        text-decoration: none;
+        font-size: 1rem;
+    }
+
+    .btn-cancel:hover {
+        background-color: #f1f5f9;
+        border-color: #cbd5e1;
+        color: #334155;
+        transform: translateY(-2px);
+    }
+</style>
 {% endblock %}
 
 {% block content %}
+<div class="container py-5" dir="rtl">
+    <div class="row justify-content-center">
+        <div class="col-lg-7 col-md-9">
+            <div class="profile-edit-card">
+                
+                <!-- هدر کارت -->
+                <div class="text-center mb-4">
+                    <div class="mb-3 mx-auto" style="width: 64px; height: 64px; background: #eff6ff; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#3b82f6" viewBox="0 0 16 16">
+                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+                        </svg>
+                    </div>
+                    <h2 class="h4 fw-bold text-dark mb-1">ویرایش پروفایل</h2>
+                    {% if custom_message %}
+                        <p class="text-muted small mb-0">{{ custom_message }}</p>
+                    {% endif %}
+                </div>
 
-<div class="edit-profile-container">
-    <h2 class="mb-4">ویرایش پروفایل {{ custom_message }}</h2>
-    <p id="higherEtcError"><small id="etcError"></small></p>
-    <p id="higherPasswordMatch" class="{% if passwordError %} alert alert-danger alert-dismissable fade show {% endif %}" role="alert"><small id="passwordMatch">{% if passwordError %} رمزعبور تاییدشده اشتباه است {% endif %}</small></p>
-    <form method="POST" action="/profile/edit" onsubmit="return validatePassword()">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        {% if CsrfError %}
-          <p class="alert alert-danger alert-dismissable fade show" role="alert">
-            به مدت طولانی افلاین بودید٬ لطفا دوباره تلاش کنید
-          </p>
-        {% endif %}
-        <!-- Username (editable) -->
-        <div class="mb-3">
-            <label class="form-label" for="username">نام کاربری</label>
-            <input type="text" class="form-control form-control-lg" id="username" name="username" value="{{ current_user.username }}" required>
+                <!-- پیام خطای CSRF -->
+                {% if CsrfError %}
+                <div class="custom-alert alert-danger-custom" role="alert">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                    </svg>
+                    <span>به مدت طولانی آفلاین بودید، لطفاً دوباره تلاش کنید.</span>
+                </div>
+                {% endif %}
+
+                <!-- پیام خطای عمومی (توسط JS کنترل می‌شود) -->
+                <p id="higherEtcError" class="custom-alert alert-danger-custom" style="display: none;" role="alert">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                    </svg>
+                    <small id="etcError"></small>
+                </p>
+
+                <!-- پیام خطای تطابق رمز عبور -->
+                <p id="higherPasswordMatch" class="custom-alert alert-danger-custom {% if not passwordError %}d-none{% endif %}" role="alert">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                    </svg>
+                    <small id="passwordMatch">{% if passwordError %}رمز عبور تأیید شده اشتباه است.{% endif %}</small>
+                </p>
+
+                <!-- فرم ویرایش -->
+                <form method="POST" action="/profile/edit" onsubmit="return validatePassword()">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                    <!-- نام کاربری -->
+                    <div class="mb-4">
+                        <label class="form-label" for="username">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                                <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+                            </svg>
+                            نام کاربری
+                        </label>
+                        <input type="text" class="form-control" id="username" name="username" value="{{ current_user.username }}" required autocomplete="username">
+                    </div>
+
+                    <!-- ایمیل -->
+                    <div class="mb-4">
+                        <label class="form-label" for="email">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"/>
+                            </svg>
+                            ایمیل
+                        </label>
+                        <input id="email" type="email" class="form-control" value="{{ current_user.email }}" disabled readonly>
+                        <div class="form-text">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/></svg>
+                            آدرس ایمیل قابل تغییر نیست. در صورت نیاز با پشتیبانی تماس بگیرید.
+                        </div>
+                    </div>
+
+                    <!-- رمز عبور فعلی -->
+                    <div class="mb-4">
+                        <label class="form-label" for="password">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+                            </svg>
+                            رمز عبور فعلی
+                        </label>
+                        <input type="password" class="form-control" id="password" name="password" autocomplete="current-password">
+                        <div class="form-text">برای اعمال هرگونه تغییر، وارد کردن رمز عبور فعلی الزامی است.</div>
+                    </div>
+
+                    <!-- رمز عبور جدید -->
+                    <div class="mb-4">
+                        <label class="form-label" for="new_password">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M11.5 1h-7a1.5 1.5 0 0 0-1.5 1.5v11a1.5 1.5 0 0 0 1.5 1.5h7a1.5 1.5 0 0 0 1.5-1.5v-11A1.5 1.5 0 0 0 11.5 1zm-7-1a2.5 2.5 0 0 0-2.5 2.5v11A2.5 2.5 0 0 0 4.5 16h7a2.5 2.5 0 0 0 2.5-2.5v-11A2.5 2.5 0 0 0 11.5 0h-7z"/>
+                                <path d="M7 5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1z"/>
+                            </svg>
+                            رمز عبور جدید
+                        </label>
+                        <input type="password" class="form-control" id="new_password" name="new_password" autocomplete="new-password">
+                        <div class="form-text">فقط در صورتی که می‌خواهید رمز عبور خود را تغییر دهید، این فیلد را پر کنید.</div>
+                    </div>
+
+                    <!-- تکرار رمز عبور -->
+                    <div class="mb-4">
+                        <label class="form-label" for="confirm_password">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M11.5 1h-7a1.5 1.5 0 0 0-1.5 1.5v11a1.5 1.5 0 0 0 1.5 1.5h7a1.5 1.5 0 0 0 1.5-1.5v-11A1.5 1.5 0 0 0 11.5 1zm-7-1a2.5 2.5 0 0 0-2.5 2.5v11A2.5 2.5 0 0 0 4.5 16h7a2.5 2.5 0 0 0 2.5-2.5v-11A2.5 2.5 0 0 0 11.5 0h-7z"/>
+                                <path d="M10.854 8.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.793l2.646-2.647a.5.5 0 0 1 .708 0z"/>
+                            </svg>
+                            تکرار رمز عبور جدید
+                        </label>
+                        <input type="password" class="form-control" id="confirm_password" name="confirm_password" autocomplete="new-password">
+                    </div>
+
+                    <!-- دکمه‌های عملیات -->
+                    <div class="d-flex gap-3 mt-5">
+                        <button type="submit" class="btn btn-submit flex-grow-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/>
+                            </svg>
+                            ذخیره تغییرات
+                        </button>
+                        <a href="/profile/dashboard" class="btn btn-cancel flex-grow-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+                            </svg>
+                            انصراف
+                        </a>
+                    </div>
+                </form>
+
+            </div>
         </div>
-
-        <!-- Email (not editable) -->
-        <div class="mb-3">
-            <label class="form-label" for="email">ایمیل</label>
-            <input id="email" type="email" class="form-control form-control-lg bg-light" value="{{ current_user.email }}" disabled readonly>
-        </div>
-
-        <!-- Last Password -->
-
-        <div class="mb-3">
-            <label class="form-label" for="password">رمز عبور</label>
-            <input type="password" class="form-control form-control-lg" id="password" name="password">
-            <div class="form-text">در صورت تمایل به ایجاد هرگونه تغییر٬ رمز عبور خود را وارد کنید</div>
-        </div>
-
-        <!-- Password (editable) -->
-        <div class="mb-3">
-            <label class="form-label" for="new_password">رمز عبور جدید</label>
-            <input type="password" class="form-control form-control-lg" id="new_password" name="new_password">
-            <div class="form-text">در صورت تمایل به تغییر رمز عبور، رمز جدید را وارد کنید</div>
-        </div>
-
-        <!-- Confirm Password -->
-        <div class="mb-4">
-            <label class="form-label" for="confirm_password">تکرار رمز عبور</label>
-            <input type="password" class="form-control form-control-lg" id="confirm_password" name="confirm_password">
-        </div>
-
-        <div class="d-flex gap-2">
-            <button type="submit" class="btn btn-primary btn-lg px-4 rounded-pill">ذخیره تغییرات</button>
-            <a class="btn btn-outline-secondary btn-lg px-4 rounded-pill" href="/profile/dashboard">انصراف</a>
-        </div>
-    </form>
+    </div>
 </div>
-
 {% endblock %}
 
 {% block script %}
-
 <script src="/static/js/edit.js"></script>
-
-{% endblock %}
-
-{% block style %}
-
-<style>
-.edit-profile-container {
-    max-width: 600px;
-    margin: 2rem auto;
-    padding: 0 1rem;
-}
-.form-control:focus {
-    box-shadow: 0 0 0 0.2rem rgba(13,110,253,0.25);
-}
-</style>
-
 {% endblock %}

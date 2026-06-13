@@ -1,5 +1,5 @@
 var password1 = document.getElementById('new_password');
-var passwordC = document.getElementById('confirmPassword');
+var passwordC = document.getElementById('confirm_password');
 
 function validatePassword() {
 	if (password1.value !== passwordC.value
@@ -7,7 +7,7 @@ function validatePassword() {
 	passwordC.value != '') {
 		document.getElementById(
 		'higherPasswordMatch'
-		).className = "alert alert-danger alert-dismissable show fade";
+		).className = "custom-alert alert-danger-custom";
 		document.getElementById(
 		'passwordMatch'
 		).innerText =
@@ -16,13 +16,13 @@ function validatePassword() {
 	} else if (passwordC.value == '' && password1.value !== '') {
 		document.getElementById(
 		"higherPasswordMatch"
-		).className = "alert alert-danger alert-dismissable fade show";
+		).classList.remove("d-none");
 		document.getElementById(
 		"passwordMatch"
 		).innerText = "رمز عبور تایید نشده است";
 		return false;
 	}
-	document.getElementById('higherPasswordMatch').className = ''
+	document.getElementById('higherPasswordMatch').classList.add("d-none")
 	return true;
 }
 
@@ -30,7 +30,7 @@ function validateEtc() {
 	if (document.getElementById('username').value == '' ||
 	document.getElementById('email').value == '') {
 		document.getElementById('higherEtcError').
-		className = "alert alert-danger alert-dismissable show fade";
+		className = "custom-alert alert-danger-custom";
 		var uname = document.getElementById('username');
 		var email = document.getElementById('email')
 		
@@ -45,9 +45,14 @@ function validateEtc() {
 			err.innerText =
 			"ایمیل خالی است";
 		}
+                const h = document.getElementById("higherEtcError");
+                h.className = "custom-alert alert-danger-custom";
+                h.style = "";
 		return false;
 	}
-	document.getElementById('higherEtcError').className = ''
+	const h =document.getElementById('higherEtcError');
+        h.className = '';
+        h.style = "display: none;";
 	return true;
 }
 

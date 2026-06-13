@@ -2,51 +2,329 @@
 
 {% block title %} ساخت تالار {% endblock %}
 
-{% block content %}
+{% block style %}
+<style>
+    /* کانتینر اصلی */
+    .create-chamber-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+        animation: fadeInUp 0.6s ease-out;
+    }
 
-<div class="create-chamber-container">
+    /* کارت فرم */
+    .form-card {
+        background-color: #ffffff;
+        border: 1px solid rgba(0, 0, 0, 0.05) !important;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    .form-card:hover {
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+    }
+
+    /* هدر فرم */
+    .form-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 2px solid #f1f5f9;
+    }
+
+    .form-header-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .form-header-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        color: #2563eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .form-header h2 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+    .form-header p {
+        margin: 4px 0 0 0;
+        font-size: 0.9rem;
+        color: #64748b;
+    }
+
+    .btn-back {
+        background-color: #f8f9fa;
+        border: 1.5px solid #e5e7eb;
+        color: #4b5563;
+        font-weight: 600;
+        padding: 0.6rem 1.2rem;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+    }
+
+    .btn-back:hover {
+        background-color: #f3f4f6;
+        border-color: #d1d5db;
+        color: #1f2937;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    /* پیام خطای CSRF */
+    .csrf-alert {
+        background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+        border: 1px solid #fecaca;
+        border-radius: 12px;
+        padding: 1rem 1.25rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        animation: slideDown 0.4s ease-out;
+    }
+
+    .csrf-alert-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background-color: #dc2626;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .csrf-alert-icon svg {
+        color: #fff;
+        width: 20px;
+        height: 20px;
+    }
+
+    .csrf-alert-content {
+        flex: 1;
+    }
+
+    .csrf-alert-title {
+        font-weight: 700;
+        color: #991b1b;
+        margin-bottom: 2px;
+        font-size: 0.95rem;
+    }
+
+    .csrf-alert-message {
+        color: #b91c1c;
+        font-size: 0.85rem;
+        margin: 0;
+    }
+
+    /* گروه فیلد فرم */
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #334155;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.95rem;
+    }
+
+    .form-label .required {
+        color: #dc2626;
+    }
+
+    .form-label i {
+        color: #64748b;
+        font-size: 1rem;
+    }
+
+    /* فیلدهای ورودی */
+    .form-control {
+        border: 1.5px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background-color: #f9fafb;
+    }
+
+    .form-control:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        background-color: #ffffff;
+        outline: none;
+    }
+
+    .form-control:hover:not(:focus) {
+        border-color: #cbd5e1;
+    }
+
+    .form-text {
+        font-size: 0.8rem;
+        color: #64748b;
+        margin-top: 0.4rem;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .form-text::before {
+        content: "ℹ";
+        font-size: 0.9rem;
+        color: #94a3b8;
+    }
+
+    /* دکمه ارسال */
+    .btn-submit {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 0.9rem 2rem;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn-submit:hover {
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        color: white;
+    }
+
+    .btn-submit:active {
+        transform: translateY(0);
+    }
+
+    /* انیمیشن‌ها */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="create-chamber-container" dir="rtl">
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
-            <div class="card shadow-sm border-0 rounded-4">
+            <div class="card shadow-sm border-0 rounded-4 form-card">
                 <div class="card-body p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h2 class="h4 mb-0"> ایجاد تالار جدید {{custom_message}}</h2>
-                        <a href="/chamber/dashboard" class="btn btn-outline-secondary rounded-pill">
-                            <i class="bi bi-arrow-right me-1"></i> بازگشت
+                    
+                    <!-- هدر فرم -->
+                    <div class="form-header">
+                        <div class="form-header-title">
+                            <div class="form-header-icon">
+                                <i class="bi bi-plus-circle"></i>
+                            </div>
+                            <div>
+                                <h2> {{ custom_message }} ایجاد تالار جدید</h2>
+                                {% if not custom_message %} <p>یک تالار گفتگوی جدید بسازید و اعضا را دعوت کنید.</p> {% endif %}
+                            </div>
+                        </div>
+                        <a href="/chamber/dashboard" class="btn-back rounded-pill">
+                            <i class="bi bi-arrow-right"></i> بازگشت
                         </a>
                     </div>
 
+                    <!-- فرم -->
                     <form method="POST" action="/chamber/create">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        
+                        <!-- پیام خطای CSRF -->
                         {% if CsrfError %}
-                        <p class="alert alert-danger alert-dismissable fade show" role="alert">
-                            به مدت طولانی افلاین بودید٬ لطفا دوباره تلاش کنید
-                        </p>
+                        <div class="csrf-alert" role="alert">
+                            <div class="csrf-alert-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                                </svg>
+                            </div>
+                            <div class="csrf-alert-content">
+                                <div class="csrf-alert-title">خطای امنیتی</div>
+                                <p class="csrf-alert-message">به مدت طولانی آفلاین بودید، لطفاً دوباره تلاش کنید.</p>
+                            </div>
+                        </div>
                         {% endif %}
-                        <!-- Name -->
-                        <div class="mb-3">
-                            <label for="name" class="form-label">نام تالار <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="name" name="name" required autofocus>
-                            <div class="form-text">مثال: «تالار رفع اشکال جاوااسکریپت»</div>
+
+                        <!-- نام تالار -->
+                        <div class="form-group">
+                            <label for="name" class="form-label">
+                                <i class="bi bi-chat-square-text"></i>
+                                نام تالار
+                                <span class="required">*</span>
+                            </label>
+                            <input type="text" class="form-control" id="name" name="name" placeholder="مثال: تالار رفع اشکال جاوااسکریپت" required autofocus>
+                            <div class="form-text">نام تالار باید گویا و مرتبط با موضوع گفتگو باشد.</div>
                         </div>
 
-                        <!-- Entrance code -->
-                        <div class="mb-3">
-                            <label for="entrance_code" class="form-label">کد ورود <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="entrance_code" name="entrance_code" required>
-                            <div class="form-text">حداقل ۴ کاراکتر. مثال: `JS2025`</div>
+                        <!-- کد ورود -->
+                        <div class="form-group">
+                            <label for="entrance_code" class="form-label">
+                                <i class="bi bi-key"></i>
+                                کد ورود
+                                <span class="required">*</span>
+                            </label>
+                            <input type="text" class="form-control" id="entrance_code" name="entrance_code" placeholder="مثال: JS2025" required>
+                            <div class="form-text">حداقل ۴ کاراکتر. این کد برای ورود اعضا به تالار استفاده می‌شود.</div>
                         </div>
 
-                        <!-- Description -->
-
-                        <div class="mb-4">
-                            <label for="description" class="form-label">توضیحات</label>
-                            <textarea class="form-control" id="description" name="description" rows="2" required></textarea>
+                        <!-- توضیحات -->
+                        <div class="form-group">
+                            <label for="description" class="form-label">
+                                <i class="bi bi-card-text"></i>
+                                توضیحات
+                                <span class="required">*</span>
+                            </label>
+                            <textarea class="form-control" id="description" name="description" rows="3" placeholder="توضیح کوتاهی درباره هدف و موضوع تالار بنویسید..." required></textarea>
+                            <div class="form-text">توضیحات به اعضا کمک می‌کند تا با هدف تالار آشنا شوند.</div>
                         </div>
 
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary rounded-pill py-2">
-                                <i class="bi bi-plus-circle me-1"></i> ایجاد تالار
+                        <!-- دکمه ارسال -->
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-submit btn-lg w-100">
+                                <i class="bi bi-plus-circle"></i>
+                                ایجاد تالار
                             </button>
                         </div>
                     </form>
@@ -55,24 +333,4 @@
         </div>
     </div>
 </div>
-
-{% endblock %}
-
-{% block style %}
-
-<style>
-.create-chamber-container {
-    max-width: 800px;
-    margin: 2rem auto;
-    padding: 0 1rem;
-}
-.card {
-    background-color: #ffffff;
-}
-.form-text {
-    font-size: 0.75rem;
-    color: #6c757d;
-}
-</style>
-
 {% endblock %}
