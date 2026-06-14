@@ -28,7 +28,7 @@ class User(UserMixin, db.Model):
 
     credits = db.Column(db.Integer, default=0, nullable=False)
 
-    # On-to-many
+    # One-to-many
 
     messages = db.relationship('Message', backref='author', lazy='dynamic')
     items = db.relationship('Item', backref='author', lazy='dynamic')

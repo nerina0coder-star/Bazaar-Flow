@@ -1,5 +1,6 @@
 const messagesContainer = document.getElementById('messages');
 messagesContainer.scrollTop = messagesContainer.scrollHeight;
+const token = document.querySelector('meta[name=T]').content;
 
 
 const socketio = io();
@@ -14,6 +15,7 @@ socketio.on("message_from_server", (e) => {
     const dt_author = e.author;
     const dt_timehourminute = e.timehourminute;
     const dt_timemonthday = e.timemonthday;
+    const dt_token = e.token;
 
     const message = document.createElement('div');
     const messageHeader = document.createElement('div');
@@ -24,12 +26,19 @@ socketio.on("message_from_server", (e) => {
     const timehourminute = document.createElement('span');
     const timemonthday = document.createElement('span');
 
-    message.className = 'message';
+    if (dt_token === token) {
+        message.className = 'message message-self';
+    } else { message.className = 'message'; }
+    console.log(dt_token === token)
+    console.log(dt_token === token)
+    console.log(token)
+    console.log(dt_token)
+
     messageHeader.className = 'message-header';
     messageText.className = 'message-text';
 
     author.className = 'author';
-    timestamp.className = 'timestamp';
+    timestamp.className = 'timestamp mx-6';
 
     author.innerText = dt_author;
     messageText.innerText = dt_message;

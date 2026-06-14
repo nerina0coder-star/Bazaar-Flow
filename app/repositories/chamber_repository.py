@@ -1,6 +1,7 @@
 from app.extensions import db
 from app.models.chamber import Chamber
 from app.models.participant import Participant
+from app.models.message import Message
 from app.repositories.user_repository import UserRepository
 
 
@@ -54,3 +55,6 @@ class ChamberRepository:
         chamber.users.append(user)
         db.session.commit()
         return chamber
+    @staticmethod
+    def messages(chamber_id: int, limit: int = 50):
+        return ChamberRepository.find_by_id(chamber_id).messages.order_by(Message.timestamp.desc()).limit(50).all()

@@ -1,4 +1,6 @@
 from datetime import datetime
+from random import randrange
+from base64 import b64encode
 
 from flask import Blueprint, render_template, request, redirect, url_for, abort, session
 from flask_login import login_required, current_user
@@ -14,6 +16,8 @@ from app.repositories.participant_repository import ParticipantRepository
 from app.repositories.chamber_repository import ChamberRepository
 from app.repositories.message_repository import MessageRepository
 from app.extensions import socket_io, db, iran_tz
+
+import redis
 
 chamber_bp = Blueprint('chamber', __name__)
 
@@ -172,12 +176,12 @@ def chamber(id):
 
     session['chamber'] = chamber.id
     session['render_messages'] = True
-
+    session['token'] = b64encode(f"{current_user.username}w{b64encode(f'{randrange(0, 1000)}'.encode('utf-8')).decode('utf-8')}=".encode('utf-8')).decode('utf-8')
 
     if UserRepository.is_owner(chamber.id, current_user.id):
-        return render_template('chamber/chamber.html', chamber_id=chamber.id, copyEntryCode = True)
+        return render_template('chamber/chamber.html', chamber_id=chamber.id, copyEntryCode = True, token=session['token'])
     else:
-        return render_template('chamber/chamber.html', chamber_id=chamber.id)
+        return render_template('chamber/chamber.html', chamber_id=chamber.id, token=session['token'])
 
 @chamber_bp.route('/create', methods=['GET', 'POST'])
 @login_required
@@ -242,9 +246,10 @@ def handle_msg(data):
 
     emit('message_from_server', {
         'message': data['message'],
-        'author': current_user.username,
+        'author': current_user.username if current_user.username != 'self' else '/self',
         'timehourminute' : hour_timestamp,
-        'timemonthday' : month_timestamp
+        'timemonthday' : month_timestamp,
+        'token' : session['token']
     }, to=str(chamber.id))
 
     return None
@@ -268,17 +273,19 @@ def handle_joined():
     if ChamberRepository.find_by_id(session['chamber']) is None:
         return abort(404)
     if session['render_messages']:
-        for i in ChamberRepository.find_by_id(session['chamber']).messages:
+        for i in ChamberRepository.messages(session['chamber']):
             content = i.content
             hour_timestamp = i.timestamp.astimezone(iran_tz).strftime('%H:%M')
             month_timestamp = i.timestamp.astimezone(iran_tz).strftime('%d %b, ')
             author = i.author.username
+            is_author = i.author == current_user
 
             emit('message_from_server', {
                 'message' : content,
                 'timehourminute' : hour_timestamp,
                 'timemonthday' : month_timestamp,
                 'author' : author,
+                'token' : '' if not is_author else session['token']
             }, to=str(session['chamber']))
         session['render_messages'] = False
 
@@ -300,5 +307,7 @@ def handle_left():
         chamber = ChamberRepository.find_by_id(session['chamber'])
     except KeyError:
         return abort(400)
+    session['token'] = ''
+    session['chamber'] = ''
 
     leave_room(str(chamber.id))

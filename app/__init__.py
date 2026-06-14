@@ -1,6 +1,7 @@
 import socketio
 from flask import Flask, render_template
 from flask_socketio import SocketIO
+from flask_session import Session
 from .config import config
 from .extensions import db, login_manager, socket_io, csrf, captcha
 from .blueprints.auth import auth_bp
@@ -25,6 +26,7 @@ def create_app(config_name='default'):
     # Initialize extensions
     db.init_app(app)
     login_manager.init_app(app)
+    Session(app)
 
     csrf.init_app(app)
     captcha.init_app(app)

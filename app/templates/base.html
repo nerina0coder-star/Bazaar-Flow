@@ -4,6 +4,7 @@
 <head>
     <title>{% block title %} {% endblock %}</title>
     {% include 'includes/head.html' %}
+    {% block custom_headers %} {% endblock %}
     {% block style %} {% endblock %}
 </head>
 <body class="d-flex flex-column min-vh-100 persian">

@@ -2,8 +2,11 @@
 
 {% block title %} تالار {% endblock %}
 
+{% block custom_headers %} <meta name="T" content="{{ token }}"> {% endblock %} 
+
 {% block style %}
 <style>
+
     /* کانتینر اصلی چت‌روم */
     .chamber-wrapper {
         display: flex;
@@ -85,6 +88,8 @@
         transition: all 0.2s ease;
         border: 1px solid rgba(0, 0, 0, 0.03);
         animation: messageSlideIn 0.3s ease-out;
+        margin-left: 0;
+        margin-right: auto;
     }
 
     @keyframes messageSlideIn {
@@ -106,6 +111,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        gap: 0.8rem;
         margin-bottom: 0.4rem;
         font-size: 0.8rem;
     }
@@ -244,6 +250,34 @@
             padding: 0.85rem;
             border-radius: 50%;
         }
+    }
+    /* styling self messages */
+
+    .message-self {
+        align-self: flex-end;
+        background-color: #eff6ff;
+        border: 1px solid #bfdbfe;
+        border-radius: 1rem 1rem 0.25rem 1rem;
+        margin-left: auto;
+        margin-right: 0;
+    }
+
+    /* تغییر رنگ نام نویسنده در پیام‌های خودی */
+    .message-self .author {
+        color: #1d4ed8; /* آبی تیره‌تر و جذاب‌تر */
+    }
+
+    /* تغییر رنگ پس‌زمینه ساعت در پیام‌های خودی برای هماهنگی */
+    .message-self .timestamp {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+
+    /* افکت هاور اختصاصی برای پیام‌های خودی */
+    .message-self:hover {
+        background-color: #dbeafe;
+        border-color: #93c5fd;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
     }
 </style>
 {% endblock %}
