@@ -10,6 +10,7 @@ from .blueprints.chamber import chamber_bp
 from .blueprints.errors import error_bp
 from .blueprints.main import main_bp
 from .filters import *
+from .processors import *
 
 def create_app(config_name='default'):
 
@@ -20,9 +21,12 @@ def create_app(config_name='default'):
     # Optionally load instance config
     app.config.from_pyfile('app.cfg', silent=True)
 
+    # Intializing processors
+    app.context_processor(inject_conditions)
+
     # Initializing socketio app
     socket_io.init_app(app)
-
+    
     # Initialize extensions
     db.init_app(app)
     login_manager.init_app(app)

@@ -33,10 +33,56 @@ main {
     flex: 1;
 }
 
-body.persian {
+.persian {
     font-family: Vazirmatn!important;
+    dir: rtl;
 }
 
-body.english {
+.english {
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+  dir: ltr;
+}
+
+
+
+
+
+
+.navbar-nav .nav-link {
+    color: #475569 !important;
+    transition: all 0.2s ease;
+}
+    
+.navbar-nav .nav-link:hover {
+    color: #0f172a !important;
+    background-color: #f1f5f9;
+}
+    
+.navbar-nav .nav-link.active {
+    color: #3b82f6 !important;
+    background-color: #eff6ff;
+}
+
+/* استایل آیتم‌های منوی کششی */
+.dropdown-item {
+    color: #475569;
+    transition: all 0.2s ease;
+}
+    
+.dropdown-item:hover {
+    background-color: #eff6ff;
+    color: #2563eb;
+}
+
+/* فوکوس روی فیلد جستجو */
+.form-control.rounded-pill:focus {
+   background-color: #ffffff !important;
+   border-color: #3b82f6 !important;
+   box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1) !important;
+}
+
+/* انیمیشن باز شدن منو */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
