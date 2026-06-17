@@ -231,7 +231,7 @@
         </div>
 
         <!-- کپچا (در صورت فعال بودن) -->
-        {% if use_captcha %}
+        {% if config.get('use_captcha') %}
         <div class="mb-3">
             {{ hcaptcha }}
         </div>

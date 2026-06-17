@@ -1,6 +1,8 @@
 from datetime import datetime
 from random import randrange
-from base64 import b64encode
+from hmac import compare_digest
+import secrets
+from hashlib import sha256
 
 from flask import Blueprint, render_template, request, redirect, url_for, abort, session
 from flask_login import login_required, current_user
@@ -9,6 +11,8 @@ from flask_wtf.csrf import validate_csrf, CSRFError
 from sqlalchemy import custom_op
 
 from app.models import Participant
+from app.models import Message
+
 from app.repositories.banned_user_repository import BannedUserRepository
 from app.repositories.user_repository import UserRepository
 from app.services.chamber_service import ChamberService
@@ -156,6 +160,8 @@ def join():
 
         ParticipantRepository.add_to_chamber(current_user.id, chamber_id)
 
+        session['just_joined'] = True
+
         return redirect(url_for('chamber.chamber', id=chamber_id))
 
 
@@ -175,13 +181,14 @@ def chamber(id):
         return abort(403)
 
     session['chamber'] = chamber.id
-    session['render_messages'] = True
-    session['token'] = b64encode(f"{current_user.username}w{b64encode(f'{randrange(0, 1000)}'.encode('utf-8')).decode('utf-8')}=".encode('utf-8')).decode('utf-8')
+    session['token'] = secrets.token_urlsafe(64)
+    raw_vertoken = secrets.token_urlsafe(64)
+    session['vertoken'] = sha256(raw_vertoken.encode('utf-8')).hexdigest()
 
     if UserRepository.is_owner(chamber.id, current_user.id):
-        return render_template('chamber/chamber.html', chamber_id=chamber.id, copyEntryCode = True, token=session['token'])
+        return render_template('chamber/chamber.html', chamber_id=chamber.id, copyEntryCode = True, token=session['token'], vertoken=raw_vertoken)
     else:
-        return render_template('chamber/chamber.html', chamber_id=chamber.id, token=session['token'])
+        return render_template('chamber/chamber.html', chamber_id=chamber.id, token=session['token'], vertoken=raw_vertoken)
 
 @chamber_bp.route('/create', methods=['GET', 'POST'])
 @login_required
@@ -246,7 +253,7 @@ def handle_msg(data):
 
     emit('message_from_server', {
         'message': data['message'],
-        'author': current_user.username if current_user.username != 'self' else '/self',
+        'author': current_user.username,
         'timehourminute' : hour_timestamp,
         'timemonthday' : month_timestamp,
         'token' : session['token']
@@ -260,45 +267,72 @@ def get_code():
     if UserRepository.is_owner(session['chamber'], current_user.id):
         emit('entrance_code', {'code' : f"{session['chamber']}|{ChamberRepository.find_by_id(session['chamber']).entrance_code}"}, to=str(session['chamber']))
 
+@socket_io.on('client_ask_more')
+@login_required
+def return_more(data):
+    if data.get('after') is None:
+        return abort(400)
+    after = data['after']
+    messages = MessageRepository.get(after=after, chamber=ChamberRepository.find_by_id(session['chamber']))
+    if not messages:
+        socket_io.emit('server_send_more', {
+            'nomore' : True
+        })
+    else:
+        for i in messages:
+            author = UserRepository.find_by_id(i.user_id)
+            socket_io.emit('server_send_more', {
+                    'islast' : False if i != messages[-1] else True,
+                    'message' : i.content,
+                    'author' : author.username,
+                    'timehourminute' : i.timestamp.astimezone(iran_tz).strftime('%H:%M'),
+                    'timemonthday' : i.timestamp.astimezone(iran_tz).strftime('%d %b, '),
+                    'nomore' : False,
+                    'token' : None if current_user.id != author.id else session['token'] 
+                }, to=str(session['chamber']))
+
+
 @socket_io.on('connect')
 @login_required
-def handle_joined():
+def handle_joined(auth):
+    
+    if not auth or not compare_digest(sha256(auth['token'].encode('utf-8')).hexdigest(), session['vertoken']):
+        return abort(403)
+    else:
+        session.pop('vertoken', None)
 
     try:
-        ChamberRepository.find_by_id(session['chamber'])
+        chamber = ChamberRepository.find_by_id(session['chamber'])
     except KeyError:
         return abort(400)
-
+    
     join_room(str(session['chamber']))
-    if ChamberRepository.find_by_id(session['chamber']) is None:
+    if chamber is None:
         return abort(404)
-    if session['render_messages']:
-        for i in ChamberRepository.messages(session['chamber']):
-            content = i.content
-            hour_timestamp = i.timestamp.astimezone(iran_tz).strftime('%H:%M')
-            month_timestamp = i.timestamp.astimezone(iran_tz).strftime('%d %b, ')
-            author = i.author.username
-            is_author = i.author == current_user
+    
+    for i in MessageRepository.get(chamber=chamber)[::-1]:
+        content = i.content
+        hour_timestamp = i.timestamp.astimezone(iran_tz).strftime('%H:%M')
+        month_timestamp = i.timestamp.astimezone(iran_tz).strftime('%d %b, ')
+        author = i.author.username
+        is_author = i.author == current_user
 
-            emit('message_from_server', {
-                'message' : content,
-                'timehourminute' : hour_timestamp,
-                'timemonthday' : month_timestamp,
-                'author' : author,
-                'token' : '' if not is_author else session['token']
-            }, to=str(session['chamber']))
-        session['render_messages'] = False
+        emit('message_from_server', {
+            'message' : content,
+            'timehourminute' : hour_timestamp,
+            'timemonthday' : month_timestamp,
+            'author' : author,
+            'token' : '' if not is_author else session['token']
+        }, to=str(session['chamber']))
 
-
-    if ChamberRepository.find_by_id(session['chamber']) not in current_user.chambers:
-
-        ParticipantRepository.add_to_chamber(current_user.id, session['chamber'])
+    if session.get('just_joined') is not None:
         emit('message_from_server', {
             'message' : f'کاربر {current_user.username} وارد تالار شد',
             'author' : 'سیستم',
             'timehourminute' : datetime.now().strftime('%H:%M'),
             'timemonthday' : datetime.now().strftime('%d %b, ')
         }, to=str(session['chamber']))
+        session.pop('just_joined', None)
 
 @socket_io.on('disconnect')
 @login_required
@@ -307,7 +341,7 @@ def handle_left():
         chamber = ChamberRepository.find_by_id(session['chamber'])
     except KeyError:
         return abort(400)
-    session['token'] = ''
-    session['chamber'] = ''
+    session.pop('token', None)
+    session.pop('chamber', None)
 
     leave_room(str(chamber.id))

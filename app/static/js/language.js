@@ -95,3 +95,8 @@
 
   window.toggleLanguage = toggleLanguage;
 })();
+
+changeLangBtn = document.getElementById('change-language-btn')
+changeLangBtn.addEventListener('click', () => {
+  toggleLanguage();
+});

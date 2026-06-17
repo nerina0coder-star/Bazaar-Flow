@@ -1,6 +1,6 @@
 from app.repositories.user_repository import UserRepository
 from werkzeug.security import generate_password_hash
-
+from typing import List
 
 class UserService:
     @staticmethod
@@ -24,14 +24,15 @@ class UserService:
 
         if user_mail and user_mail.check_password(password) and user_mail.is_active and username == user_mail.username:
             return user_mail
+        
         return None
 
     @staticmethod
-    def update_profile(user_id: int, username: str, password: str | None):
+    def update_profile(user_id: int, username: str, password: str | None = None, description: str | None = None, is_public: bool=False):
         user = UserRepository.find_by_id(user_id)
         if not user:
             raise ValueError("User not found")
         if password is not None and password != "":
             user.set_password(password)
-        UserRepository.update(user, username=username)
+        UserRepository.update(user, username=username, description=description, is_public=is_public)
         return user

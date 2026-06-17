@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app
 from flask_login import login_user, logout_user, login_required
 from flask_wtf.csrf import validate_csrf, CSRFError
 
@@ -27,7 +27,7 @@ def login():
             return render_template('auth/login.html', customMessage=
             "همم... به نظر می‌رسه ایمیل یا پسوردت خالیه...")
 
-        if not captcha.verify():
+        if current_app.config.get('use_captcha') and not captcha.verify():
             return render_template('auth/login.html', CaptchaError=True)
 
         user = UserService.authenticate(username, email, password)

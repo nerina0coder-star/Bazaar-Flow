@@ -3,14 +3,13 @@ from flask import Flask, render_template
 from flask_socketio import SocketIO
 from flask_session import Session
 from .config import config
-from .extensions import db, login_manager, socket_io, csrf, captcha
+from .extensions import db, login_manager, socket_io, csrf, captcha, talisman, cors
 from .blueprints.auth import auth_bp
 from .blueprints.profile import profile_bp
 from .blueprints.chamber import chamber_bp
 from .blueprints.errors import error_bp
 from .blueprints.main import main_bp
 from .filters import *
-from .processors import *
 
 def create_app(config_name='default'):
 
@@ -21,9 +20,6 @@ def create_app(config_name='default'):
     # Optionally load instance config
     app.config.from_pyfile('app.cfg', silent=True)
 
-    # Intializing processors
-    app.context_processor(inject_conditions)
-
     # Initializing socketio app
     socket_io.init_app(app)
     
@@ -31,7 +27,14 @@ def create_app(config_name='default'):
     db.init_app(app)
     login_manager.init_app(app)
     Session(app)
-
+    talisman.init_app(app,
+                      force_https=True,
+                      strict_transport_security=True,
+                  content_security_policy={
+                 'default-src': "'self'",
+                 'style-src': ["'self'", "'unsafe-inline'"],
+                 'img-src' : ["'self'", "data:"]})
+    cors.init_app(app)
     csrf.init_app(app)
     captcha.init_app(app)
     # starting db

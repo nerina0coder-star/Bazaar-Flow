@@ -2,7 +2,10 @@
 
 {% block title %} تالار {% endblock %}
 
-{% block custom_headers %} <meta name="T" content="{{ token }}"> {% endblock %} 
+{% block custom_headers %}
+<meta name="T" content="{{ token }}">
+<meta name="VT" content="{{ vertoken }}">
+{% endblock %}
 
 {% block style %}
 <style>

@@ -29,16 +29,27 @@ def edit_profile():
         new_password = request.form.get('new_password')
         confirm_password = request.form.get('confirm_password')
 
+        description = request.form.get('description')
+        
+        visible = request.form.get('visible_on_home') == 'on'
+
         username = request.form['username']
         password = request.form['password']
 
         if not current_user.check_password(password):
-            return render_template('profile/edit.html', custom_message='شکست خورد٬ رمزعبور صحیح نمی‌باشد')
+            return render_template('profile/edit.html', custom_message='شکست خورد٬ رمزعبور صحیح ‌نمی‌باشد')
         if new_password != confirm_password:
             return render_template('profile/edit.html', passwordError = True)
-
+        if len(description) > 20:
+            return render_template('profile/edit.html', custom_message='شکست خورد٬ طول توضیحات نباید بیش از ۲۰۰ کاراکتر شود')
+        if visible:
+            tc = request.form.get("terms_conditions_check") == 'on'
+            privacy_policy = request.form.get("privacy_policy_check") == 'on'
+            if not tc or not privacy_policy:
+                return render_template('profile/edit.html', custom_message='شکست خورد٬ لطفا برای دیده شدن در صفحه اصلی شرایط و ضوابت را به همراه سیاست حفظ حریم خصوصی تایید کنید.')
+        
         try:
-            UserService.update_profile(current_user.id, username, new_password)
+            UserService.update_profile(current_user.id, username, new_password, description, visible)
             flash('Profile updated successfully!', 'success')
             return redirect(url_for('profile.dashboard'))
         except ValueError as e:

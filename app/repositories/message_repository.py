@@ -2,7 +2,8 @@ from app.models.message import Message
 from app.extensions import db
 from app.repositories.chamber_repository import ChamberRepository
 from app.repositories.user_repository import UserRepository
-
+from app.models.user import User
+from app.models.chamber import Chamber
 
 class MessageRepository:
     @staticmethod
@@ -26,3 +27,14 @@ class MessageRepository:
     @staticmethod
     def find_by_id(message_id: int) -> Message:
         return Message.query.filter_by(id=message_id).first()
+    @staticmethod
+    def get(after: int = 1, maxis: int = 20, user: User|None = None, chamber: Chamber|None = None):
+        if after is None or maxis is None: return None
+        if user is None and chamber is None: return None
+        elif user is None: getting = chamber
+        else: getting = user
+        if after <= 0 or maxis <= 0: return []
+        
+        
+        out = getting.messages.order_by(Message.id.desc()).offset(after - 1).limit(maxis).all()
+        return out

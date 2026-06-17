@@ -1,6 +1,7 @@
 from app.models.participant import Participant
 from app.models.user import User
 from app.extensions import db
+from sqlalchemy import text, or_
 
 
 class UserRepository:
@@ -35,3 +36,19 @@ class UserRepository:
     def is_owner(chamber_id, user_id):
         owner = Participant.query.filter_by(chamber_id=chamber_id, user_id=user_id, role='owner').first()
         return owner is not None
+
+    @staticmethod
+    def get_related(user: User):
+        ignoring = {
+            'a', 'an', 'the', 'and', 'or', 'but', 'is', 'are', 'am', 'was', 'were',
+            'be', 'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did',
+            'will', 'would', 'shall', 'should', 'can', 'could', 'may', 'might', 'must',
+            'i', 'you', 'he', 'she', 'it', 'we', 'they', 'me', 'him', 'her', 'us', 'them',
+            'my', 'your', 'his', 'its', 'our', 'their', 'this', 'that', 'these', 'those',
+            'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'from', 'up', 'about', 'into', 'over', 'after'
+        }
+        pattern = (f'%{j}%' for j in user.description.split() if j.lower() not in ignoring) or None
+        if pattern == None:
+            return None
+        pattern = [User.description.ilike(p) for p in pattern]
+        return User.query.filter(or_(*pattern), User.id != user.id).limit(20).all()

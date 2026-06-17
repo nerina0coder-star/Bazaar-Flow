@@ -62,3 +62,9 @@ function validateEtc() {
 function validateForm () {
 	return validateEtc() || validatePassword();
 }
+
+document.getElementById('register-form').addEventListener('submit', function(event) {
+	if (!validateForm()) {
+        event.preventDefault();
+	}
+})

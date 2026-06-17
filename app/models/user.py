@@ -25,8 +25,12 @@ class User(UserMixin, db.Model):
     last_seen = db.Column(db.DateTime, default=datetime.datetime.now)
 
     is_active = db.Column(db.Boolean, default=True)
+ 
+    description = db.Column(db.String(200))
 
     credits = db.Column(db.Integer, default=0, nullable=False)
+
+    is_public = db.Column(db.Boolean, default=False)
 
     # One-to-many
 

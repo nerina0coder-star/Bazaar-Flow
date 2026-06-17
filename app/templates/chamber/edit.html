@@ -223,7 +223,7 @@
                 {% endif %}
 
                 <!-- فرم ویرایش -->
-                <form method="POST" action="/chamber/edit/{{ chamber.id }}">
+                <form method="POST" action="/chamber/chambers/{{ chamber.id }}/edit">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
                     <!-- نام تالار -->

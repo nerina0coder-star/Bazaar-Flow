@@ -172,7 +172,7 @@
     </p>
 
     <!-- فرم ثبت‌نام -->
-    <form action="{{ url_for('auth.register') }}" method="POST" onsubmit="return validateForm()">
+    <form action="{{ url_for('auth.register') }}" method="POST" id="register-form">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
         <!-- نام کاربری -->
