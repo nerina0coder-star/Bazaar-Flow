@@ -2,6 +2,7 @@
 /.venv/
 /.idea
 /**/*~
+/**/*.swp
 /**/__pycache__/
 /instance/
 /vscode-workspaces/

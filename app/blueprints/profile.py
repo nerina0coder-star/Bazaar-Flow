@@ -29,9 +29,10 @@ def edit_profile():
         new_password = request.form.get('new_password')
         confirm_password = request.form.get('confirm_password')
 
-        description = request.form.get('description')
+        description = request.form.get('description').strip()
+        description = description if description else None
         
-        visible = request.form.get('visible_on_home') == 'on'
+        visible = request.form.get('is_public') == 'on'
 
         username = request.form['username']
         password = request.form['password']
@@ -40,11 +41,11 @@ def edit_profile():
             return render_template('profile/edit.html', custom_message='شکست خورد٬ رمزعبور صحیح ‌نمی‌باشد')
         if new_password != confirm_password:
             return render_template('profile/edit.html', passwordError = True)
-        if len(description) > 20:
+        if description is not None and len(description) > 20:
             return render_template('profile/edit.html', custom_message='شکست خورد٬ طول توضیحات نباید بیش از ۲۰۰ کاراکتر شود')
         if visible:
-            tc = request.form.get("terms_conditions_check") == 'on'
-            privacy_policy = request.form.get("privacy_policy_check") == 'on'
+            tc = request.form.get("terms_accepted") == 'on'
+            privacy_policy = request.form.get("privacy_accepted") == 'on'
             if not tc or not privacy_policy:
                 return render_template('profile/edit.html', custom_message='شکست خورد٬ لطفا برای دیده شدن در صفحه اصلی شرایط و ضوابت را به همراه سیاست حفظ حریم خصوصی تایید کنید.')
         

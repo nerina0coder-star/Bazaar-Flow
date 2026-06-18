@@ -48,7 +48,7 @@ class UserRepository:
             'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'from', 'up', 'about', 'into', 'over', 'after'
         }
         pattern = (f'%{j}%' for j in user.description.split() if j.lower() not in ignoring) or None
-        if pattern == None:
+        if not pattern or pattern == None:
             return None
         pattern = [User.description.ilike(p) for p in pattern]
-        return User.query.filter(or_(*pattern), User.id != user.id).limit(20).all()
+        return User.query.filter(or_(*pattern), User.id != user.id).filter_by(is_public=True).limit(20).all()

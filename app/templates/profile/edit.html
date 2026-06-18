@@ -631,14 +631,14 @@
 
                             <div class="terms-checkbox-group">
                                 <label class="terms-checkbox-item" id="termsItem1">
-                                    <input type="checkbox" id="termsCheckbox1" name="terms_accepted">
+                                    <input type="checkbox" id="termsCheckbox1" name="terms_accepted" {% if current_user.is_public %} checked {% endif %}>
                                     <span class="terms-checkbox-label">
                                         من <a href="/terms" target="_blank">شرایط و ضوابط</a> بازار فلو را به دقت مطالعه کرده‌ام و با تمام مفاد آن موافقم.
                                     </span>
                                 </label>
 
                                 <label class="terms-checkbox-item" id="termsItem2">
-                                    <input type="checkbox" id="termsCheckbox2" name="privacy_accepted">
+                                    <input type="checkbox" id="termsCheckbox2" name="privacy_accepted" {% if current_user.is_public %} checked {% endif %}>
                                     <span class="terms-checkbox-label">
                                         من <a href="/privacy" target="_blank">سیاست حفظ حریم خصوصی</a> را مطالعه کرده‌ام و با نحوه استفاده از اطلاعات شخصی خود موافقم.
                                     </span>
