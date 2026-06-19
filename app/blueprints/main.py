@@ -21,7 +21,6 @@ def before_request():
 @limiter.exempt
 def ping():
     if request.headers.get('X-Fetch-Request') != 't':
-        print("rejected request ping")
         return abort(404) # For security purposes and pervention of leak of data.
     current_user.last_seen = datetime.datetime.now(datetime.UTC)
     db.session.commit()

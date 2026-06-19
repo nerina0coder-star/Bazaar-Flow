@@ -1,3 +1,4 @@
+import hmac
 import secrets
 from datetime import datetime
 from hashlib import sha256
@@ -146,7 +147,7 @@ def join():
         if chamber is None:
             return render_template('chamber/join.html', message='شکست خورد٬ تالار یافت نشد')
 
-        if chamber.entrance_code != chamber_entrance_code:
+        if not hmac.compare_digest(chamber.entrance_code, chamber_entrance_code):
             return render_template('chamber/join.html', message='شکست خورد٬ رمز ورود اشتباه است')
 
         if BannedUserRepository.is_banned(current_user, current_user.id):
