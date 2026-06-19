@@ -1,7 +1,8 @@
+from sqlalchemy import or_
+
+from app.extensions import db
 from app.models.participant import Participant
 from app.models.user import User
-from app.extensions import db
-from sqlalchemy import text, or_
 
 
 class UserRepository:

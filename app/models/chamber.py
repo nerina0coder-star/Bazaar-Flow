@@ -1,8 +1,7 @@
-import datetime
-
 from app.extensions import db
 from .message import Message
 from .participant import Participant
+
 
 class Chamber(db.Model):
     __tablename__ = 'chamber'

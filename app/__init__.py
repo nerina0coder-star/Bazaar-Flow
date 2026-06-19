@@ -1,15 +1,15 @@
-import socketio
 from flask import Flask, render_template
-from flask_socketio import SocketIO
 from flask_session import Session
-from .config import config
-from .extensions import db, login_manager, socket_io, csrf, captcha, talisman, cors, limiter, paranoid
+
 from .blueprints.auth import auth_bp
-from .blueprints.profile import profile_bp
 from .blueprints.chamber import chamber_bp
 from .blueprints.errors import error_bp
 from .blueprints.main import main_bp
+from .blueprints.profile import profile_bp
+from .config import config
+from .extensions import db, login_manager, socket_io, csrf, captcha, talisman, cors, limiter, paranoid
 from .filters import *
+
 
 def create_app(config_name='default'):
 

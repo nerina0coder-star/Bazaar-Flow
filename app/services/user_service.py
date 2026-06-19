@@ -1,6 +1,5 @@
 from app.repositories.user_repository import UserRepository
-from werkzeug.security import generate_password_hash
-from typing import List
+
 
 class UserService:
     @staticmethod

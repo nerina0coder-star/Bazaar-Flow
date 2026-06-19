@@ -1,5 +1,5 @@
-from flask import Blueprint, render_template, request
-from flask_login import login_required, current_user
+from flask import Blueprint, render_template
+
 from app import limiter
 
 error_bp = Blueprint('errors', __name__)
