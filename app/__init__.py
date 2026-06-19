@@ -3,7 +3,7 @@ from flask import Flask, render_template
 from flask_socketio import SocketIO
 from flask_session import Session
 from .config import config
-from .extensions import db, login_manager, socket_io, csrf, captcha, talisman, cors
+from .extensions import db, login_manager, socket_io, csrf, captcha, talisman, cors, limiter, paranoid
 from .blueprints.auth import auth_bp
 from .blueprints.profile import profile_bp
 from .blueprints.chamber import chamber_bp
@@ -27,16 +27,12 @@ def create_app(config_name='default'):
     db.init_app(app)
     login_manager.init_app(app)
     Session(app)
-    talisman.init_app(app,
-                      force_https=True,
-                      strict_transport_security=True,
-                  content_security_policy={
-                 'default-src': "'self'",
-                 'style-src': ["'self'", "'unsafe-inline'"],
-                 'img-src' : ["'self'", "data:"]})
+    talisman.init_app(app, content_security_policy=app.config['CONTENT_SECURITY_POLICY'])
     cors.init_app(app)
     csrf.init_app(app)
     captcha.init_app(app)
+    limiter.init_app(app)
+    paranoid.init_app(app)
     # starting db
 
     with app.app_context():

@@ -19,7 +19,7 @@ from app.services.chamber_service import ChamberService
 from app.repositories.participant_repository import ParticipantRepository
 from app.repositories.chamber_repository import ChamberRepository
 from app.repositories.message_repository import MessageRepository
-from app.extensions import socket_io, db, iran_tz
+from app.extensions import socket_io, limiter, iran_tz
 
 import redis
 
@@ -28,6 +28,7 @@ chamber_bp = Blueprint('chamber', __name__)
 
 @chamber_bp.route('/dashboard')
 @login_required
+@limiter.limit("5000 per hour")
 def dashboard():
     chambers = current_user.chambers.all()
     return render_template('chamber/dashboard.html', chambers=chambers, user_repo = UserRepository())
@@ -171,6 +172,7 @@ def join():
 
 @chamber_bp.route('/chambers/<int:id>')
 @login_required
+@limiter.limit("5000 per hour")
 def chamber(id):
     chamber = ChamberRepository.find_by_id(id)
 

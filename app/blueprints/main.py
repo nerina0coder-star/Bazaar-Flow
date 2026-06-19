@@ -3,7 +3,7 @@ import datetime
 from flask import Blueprint, render_template, abort, flash, redirect, url_for, request, current_app
 from flask_login import login_required, current_user
 
-from app import db
+from app import db, limiter
 from app.repositories.user_repository import UserRepository
 
 main_bp = Blueprint('main', __name__)
@@ -18,6 +18,7 @@ def before_request():
 
 @main_bp.route('/ping')
 @login_required
+@limiter.exempt
 def ping():
     if request.headers.get('X-Fetch-Request') != 't':
         print("rejected request ping")
@@ -28,6 +29,7 @@ def ping():
 
 
 @main_bp.route('/')
+@limiter.limit('5000 per hour')
 def home():
     if current_user.is_authenticated:
         if current_user.description == None:

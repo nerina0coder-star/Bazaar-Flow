@@ -2,13 +2,14 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_required, current_user
 from flask_wtf.csrf import validate_csrf, CSRFError
 
-from app import db
+from app import limiter
 from app.services.user_service import UserService
 
 profile_bp = Blueprint('profile', __name__)
 
 @profile_bp.route('/dashboard')
 @login_required
+@limiter.limit("5000 per hour")
 def dashboard():
     return render_template('profile/memory.html')
 
