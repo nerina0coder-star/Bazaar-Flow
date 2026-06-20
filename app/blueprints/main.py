@@ -3,8 +3,9 @@ import datetime
 from flask import Blueprint, render_template, abort, request, current_app
 from flask_login import login_required, current_user
 
-from app import db, limiter
+from app.extensions import db, limiter
 from app.repositories.user_repository import UserRepository
+from app.repositories.participant_repository import ParticipantRepository
 
 main_bp = Blueprint('main', __name__)
 

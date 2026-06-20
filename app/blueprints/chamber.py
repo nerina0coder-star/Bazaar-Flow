@@ -48,6 +48,8 @@ def edit(id):
         name = request.form.get('name').strip()
         entrance_code = request.form.get('entrance_code').strip()
         description = request.form.get('description').strip()
+        is_primary = request.form.get('is_primary') == 'on'
+        is_public = request.form.get('is_public') == 'on'
 
         if len(name) > 49:
             return render_template('chamber/edit.html', custom_message='شکست خورد٬ نام تالار نمی‌تواند بیشتر از ۴۹ کاراکتر باشد', chamber=chamber)
@@ -55,7 +57,7 @@ def edit(id):
             return render_template('chamber/edit.html', custom_message='شکست خورد٬ توضیحات نمیتواند بیشتر از ۴۹ کاراکتر باشد', chamber=chamber)
         if len(entrance_code) > 49:
             return render_template('chamber/edit.html', custom_message='شکست خورد٬ کد ورود نمیتواند بیشتر از ۴۹ کاراکتر باشد', chamber=chamber)
-        ChamberRepository.edit_chamber(id, name, entrance_code, description)
+        ChamberRepository.edit_chamber(id, name, entrance_code, description, is_primary, is_public)
 
         return redirect(url_for('chamber.dashboard'))
 

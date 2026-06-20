@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template
 
-from app import limiter
+from app.extensions import limiter
 
 error_bp = Blueprint('errors', __name__)
 

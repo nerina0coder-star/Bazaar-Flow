@@ -13,9 +13,14 @@ class Config:
 
     MAX_CONTENT_LENGTH = 10 * 1024 * 1024
     CONTENT_SECURITY_POLICY = {
-        'default-src' : "'self'",
-        'style-src' : ["'self'", "'unsafe-inline'"],
-        'img-src' : ["'self'", "data:"]
+        'default-src' : ["'self'"],
+        'style-src' : ["'self'"],
+        'img-src' : ["'self'", "data:", "blob:"],
+        'media-src' : ["'self'", "data:", "blob:"],
+        'base-uri' : ["'self'"],
+        'form-action' : ["'self'"],
+        'frame-src' : ["'self'", "data:", "blob:"],
+        'frame-ancestors' : ["'self'"],
     }
  
     SQLALCHEMY_TRACK_MODIFICATIONS = False

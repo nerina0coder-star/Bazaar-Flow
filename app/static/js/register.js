@@ -1,70 +1,91 @@
-var password1 = document.getElementById('password');
-var passwordC = document.getElementById('confirmPassword');
+// ==========================================
+// اعتبارسنجی فرم ثبت‌نام
+// ==========================================
 
+// توابع کمکی برای نمایش/مخفی کردن خطاها
+function showError(boxId, textId, message) {
+    const box = document.getElementById(boxId);
+    const text = document.getElementById(textId);
+    
+    if (box) {
+        box.classList.remove('none');
+        box.classList.add('flex');
+    }
+    if (text) text.textContent = message;
+}
+
+function hideError(boxId) {
+    const box = document.getElementById(boxId);
+    
+    if (box) {
+        box.classList.remove('flex');
+        box.classList.add('none');
+    }
+}
+
+// اعتبارسنجی رمز عبور
 function validatePassword() {
-	if (password1.value !== passwordC.value
-	&& password1.value !== '' &&
-	passwordC.value != '') {
-		document.getElementById(
-		'higherPasswordMatch'
-		).className = "alert alert-danger alert-dismissable show fade";
-		document.getElementById(
-		'passwordMatch'
-		).innerText =
-		"رمز عبور با رمز عبور تاییدی مطابقت ندارد ";
-		return false;
-	} else if (password1.value == '') {
-		document.getElementById(
-		"higherPasswordMatch"
-		).className = "alert alert-danger alert-dismissable fade show";
-		document.getElementById(
-		"passwordMatch"
-		).innerText = "رمز عبور وارد نشده است";
-		return false;
-	} else if (passwordC.value == '') {
-		document.getElementById(
-		"higherPasswordMatch"
-		).className = "alert alert-danger alert-dismissable fade show";
-		document.getElementById(
-		"passwordMatch"
-		).innerText = "رمز عبور تایید نشده است";
-		return false;
-	}
-	document.getElementById('higherPasswordMatch').className = ''
-	return true;
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+
+    if (password === '' && confirmPassword === '') {
+        showError('higherPasswordMatch', 'passwordMatch', 'رمز عبور وارد نشده است');
+        return false;
+    }
+    if (password === '') {
+        showError('higherPasswordMatch', 'passwordMatch', 'رمز عبور وارد نشده است');
+        return false;
+    }
+    if (confirmPassword === '') {
+        showError('higherPasswordMatch', 'passwordMatch', 'تکرار رمز عبور خالی است');
+        return false;
+    }
+    if (password !== confirmPassword) {
+        showError('higherPasswordMatch', 'passwordMatch', 'رمز عبور با تکرار آن مطابقت ندارد');
+        return false;
+    }
+
+    hideError('higherPasswordMatch');
+    return true;
 }
 
+// اعتبارسنجی نام کاربری و ایمیل
 function validateEtc() {
-	if (document.getElementById('username').value == '' ||
-	document.getElementById('email').value == '') {
-		document.getElementById('higherEtcError').
-		className = "alert alert-danger alert-dismissable show fade";
-		var uname = document.getElementById('username');
-		var email = document.getElementById('email')
-		
-		const err = document.getElementById('etcError');
-		if (uname.value == '' && email.value == '') {
-			err.innerText =
-			"نام کاربری و ایمیل خیالی است";
-		} else if (uname.value == '') {
-			err.innerText = 
-			"نام کاربری خالی است";
-		} else {
-			err.innerText =
-			"ایمیل خالی است";
-		}
-		return false;
-	}
-	document.getElementById('higherEtcError').className = ''
-	return true;
+    const username = document.getElementById('username').value.trim();
+    const email = document.getElementById('email').value.trim();
+
+    if (username === '' && email === '') {
+        showError('higherEtcError', 'etcError', 'نام کاربری و ایمیل خالی هستند');
+        return false;
+    }
+    if (username === '') {
+        showError('higherEtcError', 'etcError', 'نام کاربری خالی است');
+        return false;
+    }
+    if (email === '') {
+        showError('higherEtcError', 'etcError', 'ایمیل خالی است');
+        return false;
+    }
+
+    hideError('higherEtcError');
+    return true;
 }
 
-function validateForm () {
-	return validateEtc() || validatePassword();
+// اعتبارسنجی کلی فرم (هر دو باید درست باشند)
+function validateForm() {
+    const isEtcValid = validateEtc();
+    const isPasswordValid = validatePassword();
+    return isEtcValid && isPasswordValid;
 }
 
-document.getElementById('register-form').addEventListener('submit', function(event) {
-	if (!validateForm()) {
-        event.preventDefault();
-	}
-})
+// اتصال به فرم پس از لود DOM
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('register-form');
+    if (form) {
+        form.addEventListener('submit', function(event) {
+            if (!validateForm()) {
+                event.preventDefault();
+            }
+        });
+    }
+});

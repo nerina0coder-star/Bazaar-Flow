@@ -1,7 +1,7 @@
 from app.extensions import db
 from app.models.chamber import Chamber
-from app.models.participant import Participant
 from app.models.message import Message
+from app.models.participant import Participant
 from app.repositories.user_repository import UserRepository
 
 
@@ -29,11 +29,20 @@ class ChamberRepository:
         db.session.commit()
 
     @staticmethod
-    def edit_chamber(chamber_id: int, name: str, entrance_code: str, description: str) -> Chamber:
+    def edit_chamber(chamber_id: int,
+                     name: str,
+                     entrance_code: str,
+                     description: str,
+                     is_primary: bool|None = None,
+                     is_public: bool|None = None) -> Chamber:
         chamber = Chamber.query.get(chamber_id)
         chamber.name = name
         chamber.entrance_code = entrance_code
         chamber.description = description
+        if is_public is not None:
+            chamber.is_public = is_public
+        if is_primary is not None:
+            Participant.query.filter_by(chamber_id=chamber.id).first().is_primary = is_primary
         db.session.commit()
         return chamber
 
@@ -57,4 +66,4 @@ class ChamberRepository:
         return chamber
     @staticmethod
     def messages(chamber_id: int, limit: int = 50):
-        return ChamberRepository.find_by_id(chamber_id).messages.order_by(Message.timestamp.desc()).limit(50).all()
+        return ChamberRepository.find_by_id(chamber_id).messages.order_by(Message.timestamp.desc()).limit(limit).all()

@@ -9,6 +9,7 @@ from .blueprints.profile import profile_bp
 from .config import config
 from .extensions import db, login_manager, socket_io, csrf, captcha, talisman, cors, limiter, paranoid
 from .filters import *
+from .processors import *
 
 
 def create_app(config_name='default'):
@@ -37,6 +38,9 @@ def create_app(config_name='default'):
 
     with app.app_context():
         db.create_all()
+
+    # Context processors
+    app.context_processor(repositories)
 
     # Register blueprints
     app.register_blueprint(auth_bp, url_prefix='/auth')

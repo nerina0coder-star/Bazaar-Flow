@@ -8,6 +8,7 @@ class Participant(db.Model):
     chamber_id = db.Column(db.Integer, db.ForeignKey('chamber.id'), primary_key=True)
 
     role = db.Column(db.String(20), nullable=False, default='member')
+    is_primary = db.Column(db.Boolean, nullable=False, default=False)
 
     # Relationships back to User and Chamber
     user = db.relationship('User', back_populates='participants')

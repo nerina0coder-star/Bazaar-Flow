@@ -35,14 +35,20 @@ main {
 
 .persian {
     font-family: Vazirmatn!important;
-    dir: rtl;
+    direction: rtl;
 }
 
 .english {
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
-  dir: ltr;
+  direction: ltr;
 }
 
+.none {
+    display: none!important;
+}
+.flex {
+    display: flex!important;
+}
 
 
 
@@ -85,4 +91,55 @@ main {
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+/* افکت شیشه‌ای نوبار */
+.nav-glass-effect {
+    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.95) !important;
+}
+
+/* متن برند نوبار */
+.navbar-brand-text {
+    color: #0f172a;
+    font-size: 1.25rem;
+}
+
+/* آیکون ستاره برند */
+.navbar-star-icon {
+    color: #3b82f6;
+    font-size: 1.4rem;
+}
+
+/* لینک احراز هویت (ورود/ثبت نام) */
+.nav-link-auth {
+    color: #3b82f6;
+}
+
+/* انیمیشن منوی کشویی */
+.dropdown-menu-animated {
+    animation: fadeIn 0.2s ease-out;
+}
+
+/* لینک غیرفعال سفارشی */
+.nav-link-disabled-custom {
+    opacity: 0.5;
+}
+
+/* اینپوت جستجوی مدرن */
+.search-input-modern {
+    background-color: #f1f5f9;
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+
+/* غیرفعال کردن رویداد pointer برای آیکون جستجو */
+.search-icon-no-pointer {
+    pointer-events: none;
+}
+
+/* دکمه ارسال جستجو */
+.search-submit-btn {
+    padding: 0.4rem 1rem;
+    font-size: 0.85rem;
 }

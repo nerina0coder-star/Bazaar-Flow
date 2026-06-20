@@ -13,6 +13,8 @@ class Chamber(db.Model):
 
     entrance_code = db.Column(db.String(100), nullable=False)
 
+    is_public = db.Column(db.Boolean, nullable=False, default=False)
+
     # many-to-many
     participants = db.relationship('Participant', back_populates='chamber', lazy='dynamic')
     banned_users = db.relationship('BannedUser', back_populates='chamber', lazy='dynamic')

@@ -1,4 +1,6 @@
-from app import db
+from dns.resolver import query
+
+from app.extensions import db
 from app.models.participant import Participant
 from app.models.user import User
 from app.models.chamber import Chamber
@@ -42,13 +44,19 @@ class ParticipantRepository:
         return len(parts)
 
     @staticmethod
-    def get(user_id: int, chamber_id: int, role: str = None) -> Participant | None:
-        query = Participant.query.filter_by(chamber_id=chamber_id, user_id=user_id)
-        if role is not None:
-            query = query.filter_by(role=role)
-        return query.first()
+    def get(user_id: int = None, chamber_id: int = None, role: str = None, is_primary: bool = None) -> Participant | None:
+        giving: dict = {'user_id' : user_id, 'chamber_id' : chamber_id, 'role' : role, 'is_primary' : is_primary}
+        giving = {k : v for k, v in giving.items() if v is not None}
+        out = Participant.query.filter_by(**giving).first()
+        return out
 
     @staticmethod
     def remove(part: Participant):
         db.session.delete(part)
+        db.session.commit()
+
+    @staticmethod
+    def update(part: Participant, **kwargs):
+        for k, v in kwargs.items():
+            setattr(Participant, k, v)
         db.session.commit()
