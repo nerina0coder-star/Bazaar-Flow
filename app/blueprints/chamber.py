@@ -152,12 +152,12 @@ def join():
         if not hmac.compare_digest(chamber.entrance_code, chamber_entrance_code):
             return render_template('chamber/join.html', message='شکست خورد٬ رمز ورود اشتباه است')
 
-        if BannedUserRepository.is_banned(current_user, current_user.id):
+        if BannedUserRepository.is_banned(chamber_id, current_user.id):
             return render_template('chamber/join.html', message='شکست خورد٬ شما را از این تالار مسدود کرده‌اند')
 
-        ParticipantRepository.add_to_chamber(current_user.id, chamber_id)
-
-        session['just_joined'] = True
+        just_joined = ParticipantRepository.add_to_chamber(current_user.id, chamber_id) != 0
+        if just_joined:
+            session['just_joined'] = True
 
         return redirect(url_for('chamber.chamber', id=chamber_id))
 

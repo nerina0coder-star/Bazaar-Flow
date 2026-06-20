@@ -1,4 +1,7 @@
+from sqlalchemy import or_
+
 from app.extensions import db
+from app.models import User
 from app.models.chamber import Chamber
 from app.models.message import Message
 from app.models.participant import Participant
@@ -67,3 +70,19 @@ class ChamberRepository:
     @staticmethod
     def messages(chamber_id: int, limit: int = 50):
         return ChamberRepository.find_by_id(chamber_id).messages.order_by(Message.timestamp.desc()).limit(limit).all()
+
+    @staticmethod
+    def get_related(user: User):
+        ignoring = {
+            'a', 'an', 'the', 'and', 'or', 'but', 'is', 'are', 'am', 'was', 'were',
+            'be', 'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did',
+            'will', 'would', 'shall', 'should', 'can', 'could', 'may', 'might', 'must',
+            'i', 'you', 'he', 'she', 'it', 'we', 'they', 'me', 'him', 'her', 'us', 'them',
+            'my', 'your', 'his', 'its', 'our', 'their', 'this', 'that', 'these', 'those',
+            'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'from', 'up', 'about', 'into', 'over', 'after'
+        }
+        pattern = (f'%{j}%' for j in user.description.split() if j.lower() not in ignoring) or None
+        if not pattern or pattern == None:
+            return None
+        pattern = [Chamber.description.ilike(p) for p in pattern]
+        return Chamber.query.filter(or_(*pattern)).filter_by(is_public=True).limit(20).all()

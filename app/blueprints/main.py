@@ -3,9 +3,9 @@ import datetime
 from flask import Blueprint, render_template, abort, request, current_app
 from flask_login import login_required, current_user
 
+from app.repositories.chamber_repository import ChamberRepository
 from app.extensions import db, limiter
 from app.repositories.user_repository import UserRepository
-from app.repositories.participant_repository import ParticipantRepository
 
 main_bp = Blueprint('main', __name__)
 
@@ -22,7 +22,7 @@ def before_request():
 @limiter.exempt
 def ping():
     if request.headers.get('X-Fetch-Request') != 't':
-        return abort(404) # For security purposes and pervention of leak of data.
+        return abort(403)
     current_user.last_seen = datetime.datetime.now(datetime.UTC)
     db.session.commit()
     return 'pong', 204
@@ -35,7 +35,8 @@ def home():
         if current_user.description == None:
             return render_template('home.html', user_matching_error=True)
         umatches = UserRepository.get_related(current_user)
+        cmatches = ChamberRepository.get_related(current_user)
         if not umatches:
-            return render_template('home.html', no_matches=True)
-        return render_template('home.html', umatches=umatches)
+            return render_template('home.html', no_matches=True, cmatches=cmatches)
+        return render_template('home.html', umatches=umatches, cmatches=cmatches)
     return render_template('home.html')
