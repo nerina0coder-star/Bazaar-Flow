@@ -28,7 +28,11 @@
 آنالیز هفتگی فروش و سود، و امکان سپردن تبلیغ به دیگران با یک دکمه!
     `.trim()],
     ['home-login', 'ورود به بازارفلو'],
-    ['home-register', 'ثبت‌نام رایگان']
+    ['home-register', 'ثبت‌نام رایگان'],
+
+    // register-page specific
+
+    
   ]);
 
   const englishTxts = new Map([
@@ -59,7 +63,9 @@ Sellers can choose an advertisement for their products to be broadcast on the we
     `.trim()],
     
     ['home-login', 'Login to Bazaar Flow'],
-    ['home-register', 'Register for Free']
+    ['home-register', 'Register for Free'],
+
+    // register-page specific
 ]);
 
   let curlang = localStorage.getItem('lang') || 'persian';

@@ -255,7 +255,7 @@ def handle_msg(data):
         'timehourminute' : hour_timestamp,
         'timemonthday' : month_timestamp,
         'token' : session['token']
-    }, to=str(chamber.id))
+    }, room=str(chamber.id))
 
     return None
 
@@ -263,7 +263,7 @@ def handle_msg(data):
 @login_required
 def get_code():
     if UserRepository.is_owner(session['chamber'], current_user.id):
-        emit('entrance_code', {'code' : f"{session['chamber']}|{ChamberRepository.find_by_id(session['chamber']).entrance_code}"}, to=str(session['chamber']))
+        emit('entrance_code', {'code' : f"{session['chamber']}|{ChamberRepository.find_by_id(session['chamber']).entrance_code}"}, room=str(session['chamber']))
 
 @socket_io.on('client_ask_more')
 @login_required
@@ -287,7 +287,7 @@ def return_more(data):
                     'timemonthday' : i.timestamp.astimezone(iran_tz).strftime('%d %b, '),
                     'nomore' : False,
                     'token' : None if current_user.id != author.id else session['token'] 
-                }, to=str(session['chamber']))
+                }, room=str(session['chamber']))
 
 
 @socket_io.on('connect')
@@ -321,7 +321,7 @@ def handle_joined(auth):
             'timemonthday' : month_timestamp,
             'author' : author,
             'token' : '' if not is_author else session['token']
-        }, to=str(session['chamber']))
+        }, to=request.sid)
 
     if session.get('just_joined') is not None:
         emit('message_from_server', {
@@ -329,7 +329,7 @@ def handle_joined(auth):
             'author' : 'سیستم',
             'timehourminute' : datetime.now().strftime('%H:%M'),
             'timemonthday' : datetime.now().strftime('%d %b, ')
-        }, to=str(session['chamber']))
+        }, room=str(session['chamber']))
         session.pop('just_joined', None)
 
 @socket_io.on('disconnect')

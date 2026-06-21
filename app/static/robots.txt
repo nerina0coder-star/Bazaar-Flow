@@ -1,0 +1,11 @@
+# Block unusable paths
+User-agent: *
+Disallow: /static/
+
+# Block OpenAI's GPTBot
+User-agent: GPTBot
+Disallow: /
+
+# Block Google's AI training crawler
+User-agent: Google-Extended
+Disallow: /

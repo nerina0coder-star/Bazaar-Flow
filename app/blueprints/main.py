@@ -1,6 +1,6 @@
 import datetime
 
-from flask import Blueprint, render_template, abort, request, current_app
+from flask import Blueprint, render_template, abort, request, current_app, send_from_directory
 from flask_login import login_required, current_user
 
 from app.repositories.chamber_repository import ChamberRepository
@@ -9,6 +9,9 @@ from app.repositories.user_repository import UserRepository
 
 main_bp = Blueprint('main', __name__)
 
+@main_bp.route('/robots.txt')
+def robots():
+    return send_from_directory(main_bp.static_folder, 'robots.txt')
 
 @main_bp.before_request
 def before_request():
