@@ -1,15 +1,16 @@
 import hmac
 import secrets
-from datetime import datetime
 from hashlib import sha256
 from hmac import compare_digest
 
 from flask import Blueprint, render_template, request, redirect, url_for, abort, session
+from flask_babel import format_time, format_date, get_locale
+from flask_babel import gettext as _
 from flask_login import login_required, current_user
 from flask_socketio import emit, join_room, leave_room
 from flask_wtf.csrf import validate_csrf, CSRFError
 
-from app.extensions import socket_io, limiter, iran_tz
+from app.extensions import socket_io, limiter, utc
 from app.repositories.banned_user_repository import BannedUserRepository
 from app.repositories.chamber_repository import ChamberRepository
 from app.repositories.message_repository import MessageRepository
@@ -43,7 +44,7 @@ def edit(id):
         if request.form.get('name') is None or request.form.get('description')\
                 is None or request.form.get('entrance_code') is None or not request.form.get('name').strip()\
                 or not request.form.get('description').strip() or not request.form.get('entrance_code').strip():
-            return render_template('chamber/edit.html', custom_message='شکست خورد٬ یکی از موارد وارد شده خالی است', chamber=chamber)
+            return render_template('chamber/edit.html', custom_message=_('شکست خورد، یکی از موارد وارد شده خالی است'), chamber=chamber)
 
         name = request.form.get('name').strip()
         entrance_code = request.form.get('entrance_code').strip()
@@ -52,11 +53,11 @@ def edit(id):
         is_public = request.form.get('is_public') == 'on'
 
         if len(name) > 49:
-            return render_template('chamber/edit.html', custom_message='شکست خورد٬ نام تالار نمی‌تواند بیشتر از ۴۹ کاراکتر باشد', chamber=chamber)
+            return render_template('chamber/edit.html', custom_message=_('شکست خورد، نام تالار نمی‌تواند بیشتر از ۴۹ کاراکتر باشد'), chamber=chamber)
         if len(description) > 49:
-            return render_template('chamber/edit.html', custom_message='شکست خورد٬ توضیحات نمیتواند بیشتر از ۴۹ کاراکتر باشد', chamber=chamber)
+            return render_template('chamber/edit.html', custom_message=_('شکست خورد، توضیحات نمی‌تواند بیشتر از ۴۹ کاراکتر باشد'), chamber=chamber)
         if len(entrance_code) > 49:
-            return render_template('chamber/edit.html', custom_message='شکست خورد٬ کد ورود نمیتواند بیشتر از ۴۹ کاراکتر باشد', chamber=chamber)
+            return render_template('chamber/edit.html', custom_message=_('شکست خورد، کد ورود نمی‌تواند بیشتر از ۴۹ کاراکتر باشد'), chamber=chamber)
         ChamberRepository.edit_chamber(id, name, entrance_code, description, is_primary, is_public)
 
         return redirect(url_for('chamber.dashboard'))
@@ -109,7 +110,7 @@ def edit_member(chamber_id, member_id):
     user = UserRepository.find_by_id(member_id)
     chamber = ChamberRepository.find_by_id(chamber_id)
 
-    joined = user.time_joined.astimezone(tz=iran_tz).strftime('%d %b, %Y')
+    joined = format_date(user.time_joined, 'medium')
 
     return render_template('chamber/edit_member.html', chamber=chamber, user = user, joined=joined,
                            role=ParticipantRepository.get(member_id, chamber_id).role)
@@ -135,7 +136,7 @@ def join():
             return abort(400)
 
         if code.count("|") == 0:
-            return render_template('chamber/join.html', message= 'شکست خورد٬ کد واردشده اشتباه است')
+            return render_template('chamber/join.html', message= _('شکست خورد، کد واردشده اشتباه است'))
 
         # id|entrance code
 
@@ -147,13 +148,13 @@ def join():
 
         chamber = ChamberRepository.find_by_id(chamber_id)
         if chamber is None:
-            return render_template('chamber/join.html', message='شکست خورد٬ تالار یافت نشد')
+            return render_template('chamber/join.html', message=_('شکست خورد، تالار یافت نشد'))
 
         if not hmac.compare_digest(chamber.entrance_code, chamber_entrance_code):
-            return render_template('chamber/join.html', message='شکست خورد٬ رمز ورود اشتباه است')
+            return render_template('chamber/join.html', message=_('شکست خورد، رمز ورود اشتباه است'))
 
         if BannedUserRepository.is_banned(chamber_id, current_user.id):
-            return render_template('chamber/join.html', message='شکست خورد٬ شما را از این تالار مسدود کرده‌اند')
+            return render_template('chamber/join.html', message=_('شکست خورد، شما را از این تالار مسدود کرده‌اند'))
 
         just_joined = ParticipantRepository.add_to_chamber(current_user.id, chamber_id) != 0
         if just_joined:
@@ -208,16 +209,16 @@ def create():
 
         description = request.form.get('description').strip()
         if name == '' or entrance_code == '' or description == '':
-            return render_template('chamber/create.html', custom_message='شکست خورد٬ نام٬ کد ورود٬ یا توضیحات خالی است')
+            return render_template('chamber/create.html', custom_message=_('شکست خورد، نام، کد ورود، یا توضیحات خالی است'))
 
         if len(entrance_code) > 49:
-            return render_template('chamber/create.html', custom_message='شکست خورد٬ کد ورود نباید بیش از ۴۹ کاراکتر باشد.')
+            return render_template('chamber/create.html', custom_message=_('شکست خورد، کد ورود نباید بیش از ۴۹ کاراکتر باشد.'))
         if len(name) > 49:
-            return render_template('chamber/create.html', custom_message='شکست خورد٬ نام تالار نباید بیش از ۴۹ کاراکتر باشد')
+            return render_template('chamber/create.html', custom_message=_('شکست خورد، نام تالار نباید بیش از ۴۹ کاراکتر باشد'))
         if len(entrance_code) < 4:
-            return render_template('chamber/create.html', custom_message='شکست خورد٬ کد ورود باید حداقل ۴ کاراکتر باشد')
+            return render_template('chamber/create.html', custom_message=_('شکست خورد، کد ورود باید حداقل ۴ کاراکتر باشد'))
         if len(description) > 49:
-            return render_template('chamber/create.html', custom_message='شکست خورد٬ توضیحات نباید از ۴۹ کاراکتر بیشتر باشد')
+            return render_template('chamber/create.html', custom_message=_('شکست خورد، توضیحات نباید از ۴۹ کاراکتر بیشتر باشد'))
         chamber = ChamberService.create_chamber(name, entrance_code, description)
 
 
@@ -246,14 +247,15 @@ def handle_msg(data):
 
     message = MessageRepository.create(message, chamber.id, current_user.id)
 
-    hour_timestamp = message.timestamp.astimezone(iran_tz).strftime('%H:%M')
-    month_timestamp = message.timestamp.astimezone(iran_tz).strftime('%d %b, ')
+    hour_timestamp = format_time(message.timestamp, 'medium')
+    month_timestamp = format_date(message.timestamp, 'dd MMM, ')
 
     emit('message_from_server', {
         'message': data['message'],
         'author': current_user.username,
         'timehourminute' : hour_timestamp,
         'timemonthday' : month_timestamp,
+        'reverse_time' : True if str(get_locale()) == 'fa' else False,
         'token' : session['token']
     }, room=str(chamber.id))
 
@@ -263,7 +265,9 @@ def handle_msg(data):
 @login_required
 def get_code():
     if UserRepository.is_owner(session['chamber'], current_user.id):
-        emit('entrance_code', {'code' : f"{session['chamber']}|{ChamberRepository.find_by_id(session['chamber']).entrance_code}"}, room=str(session['chamber']))
+        emit('entrance_code',
+             {'code' : f"{session['chamber']}|{ChamberRepository.find_by_id(session['chamber']).entrance_code}"},
+             to=request.sid)
 
 @socket_io.on('client_ask_more')
 @login_required
@@ -283,9 +287,10 @@ def return_more(data):
                     'islast' : False if i != messages[-1] else True,
                     'message' : i.content,
                     'author' : author.username,
-                    'timehourminute' : i.timestamp.astimezone(iran_tz).strftime('%H:%M'),
-                    'timemonthday' : i.timestamp.astimezone(iran_tz).strftime('%d %b, '),
+                    'timehourminute' : format_time(i.timestamp, 'short'),
+                    'timemonthday' : format_date(i.timestamp, 'dd MMM, '),
                     'nomore' : False,
+                    'reverse_time' : True if str(get_locale()) == 'fa' else False,
                     'token' : None if current_user.id != author.id else session['token'] 
                 }, room=str(session['chamber']))
 
@@ -310,8 +315,8 @@ def handle_joined(auth):
     
     for i in MessageRepository.get(chamber=chamber)[::-1]:
         content = i.content
-        hour_timestamp = i.timestamp.astimezone(iran_tz).strftime('%H:%M')
-        month_timestamp = i.timestamp.astimezone(iran_tz).strftime('%d %b, ')
+        hour_timestamp = format_time(i.timestamp, 'short')
+        month_timestamp = format_date(i.timestamp, 'dd MMM, ')
         author = i.author.username
         is_author = i.author == current_user
 
@@ -320,15 +325,17 @@ def handle_joined(auth):
             'timehourminute' : hour_timestamp,
             'timemonthday' : month_timestamp,
             'author' : author,
+            'reverse_time' : True if str(get_locale()) == 'fa' else False,
             'token' : '' if not is_author else session['token']
         }, to=request.sid)
 
     if session.get('just_joined') is not None:
         emit('message_from_server', {
-            'message' : f'کاربر {current_user.username} وارد تالار شد',
-            'author' : 'سیستم',
-            'timehourminute' : datetime.now().strftime('%H:%M'),
-            'timemonthday' : datetime.now().strftime('%d %b, ')
+            'message' : _(f'کاربر %(username)s وارد تالار شد', username=current_user.username),
+            'author' : _('سیستم'),
+            'timehourminute' : format_time(utc(), 'short'),
+            'timemonthday' : format_date(utc(), 'dd MMM, '),
+            'reverse_time' : True if str(get_locale()) == 'fa' else False,
         }, room=str(session['chamber']))
         session.pop('just_joined', None)
 

@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app
 from flask_login import login_user, logout_user, login_required
 from flask_wtf.csrf import validate_csrf, CSRFError
+from flask_babel import gettext as _
 
 from app.services.user_service import UserService
 from app.extensions import captcha
@@ -25,7 +26,7 @@ def login():
         if (email is None or password is None) or \
                 (email == '' or password == ''):
             return render_template('auth/login.html', customMessage=
-            "همم... به نظر می‌رسه ایمیل یا پسوردت خالیه...")
+            _("همم... به نظر می‌رسه ایمیل یا پسوردت خالیه..."))
 
         if current_app.config.get('use_captcha') and not captcha.verify():
             return render_template('auth/login.html', CaptchaError=True)
@@ -40,7 +41,7 @@ def login():
         else:
             flash('Invalid email or password.', 'danger')
             return render_template('auth/login.html', customMessage=
-            "ولی یا رمزت یا ایمیلت یا هم نام کاربریت اشتباهه..."
+            _("ولی یا رمزت یا ایمیلت یا هم نام کاربریت اشتباهه...")
                                    )
 
     return render_template('auth/login.html')
@@ -63,22 +64,22 @@ def register():
         if (email is None or password is None or username is None or terms_accepted is None) or \
                 (email == '' or password == '' or username == '' or terms_accepted == ''):
             return render_template("auth/register.html", passwordError=False,
-                                   userError="موفق نبود٬ به نظر می‌رسد یک یا چند مورد از گزینه ها خالی است")
+                                   userError=_("موفق نبود، به نظر می‌رسد یک یا چند مورد از گزینه ها خالی است"))
 
         if not terms_accepted or terms_accepted is None:
             return render_template("auth/register.html", passwordError=False,
-                                   userError="به دلیل موافقط نکردن با قوانین و مقررات شکست خورد")
+                                   userError=_("به دلیل موافقت نکردن با قوانین و مقررات شکست خورد"))
 
         if password != request.form.get('confirmPassword'):
             return render_template("auth/register.html", passwordError=False,
-                                   userError="شکست خورد٬ رمز عبور با رمز عبور تاییدی مطابقت ندارد")
+                                   userError=_("شکست خورد، رمز عبور با رمز عبور تاییدی مطابقت ندارد"))
 
         if len(username) > 63:
             return render_template("auth/register.html", passwordError=False,
-                                   userError='شکست خورد٬ نام کاربری نباید بیشتر از ۶۳ کاراکتر باشد')
+                                   userError=_('شکست خورد، نام کاربری نباید بیشتر از ۶۳ کاراکتر باشد'))
         if len(email) > 119:
             return render_template('auth/register.html', passwordError=False,
-                                   userError='شکست خورد٬ طول ایمیل نباید بیشتر از ۱۱۹ کاراکتر باشد')
+                                   userError=_('شکست خورد، طول ایمیل نباید بیشتر از ۱۱۹ کاراکتر باشد'))
 
         try:
             validate_email(email)
@@ -87,13 +88,13 @@ def register():
             return redirect(url_for('auth.login'))
         except EmailNotValidError:
             return render_template('auth/register.html', passwordError=True,
-                                   userError="به دلیل غلت بودن ایمیل شکست خورد")
+                                   userError=_("به دلیل غلط بودن ایمیل شکست خورد"))
         except ValueError:
             if len(password) < 8:
                 return render_template('auth/register.html', passwordError=True)
             else:
                 return render_template('auth/register.html', passwordError=False,
-                                       userError="شکست خورد٬ این ایمیل قبلا ثبت شده است")
+                                       userError=_("شکست خورد، این ایمیل قبلا ثبت شده است"))
     return render_template('auth/register.html')
 
 

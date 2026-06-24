@@ -1,33 +1,56 @@
 {% extends 'base.html' %}
 
-{% block title %}خطای {{ type }}{% endblock %}
+{% block title %}{{ _('خطای') }} {{ type }}{% endblock %}
 
 {% block style %}
-<link rel="stylesheet" href="{{ url_for('static', filename='/css/error.css') }}">
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='/css/error.css') }}"
+  />
 {% endblock %}
 
 {% block content %}
-<div class="d-flex flex-column align-items-center justify-content-center vh-100" dir="rtl">
+  <div
+    class="d-flex flex-column align-items-center justify-content-center vh-100"
+  >
     <div class="error-card">
-        <div class="error-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="90" height="90" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
-            </svg>
-        </div>
+      <div class="error-icon">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="90"
+          height="90"
+          fill="currentColor"
+          viewBox="0 0 16 16"
+        >
+          <path
+            d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"
+          />
+        </svg>
+      </div>
 
-        <h1 class="display-4 text-danger mb-3 fw-bold">خطای {{ type }}</h1>
-        <h4 class="text-muted mb-5 fs-5">{{ message }}</h4>
+      <h1 class="display-4 text-danger mb-3 fw-bold">
+        {{ _('خطای') }} {{ type }}
+      </h1>
+      <h4 class="text-muted mb-5 fs-5">{{ message }}</h4>
 
-        <a class="btn btn-custom btn-lg" id="btn-back">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146zM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5z"/>
-            </svg>
-            بازگشت به صفحه قبل
-        </a>
+      <a class="btn btn-custom btn-lg" id="btn-back">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          fill="currentColor"
+          viewBox="0 0 16 16"
+        >
+          <path
+            d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146zM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5z"
+          />
+        </svg>
+        {{ _('بازگشت به صفحه قبل') }}
+      </a>
     </div>
-</div>
+  </div>
 {% endblock %}
 
 {% block script %}
-<script src="{{ url_for('static', filename='/js/errors.js') }}"></script>
+  <script src="{{ url_for('static', filename='/js/errors.js') }}"></script>
 {% endblock %}

@@ -1,138 +1,268 @@
 {% extends 'base.html' %}
 
-{% block title %}ویرایش عضو{% endblock %}
+{% block title %}{{ _('ویرایش عضو') }}{% endblock %}
 
 {% block style %}
-<link rel="stylesheet" href="{{ url_for('static', filename='/css/chamber/edit_member.css') }}">
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='/css/chamber/edit_member.css') }}"
+  />
 {% endblock %}
 
 {% block content %}
-<div class="container py-5" dir="rtl">
+  <div class="container py-5">
     <div class="row justify-content-center">
-        <div class="col-lg-8 col-md-10">
-            <div class="member-edit-card">
-                
-                <!-- هدر کارت -->
-                <div class="text-center mb-4">
-                    <div class="edit-header-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
-                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
-                            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
-                        </svg>
-                    </div>
-                    <h2 class="edit-title">ویرایش کاربر</h2>
-                    <p class="edit-subtitle">مدیریت نقش و دسترسی‌های کاربر در این تالار</p>
-                </div>
-
-                <!-- پیام خطای CSRF -->
-                {% if CsrfError %}
-                <div class="custom-alert alert-danger-custom" role="alert">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
-                    </svg>
-                    <span>به مدت طولانی آفلاین بودید، لطفاً دوباره تلاش کنید.</span>
-                </div>
-                {% endif %}
-
-                <!-- خلاصه اطلاعات کاربر -->
-                <div class="info-grid">
-                    <div class="info-item">
-                        <div class="info-icon bg-primary-soft">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/><path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/></svg>
-                        </div>
-                        <div class="info-content">
-                            <span class="info-label">شناسه کاربر</span>
-                            <span class="info-value">{{ user.id }}</span>
-                        </div>
-                    </div>
-
-                    <div class="info-item">
-                        <div class="info-icon bg-info-soft">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"/></svg>
-                        </div>
-                        <div class="info-content">
-                            <span class="info-label">ایمیل</span>
-                            <span class="info-value info-value-email" dir="ltr">{{ user.email }}</span>
-                        </div>
-                    </div>
-
-                    <div class="info-item">
-                        <div class="info-icon bg-warning-soft">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm-3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm-5 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1z"/><path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/></svg>
-                        </div>
-                        <div class="info-content">
-                            <span class="info-label">تاریخ عضویت</span>
-                            <span class="info-value ltr">{{ joined }}</span>
-                        </div>
-                    </div>
-
-                    <div class="info-item">
-                        <div class="info-icon {% if user.is_online() %}bg-success-soft{% else %}bg-secondary-soft info-icon-offline{% endif %}">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/></svg>
-                        </div>
-                        <div class="info-content">
-                            <span class="info-label">وضعیت فعلی</span>
-                            <span class="status-badge {% if user.is_online() %}status-online{% else %}status-offline{% endif %}">
-                                <span class="status-dot"></span>
-                                {% if user.is_online() %}آنلاین{% else %}آفلاین{% endif %}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- فرم ویرایش نقش -->
-                <form method="POST" action="/chamber/chambers/{{ chamber.id }}/members/{{ user.id }}">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-
-                    <div class="mb-3">
-                        <label class="form-label" for="role">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
-                            </svg>
-                            نقش کاربر در تالار
-                        </label>
-                        <select class="form-select form-select-lg" id="role" name="role">
-                            <option value="member" {% if role == 'member' %}selected{% endif %}>عضو عادی</option>
-                            <!-- <option value="mod" {% if role == 'mod' %}selected{% endif %}>مدیر</option> -->
-                        </select>
-                        <div class="form-text">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/></svg>
-                            تغییر نقش تأثیر فوری دارد و بلافاصله اعمال می‌شود.
-                        </div>
-                    </div>
-
-                    <!-- سوییچ مسدودسازی -->
-                    <div class="ban-switch-container">
-                        <label for="ban" class="ban-label-text">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                                <path d="M11.5 1a1.5 1.5 0 0 1 1.5 1.5v1.062a3.501 3.501 0 0 1 2.438 4.438l-.939 2.818A1.5 1.5 0 0 1 13.08 12H11v2.5a1.5 1.5 0 0 1-3 0V12H3.08a1.5 1.5 0 0 1-1.419-1.018l-.939-2.818A3.501 3.501 0 0 1 3.16 3.062V2.5A1.5 1.5 0 0 1 4.66 1h6.84z"/>
-                            </svg>
-                            مسدود کردن کاربر
-                        </label>
-                        <div class="form-check form-switch mb-0">
-                            <input class="form-check-input" type="checkbox" role="switch" id="ban" name="ban">
-                        </div>
-                    </div>
-
-                    <!-- دکمه‌های عملیات -->
-                    <div class="d-flex flex-column flex-sm-row gap-3 mt-5">
-                        <button type="submit" class="btn btn-submit flex-grow-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                                <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/>
-                            </svg>
-                            ذخیره تغییرات
-                        </button>
-                        <a href="/chamber/dashboard" class="btn btn-cancel flex-grow-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
-                            </svg>
-                            بازگشت به داشبورد
-                        </a>
-                    </div>
-                </form>
-
+      <div class="col-lg-8 col-md-10">
+        <div class="member-edit-card">
+          <!-- هدر کارت -->
+          <div class="text-center mb-4">
+            <div class="edit-header-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 16 16"
+              >
+                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+                <path
+                  fill-rule="evenodd"
+                  d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"
+                />
+              </svg>
             </div>
+            <h2 class="edit-title">{{ _('ویرایش کاربر') }}</h2>
+            <p class="edit-subtitle">
+              {{ _('مدیریت نقش و دسترسی‌های کاربر در این تالار') }}
+            </p>
+          </div>
+
+          <!-- پیام خطای CSRF -->
+          {% if CsrfError %}
+            <div class="custom-alert alert-danger-custom" role="alert">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"
+                />
+              </svg>
+              <span
+                >{{ _('به مدت طولانی آفلاین بودید، لطفاً دوباره تلاش کنید.') }}</span
+              >
+            </div>
+          {% endif %}
+
+          <!-- خلاصه اطلاعات کاربر -->
+          <div class="info-grid">
+            <div class="info-item">
+              <div class="info-icon bg-primary-soft">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+                >
+                  <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+                  <path
+                    fill-rule="evenodd"
+                    d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"
+                  />
+                </svg>
+              </div>
+              <div class="info-content">
+                <span class="info-label">{{ _('شناسه کاربر') }}</span>
+                <span class="info-value">{{ user.id }}</span>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <div class="info-icon bg-info-soft">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"
+                  />
+                </svg>
+              </div>
+              <div class="info-content">
+                <span class="info-label">{{ _('ایمیل') }}</span>
+                <span class="info-value info-value-email" dir="ltr"
+                  >{{ user.email }}</span
+                >
+              </div>
+            </div>
+
+            <div class="info-item">
+              <div class="info-icon bg-warning-soft">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm-3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm-5 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1z"
+                  />
+                  <path
+                    d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"
+                  />
+                </svg>
+              </div>
+              <div class="info-content">
+                <span class="info-label">{{ _('تاریخ عضویت') }}</span>
+                <span class="info-value ltr">{{ joined }}</span>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <div
+                class="info-icon {% if user.is_online() %}
+                  bg-success-soft
+                {% else %}
+                  bg-secondary-soft info-icon-offline
+                {% endif %}"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"
+                  />
+                </svg>
+              </div>
+              <div class="info-content">
+                <span class="info-label">{{ _('وضعیت فعلی') }}</span>
+                <span
+                  class="status-badge {% if user.is_online() %}status-online{% else %}status-offline{% endif %}"
+                >
+                  <span class="status-dot"></span>
+                  {% if user.is_online() %}{{ _('آنلاین') }}{% else %}{{ _('آفلاین') }}{% endif %}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- فرم ویرایش نقش -->
+          <form
+            method="POST"
+            action="/chamber/chambers/{{ chamber.id }}/members/{{ user.id }}"
+          >
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+            <div class="mb-3">
+              <label class="form-label" for="role">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"
+                  />
+                </svg>
+                {{ _('نقش کاربر در تالار') }}
+              </label>
+              <select class="form-select form-select-lg" id="role" name="role">
+                <option
+                  value="member"
+                  {% if role == 'member' %}selected{% endif %}
+                >
+                  {{ _('عضو عادی') }}
+                </option>
+                <!-- <option value="mod" {% if role == 'mod' %}selected{% endif %}>مدیر</option> -->
+              </select>
+              <div class="form-text">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="14"
+                  height="14"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"
+                  />
+                </svg>
+                {{ _('تغییر نقش تأثیر فوری دارد و بلافاصله اعمال می‌شود.') }}
+              </div>
+            </div>
+
+            <!-- سوییچ مسدودسازی -->
+            <div class="ban-switch-container">
+              <label for="ban" class="ban-label-text">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M11.5 1a1.5 1.5 0 0 1 1.5 1.5v1.062a3.501 3.501 0 0 1 2.438 4.438l-.939 2.818A1.5 1.5 0 0 1 13.08 12H11v2.5a1.5 1.5 0 0 1-3 0V12H3.08a1.5 1.5 0 0 1-1.419-1.018l-.939-2.818A3.501 3.501 0 0 1 3.16 3.062V2.5A1.5 1.5 0 0 1 4.66 1h6.84z"
+                  />
+                </svg>
+                {{ _('مسدود کردن کاربر') }}
+              </label>
+              <div class="form-check form-switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  role="switch"
+                  id="ban"
+                  name="ban"
+                />
+              </div>
+            </div>
+
+            <!-- دکمه‌های عملیات -->
+            <div class="d-flex flex-column flex-sm-row gap-3 mt-5">
+              <button type="submit" class="btn btn-submit flex-grow-1">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"
+                  />
+                </svg>
+                {{ _('ذخیره تغییرات') }}
+              </button>
+              <a href="/chamber/dashboard" class="btn btn-cancel flex-grow-1">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"
+                  />
+                </svg>
+                {{ _('بازگشت به داشبورد') }}
+              </a>
+            </div>
+          </form>
         </div>
+      </div>
     </div>
-</div>
+  </div>
 {% endblock %}

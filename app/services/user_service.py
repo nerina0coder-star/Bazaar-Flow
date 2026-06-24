@@ -27,11 +27,11 @@ class UserService:
         return None
 
     @staticmethod
-    def update_profile(user_id: int, username: str, password: str | None = None, description: str | None = None, is_public: bool=False):
+    def update_profile(user_id: int, username: str, password: str | None = None, description: str | None = None, is_public: bool=False, lang: str = 'fa', timezone: str = 'Asia/Tehran'):
         user = UserRepository.find_by_id(user_id)
         if not user:
             raise ValueError("User not found")
         if password is not None and password != "":
             user.set_password(password)
-        UserRepository.update(user, username=username, description=description, is_public=is_public)
+        UserRepository.update(user, username=username, description=description, is_public=is_public, lang=lang, timezone=timezone)
         return user

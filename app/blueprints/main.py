@@ -1,10 +1,11 @@
 import datetime
 
-from flask import Blueprint, render_template, abort, request, current_app, send_from_directory
+from flask import Blueprint, render_template, abort, request, send_from_directory, g
+from flask_babel import get_locale
 from flask_login import login_required, current_user
 
-from app.repositories.chamber_repository import ChamberRepository
 from app.extensions import db, limiter
+from app.repositories.chamber_repository import ChamberRepository
 from app.repositories.user_repository import UserRepository
 
 main_bp = Blueprint('main', __name__)
@@ -12,13 +13,6 @@ main_bp = Blueprint('main', __name__)
 @main_bp.route('/robots.txt')
 def robots():
     return send_from_directory(main_bp.static_folder, 'robots.txt')
-
-@main_bp.before_request
-def before_request():
-    if request.path.startswith('/api/') or request.path.startswith('/chambers/'):
-        origin = request.headers.get('Origin')
-        if not origin or origin not in current_app.config.get('origin'):
-            return abort(403)
 
 @main_bp.route('/ping')
 @login_required
@@ -35,11 +29,16 @@ def ping():
 @limiter.limit('5000 per hour')
 def home():
     if current_user.is_authenticated:
-        if current_user.description == None:
-            return render_template('home.html', user_matching_error=True)
-        umatches = UserRepository.get_related(current_user)
-        cmatches = ChamberRepository.get_related(current_user)
+        print("Locale is", get_locale())
+        user_matching_error = False
+        if current_user.description is None:
+            user_matching_error = True
+        umatches = []
+        cmatches = []
+        if not user_matching_error:
+            umatches = UserRepository.get_related(current_user)
+            cmatches = ChamberRepository.get_related(current_user)
         if not umatches:
-            return render_template('home.html', no_matches=True, cmatches=cmatches)
-        return render_template('home.html', umatches=umatches, cmatches=cmatches)
+            return render_template('home_loggedin.html', user_matching_error=user_matching_error, umatches=umatches, cmatches=cmatches)
+        return render_template('home_loggedin.html', umatches=umatches, cmatches=cmatches)
     return render_template('home.html')

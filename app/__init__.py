@@ -7,9 +7,11 @@ from .blueprints.errors import error_bp
 from .blueprints.main import main_bp
 from .blueprints.profile import profile_bp
 from .config import config
-from .extensions import db, login_manager, socket_io, csrf, captcha, talisman, cors, limiter, paranoid
+from .extensions import (db, login_manager, socket_io, csrf,
+                         captcha, talisman, cors, limiter, paranoid,
+                         babel, get_locale, get_timezone)
 from .filters import *
-from .processors import *
+from .processors import locale, repositories, necessaries
 
 
 def create_app(config_name='default'):
@@ -34,6 +36,7 @@ def create_app(config_name='default'):
     captcha.init_app(app)
     limiter.init_app(app)
     paranoid.init_app(app)
+    babel.init_app(app, locale_selector=get_locale, timezone_selector=get_timezone)
     # starting db
 
     with app.app_context():
@@ -41,6 +44,8 @@ def create_app(config_name='default'):
 
     # Context processors
     app.context_processor(repositories)
+    app.context_processor(locale)
+    app.context_processor(necessaries)
 
     # Register blueprints
     app.register_blueprint(auth_bp, url_prefix='/auth')

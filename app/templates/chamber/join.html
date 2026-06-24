@@ -1,79 +1,136 @@
 {% extends 'base.html' %}
 
-{% block title %}عضویت در تالار{% endblock %}
+{% block title %}{{ _('عضویت در تالار') }}{% endblock %}
 
 {% block style %}
-<link rel="stylesheet" href="{{ url_for('static', filename='/css/chamber/join.css') }}">
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='/css/chamber/join.css') }}"
+  />
 {% endblock %}
 
 {% block content %}
-<div class="container py-5" dir="rtl">
+  <div class="container py-5">
     <div class="row justify-content-center">
-        <div class="col-md-7 col-lg-5">
-            <div class="join-card">
-                
-                <!-- آیکون و هدر -->
-                <div class="join-icon-wrapper">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M11.5 1a1.5 1.5 0 0 1 1.5 1.5v1.062a3.501 3.501 0 0 1 2.438 4.438l-.939 2.818A1.5 1.5 0 0 1 13.08 12H11v2.5a1.5 1.5 0 0 1-3 0V12H3.08a1.5 1.5 0 0 1-1.419-1.018l-.939-2.818A3.501 3.501 0 0 1 3.16 3.062V2.5A1.5 1.5 0 0 1 4.66 1h6.84zm-6.84 1a.5.5 0 0 0-.5.5v1.062a.5.5 0 0 1-.33.47 2.5 2.5 0 0 0-1.668 3.168l.94 2.818a.5.5 0 0 0 .474.344H13.08a.5.5 0 0 0 .474-.344l.94-2.818a2.5 2.5 0 0 0-1.668-3.168.5.5 0 0 1-.33-.47V2.5a.5.5 0 0 0-.5-.5H4.66z"/>
-                        <path d="M8 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 1a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
-                    </svg>
-                </div>
+      <div class="col-md-7 col-lg-5">
+        <div class="join-card">
+          <!-- آیکون و هدر -->
+          <div class="join-icon-wrapper">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M11.5 1a1.5 1.5 0 0 1 1.5 1.5v1.062a3.501 3.501 0 0 1 2.438 4.438l-.939 2.818A1.5 1.5 0 0 1 13.08 12H11v2.5a1.5 1.5 0 0 1-3 0V12H3.08a1.5 1.5 0 0 1-1.419-1.018l-.939-2.818A3.501 3.501 0 0 1 3.16 3.062V2.5A1.5 1.5 0 0 1 4.66 1h6.84zm-6.84 1a.5.5 0 0 0-.5.5v1.062a.5.5 0 0 1-.33.47 2.5 2.5 0 0 0-1.668 3.168l.94 2.818a.5.5 0 0 0 .474.344H13.08a.5.5 0 0 0 .474-.344l.94-2.818a2.5 2.5 0 0 0-1.668-3.168.5.5 0 0 1-.33-.47V2.5a.5.5 0 0 0-.5-.5H4.66z"
+              />
+              <path
+                d="M8 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 1a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"
+              />
+            </svg>
+          </div>
 
-                <h2 class="join-title">پیوستن به تالار</h2>
-                {% if message %}
-                    <p class="join-subtitle">{{ message }}</p>
-                {% else %}
-                    <p class="join-subtitle">برای ورود، کد اختصاصی تالار را وارد کنید.</p>
-                {% endif %}
+          <h2 class="join-title">{{ _('پیوستن به تالار') }}</h2>
+          {% if message %}
+            <p class="join-subtitle">{{ message }}</p>
+          {% else %}
+            <p class="join-subtitle">
+              {{ _('برای ورود، کد اختصاصی تالار را وارد کنید.') }}
+            </p>
+          {% endif %}
 
-                <!-- فرم عضویت -->
-                <form method="POST" action="/chamber/join">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    
-                    <!-- پیام خطای CSRF -->
-                    {% if CsrfError %}
-                    <div class="custom-alert alert-danger-custom" role="alert">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
-                            <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
-                        </svg>
-                        <span>به مدت طولانی آفلاین بودید، لطفاً دوباره تلاش کنید.</span>
-                    </div>
-                    {% endif %}
+          <!-- فرم عضویت -->
+          <form method="POST" action="/chamber/join">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
 
-                    <!-- فیلد کد -->
-                    <div class="mb-4">
-                        <label for="code" class="form-label">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                                <path d="M11.5 1a1.5 1.5 0 0 1 1.5 1.5v1.062a3.501 3.501 0 0 1 2.438 4.438l-.939 2.818A1.5 1.5 0 0 1 13.08 12H11v2.5a1.5 1.5 0 0 1-3 0V12H3.08a1.5 1.5 0 0 1-1.419-1.018l-.939-2.818A3.501 3.501 0 0 1 3.16 3.062V2.5A1.5 1.5 0 0 1 4.66 1h6.84z"/>
-                            </svg>
-                            کد ورود تالار
-                        </label>
-                        <input type="text" class="form-control code-input" id="code" name="code" placeholder="مثلاً: JS2025" required autofocus autocomplete="off">
-                    </div>
+            <!-- پیام خطای CSRF -->
+            {% if CsrfError %}
+              <div class="custom-alert alert-danger-custom" role="alert">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"
+                  />
+                </svg>
+                <span
+                  >{{ _('به مدت طولانی آفلاین بودید، لطفاً دوباره تلاش کنید.') }}</span
+                >
+              </div>
+            {% endif %}
 
-                    <!-- دکمه ارسال -->
-                    <button type="submit" class="btn btn-join">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M6 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 0-1 0v2A1.5 1.5 0 0 0 6.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-8A1.5 1.5 0 0 0 5 3.5v2a.5.5 0 0 0 1 0v-2z"/>
-                            <path fill-rule="evenodd" d="M4.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H14a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z"/>
-                        </svg>
-                        ورود به تالار
-                    </button>
-                </form>
-
-                <!-- لینک بازگشت -->
-                <div class="text-center">
-                    <a href="/profile/dashboard" class="back-link">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
-                        </svg>
-                        بازگشت به داشبورد
-                    </a>
-                </div>
-
+            <!-- فیلد کد -->
+            <div class="mb-4">
+              <label for="code" class="form-label">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M11.5 1a1.5 1.5 0 0 1 1.5 1.5v1.062a3.501 3.501 0 0 1 2.438 4.438l-.939 2.818A1.5 1.5 0 0 1 13.08 12H11v2.5a1.5 1.5 0 0 1-3 0V12H3.08a1.5 1.5 0 0 1-1.419-1.018l-.939-2.818A3.501 3.501 0 0 1 3.16 3.062V2.5A1.5 1.5 0 0 1 4.66 1h6.84z"
+                  />
+                </svg>
+                {{ _('کد ورود تالار') }}
+              </label>
+              <input
+                type="text"
+                class="form-control code-input"
+                id="code"
+                name="code"
+                placeholder="{{ _('مثلاً: JS2025') }}"
+                required
+                autofocus
+                autocomplete="off"
+              />
             </div>
+
+            <!-- دکمه ارسال -->
+            <button type="submit" class="btn btn-join">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                fill="currentColor"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M6 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 0-1 0v2A1.5 1.5 0 0 0 6.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-8A1.5 1.5 0 0 0 5 3.5v2a.5.5 0 0 0 1 0v-2z"
+                />
+                <path
+                  fill-rule="evenodd"
+                  d="M4.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H14a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z"
+                />
+              </svg>
+              {{ _('ورود به تالار') }}
+            </button>
+          </form>
+
+          <!-- لینک بازگشت -->
+          <div class="text-center">
+            <a href="/profile/dashboard" class="back-link">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"
+                />
+              </svg>
+              {{ _('بازگشت به داشبورد') }}
+            </a>
+          </div>
         </div>
+      </div>
     </div>
-</div>
+  </div>
 {% endblock %}

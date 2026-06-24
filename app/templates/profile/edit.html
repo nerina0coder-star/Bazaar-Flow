@@ -1,241 +1,588 @@
 {% extends 'base.html' %}
 
-{% block title %}پرونده{% endblock %}
+{% block title %}{{ _('پرونده') }}{% endblock %}
 
 {% block style %}
-<link rel="stylesheet" href="{{ url_for('static', filename='/css/profile/edit.css') }}">
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='/css/profile/edit.css') }}"
+  />
 {% endblock %}
 
 {% block content %}
-<div class="container py-5" dir="rtl">
+  <div class="container py-5">
     <div class="row justify-content-center">
-        <div class="col-lg-7 col-md-9">
-            <div class="profile-edit-card">
-                
-                <div class="text-center mb-4">
-                    <div class="mb-3 mx-auto profile-icon-wrapper">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#3b82f6" viewBox="0 0 16 16">
-                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
-                            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
-                        </svg>
-                    </div>
-                    <h2 class="h4 fw-bold text-dark mb-1">ویرایش پروفایل</h2>
-                    {% if custom_message %}
-                        <p class="text-muted small mb-0">{{ custom_message }}</p>
-                    {% endif %}
-                </div>
-
-                {% if CsrfError %}
-                <div class="custom-alert alert-danger-custom" role="alert">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
-                    </svg>
-                    <span>به مدت طولانی آفلاین بودید، لطفاً دوباره تلاش کنید.</span>
-                </div>
-                {% endif %}
-
-                <p id="higherEtcError" class="custom-alert alert-danger-custom alert-hidden-initially" role="alert">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
-                    </svg>
-                    <small id="etcError"></small>
-                </p>
-
-                <p id="higherPasswordMatch" class="custom-alert alert-danger-custom {% if not passwordError %}d-none{% endif %}" role="alert">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
-                    </svg>
-                    <small id="passwordMatch">{% if passwordError %}رمز عبور تأیید شده اشتباه است.{% endif %}</small>
-                </p>
-
-                <form method="POST" action="/profile/edit" onsubmit="return validatePassword()">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-
-                    <div class="mb-4">
-                        <label class="form-label" for="username">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
-                                <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
-                            </svg>
-                            نام کاربری
-                        </label>
-                        <input type="text" class="form-control" id="username" name="username" value="{{ current_user.username }}" required autocomplete="username">
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="form-label" for="email">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                                <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"/>
-                            </svg>
-                            ایمیل
-                        </label>
-                        <input id="email" type="email" class="form-control" value="{{ current_user.email }}" disabled readonly>
-                        <div class="form-text">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/></svg>
-                            آدرس ایمیل قابل تغییر نیست. در صورت نیاز با پشتیبانی تماس بگیرید.
-                        </div>
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="form-label" for="description">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                                <path d="M5 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
-                                <path d="m2.165 15.803.02-.004c1.83-.363 2.948-.842 3.468-1.105A9.06 9.06 0 0 0 8 15c4.418 0 8-3.134 8-7s-3.582-7-8-7-8 3.134-8 7c0 1.76.743 3.37 1.97 4.6a10.437 10.437 0 0 1-.524 2.318l-.003.011a10.722 10.722 0 0 1-.244.637c-.079.186.074.394.273.362a21.673 21.673 0 0 0 .693-.125z"/>
-                            </svg>
-                            توضیحات پروفایل
-                        </label>
-                        <textarea class="form-control" id="description" name="description" rows="3" maxlength="200" placeholder="چند جمله درباره خودتان بنویسید...">{{ current_user.description or '' }}</textarea>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="form-text mb-0">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/></svg>
-                                این توضیحات در پروفایل عمومی شما نمایش داده می‌شود.
-                            </div>
-                            <div class="char-counter">
-                                <span id="descCharCount">0</span>/200
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="visibility-section">
-                        <div class="visibility-header">
-                            <div class="visibility-info">
-                                <div class="visibility-title">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                                        <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
-                                        <path d="M8 5.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM4.5 8a3.5 3.5 0 1 0 7 0 3.5 3.5 0 0 0-7 0z"/>
-                                    </svg>
-                                    در صفحه اصلی دیده شوم
-                                </div>
-                                <p class="visibility-desc">
-                                    با فعال‌سازی این گزینه، پروفایل شما در بخش "کاربران مشابه" صفحه اصلی نمایش داده می‌شود و سایر کاربران می‌توانند شما را پیدا کنند.
-                                </p>
-                                <div id="visibilityStatus" class="visibility-status {% if current_user.is_public %}status-active{% else %}status-inactive{% endif %}">
-                                    {% if current_user.is_public %}
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
-                                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
-                                        </svg>
-                                        فعال
-                                    {% else %}
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
-                                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"/>
-                                        </svg>
-                                        غیرفعال
-                                    {% endif %}
-                                </div>
-                            </div>
-                            <label class="custom-switch">
-                                <input type="checkbox" id="isPublic" name="is_public" {% if current_user.is_public %}checked{% endif %}>
-                                <span class="switch-slider"></span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <hr class="my-4 hr-light-border">
-                    <p class="text-muted small text-center mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/></svg>
-                        برای تغییر رمز عبور، فیلدهای زیر را پر کنید (اختیاری).
-                    </p>
-
-                    <div class="mb-4">
-                        <label class="form-label" for="password">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                                <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
-                            </svg>
-                            رمز عبور فعلی
-                        </label>
-                        <input type="password" class="form-control" id="password" name="password" autocomplete="current-password">
-                        <div class="form-text">برای اعمال هرگونه تغییر، وارد کردن رمز عبور فعلی الزامی است.</div>
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="form-label" for="new_password">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                                <path d="M11.5 1h-7a1.5 1.5 0 0 0-1.5 1.5v11a1.5 1.5 0 0 0 1.5 1.5h7a1.5 1.5 0 0 0 1.5-1.5v-11A1.5 1.5 0 0 0 11.5 1zm-7-1a2.5 2.5 0 0 0-2.5 2.5v11A2.5 2.5 0 0 0 4.5 16h7a2.5 2.5 0 0 0 2.5-2.5v-11A2.5 2.5 0 0 0 11.5 0h-7z"/>
-                                <path d="M7 5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1z"/>
-                            </svg>
-                            رمز عبور جدید
-                        </label>
-                        <input type="password" class="form-control" id="new_password" name="new_password" autocomplete="new-password">
-                        <div class="form-text">فقط در صورتی که می‌خواهید رمز عبور خود را تغییر دهید، این فیلد را پر کنید.</div>
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="form-label" for="confirm_password">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                                <path d="M11.5 1h-7a1.5 1.5 0 0 0-1.5 1.5v11a1.5 1.5 0 0 0 1.5 1.5h7a1.5 1.5 0 0 0 1.5-1.5v-11A1.5 1.5 0 0 0 11.5 1zm-7-1a2.5 2.5 0 0 0-2.5 2.5v11A2.5 2.5 0 0 0 4.5 16h7a2.5 2.5 0 0 0 2.5-2.5v-11A2.5 2.5 0 0 0 11.5 0h-7z"/>
-                                <path d="M10.854 8.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.793l2.646-2.647a.5.5 0 0 1 .708 0z"/>
-                            </svg>
-                            تکرار رمز عبور جدید
-                        </label>
-                        <input type="password" class="form-control" id="confirm_password" name="confirm_password" autocomplete="new-password">
-                    </div>
-
-                    <div class="d-flex gap-3 mt-5">
-                        <button type="submit" class="btn btn-submit flex-grow-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                                <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/>
-                            </svg>
-                            ذخیره تغییرات
-                        </button>
-                        <a href="/profile/dashboard" class="btn btn-cancel flex-grow-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
-                            </svg>
-                            انصراف
-                        </a>
-                    </div>
-
-                    <div class="terms-modal-overlay" id="termsModal">
-                        <div class="terms-modal">
-                            <div class="terms-modal-header">
-                                <div class="terms-modal-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
-                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-                                        <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h3 class="terms-modal-title">تأیید شرایط و قوانین</h3>
-                                    <p class="terms-modal-subtitle">برای فعال‌سازی نمایش در صفحه اصلی، لطفاً موارد زیر را مطالعه و تأیید کنید.</p>
-                                </div>
-                            </div>
-
-                            <div class="terms-checkbox-group">
-                                <label class="terms-checkbox-item" id="termsItem1">
-                                    <input type="checkbox" id="termsCheckbox1" name="terms_accepted" {% if current_user.is_public %} checked {% endif %}>
-                                    <span class="terms-checkbox-label">
-                                        من <a href="/terms" target="_blank">شرایط و ضوابط</a> بازار فلو را به دقت مطالعه کرده‌ام و با تمام مفاد آن موافقم.
-                                    </span>
-                                </label>
-
-                                <label class="terms-checkbox-item" id="termsItem2">
-                                    <input type="checkbox" id="termsCheckbox2" name="privacy_accepted" {% if current_user.is_public %} checked {% endif %}>
-                                    <span class="terms-checkbox-label">
-                                        من <a href="/privacy" target="_blank">سیاست حفظ حریم خصوصی</a> را مطالعه کرده‌ام و با نحوه استفاده از اطلاعات شخصی خود موافقم.
-                                    </span>
-                                </label>
-                            </div>
-
-                            <div class="terms-modal-footer">
-                                <button type="button" class="btn-terms-confirm" id="confirmTermsBtn" disabled>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
-                                    </svg>
-                                    تأیید و فعال‌سازی
-                                </button>
-                                <button type="button" class="btn-terms-cancel" id="cancelTermsBtn">انصراف</button>
-                            </div>
-                        </div>
-                    </div>
-
-                </form>
-
+      <div class="col-lg-7 col-md-9">
+        <div class="profile-edit-card">
+          <div class="text-center mb-4">
+            <div class="mb-3 mx-auto profile-icon-wrapper">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="32"
+                height="32"
+                fill="#3b82f6"
+                viewBox="0 0 16 16"
+              >
+                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+                <path
+                  fill-rule="evenodd"
+                  d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"
+                />
+              </svg>
             </div>
-        </div>
-    </div>
-</div>
-{% endblock %}
+            <h2 class="h4 fw-bold text-dark mb-1">{{ _('ویرایش پروفایل') }}</h2>
+            {% if custom_message %}
+              <p class="text-muted small mb-0">{{ custom_message }}</p>
+            {% endif %}
+          </div>
 
-{% block script %}
-<script src="{{ url_for('static', filename='/js/edit.js') }}"></script>
+          {% if CsrfError %}
+            <div class="custom-alert alert-danger-custom" role="alert">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"
+                />
+              </svg>
+              <span
+                >{{ _('به مدت طولانی آفلاین بودید، لطفاً دوباره تلاش کنید.') }}</span
+              >
+            </div>
+          {% endif %}
+
+          <p
+            id="higherPasswordMatch"
+            class="custom-alert alert-danger-custom {% if not passwordError %}d-none{% endif %}"
+            role="alert"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"
+              />
+            </svg>
+            <small id="passwordMatch"
+              >{% if passwordError %}{{ _('رمز عبور تأیید شده اشتباه است.') }}{% endif %}</small
+            >
+          </p>
+
+          <form method="POST" action="/profile/edit">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+            <div class="mb-4">
+              <label class="form-label" for="username">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+                >
+                  <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+                  <path
+                    fill-rule="evenodd"
+                    d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"
+                  />
+                </svg>
+                {{ _('نام کاربری') }}
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                id="username"
+                name="username"
+                value="{{ current_user.username }}"
+                required
+                autocomplete="username"
+              />
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label" for="email">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"
+                  />
+                </svg>
+                {{ _('ایمیل') }}
+              </label>
+              <input
+                id="email"
+                type="email"
+                class="form-control"
+                value="{{ current_user.email }}"
+                disabled
+                readonly
+              />
+              <div class="form-text">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="14"
+                  height="14"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"
+                  />
+                </svg>
+                {{ _('آدرس ایمیل قابل تغییر نیست. در صورت نیاز با پشتیبانی تماس بگیرید.') }}
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label" for="description">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M5 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"
+                  />
+                  <path
+                    d="m2.165 15.803.02-.004c1.83-.363 2.948-.842 3.468-1.105A9.06 9.06 0 0 0 8 15c4.418 0 8-3.134 8-7s-3.582-7-8-7-8 3.134-8 7c0 1.76.743 3.37 1.97 4.6a10.437 10.437 0 0 1-.524 2.318l-.003.011a10.722 10.722 0 0 1-.244.637c-.079.186.074.394.273.362a21.673 21.673 0 0 0 .693-.125z"
+                  />
+                </svg>
+                {{ _('توضیحات پروفایل') }}
+              </label>
+              <textarea
+                class="form-control"
+                id="description"
+                name="description"
+                rows="3"
+                maxlength="200"
+                placeholder="{{ _('چند جمله درباره خودتان بنویسید...') }}"
+              >
+{{ current_user.description or '' }}</textarea
+              >
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="form-text mb-0">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="14"
+                    height="14"
+                    fill="currentColor"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"
+                    />
+                  </svg>
+                  {{ _('این توضیحات در پروفایل عمومی شما نمایش داده می‌شود.') }}
+                </div>
+                <div class="char-counter">
+                  <span id="descCharCount">0</span>/200
+                </div>
+              </div>
+            </div>
+
+            <!-- بخش تنظیمات حساب کاربری -->
+            <div class="account-settings-section persian">
+              <h3 class="settings-section-title">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"
+                  />
+                  <path
+                    d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z"
+                  />
+                </svg>
+                تنظیمات حساب کاربری
+              </h3>
+
+              <!-- Language Select -->
+              <div class="mb-4 persian">
+                <label class="form-label" for="language">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    fill="currentColor"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="M4.545 6.714 4.11 8H3l1.862-5h1.284L8 8H6.833l-.435-1.286H4.545zm1.634-.736L5.5 3.956h-.049l-.679 2.022H6.18z"
+                    />
+                    <path
+                      d="M0 2a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v3h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-3H2a2 2 0 0 1-2-2V2zm2-1a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H2zm7.178 11c.213 0 .39.059.531.178l.007.006c.118.106.184.245.184.412 0 .167-.066.306-.184.412l-.007.006c-.141.119-.318.178-.531.178-.213 0-.39-.059-.531-.178l-.007-.006c-.118-.106-.184-.245-.184-.412 0-.167.066-.306.184-.412l.007-.006c.141-.119.318-.178.531-.178z"
+                    />
+                  </svg>
+                  زبان / Language
+                </label>
+                <select class="form-select" id="language" name="language">
+                  <option
+                    value="en"
+                    {% if language == 'en' %}selected{% endif %}
+                  >
+                    English / اینگلیسی
+                  </option>
+                  <option
+                    value="fa"
+                    {% if language == 'fa' %}selected{% endif %}
+                  >
+                    Persian / فارسی
+                  </option>
+                </select>
+              </div>
+
+              <!-- Timezone Select -->
+              {% set tz = str(current_timezone()) %}
+              <div class="mb-4 persian">
+                <label class="form-label" for="timezone">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    fill="currentColor"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"
+                    />
+                    <path
+                      d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"
+                    />
+                  </svg>
+                  منطقه زمانی / Timezone
+                </label>
+                <select class="form-select" id="timezone" name="timezone">
+                  <option
+                    value="Asia/Tehran"
+                    {% if tz == 'Asia/Tehran' %}selected{% endif %}
+                  >
+                    Asia/Tehran - آسیا/تهران
+                  </option>
+                  <option
+                    value="US/Eastern"
+                    {% if tz == 'US/Eastern' %}selected{% endif %}
+                  >
+                    US/Eastern - ایالات متحده/جنوبی
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <div class="visibility-section">
+              <div class="visibility-header">
+                <div class="visibility-info">
+                  <div class="visibility-title">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      fill="currentColor"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"
+                      />
+                      <path
+                        d="M8 5.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM4.5 8a3.5 3.5 0 1 0 7 0 3.5 3.5 0 0 0-7 0z"
+                      />
+                    </svg>
+                    {{ _('در صفحه اصلی دیده شوم') }}
+                  </div>
+                  <p class="visibility-desc">
+                    {{ _('با فعال‌سازی این گزینه، تالار اصلی شما در بخش "کاربران مشابه" صفحه اصلی نمایش داده می‌شود و سایر کاربران می‌توانند شما را پیدا کنند.') }}
+                  </p>
+                  <div
+                    id="visibilityStatus"
+                    class="visibility-status {% if current_user.is_public %}status-active{% else %}status-inactive{% endif %}"
+                  >
+                    {% if current_user.is_public %}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="12"
+                        height="12"
+                        fill="currentColor"
+                        viewBox="0 0 16 16"
+                      >
+                        <path
+                          d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"
+                        />
+                      </svg>
+                      {{ _('فعال') }}
+                    {% else %}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="12"
+                        height="12"
+                        fill="currentColor"
+                        viewBox="0 0 16 16"
+                      >
+                        <path
+                          d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"
+                        />
+                      </svg>
+                      {{ _('غیرفعال') }}
+                    {% endif %}
+                  </div>
+                </div>
+                <label class="custom-switch">
+                  <input
+                    type="checkbox"
+                    id="isPublic"
+                    name="is_public"
+                    {% if current_user.is_public %}checked{% endif %}
+                  />
+                  <span class="switch-slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <hr class="my-4 hr-light-border" />
+            <p class="text-muted small text-center mb-4">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="14"
+                height="14"
+                fill="currentColor"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"
+                />
+              </svg>
+              {{ _('برای تغییر رمز عبور، فیلدهای زیر را پر کنید (اختیاری).') }}
+            </p>
+
+            <div class="mb-4">
+              <label class="form-label" for="password">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"
+                  />
+                </svg>
+                {{ _('رمز عبور فعلی') }}
+              </label>
+              <input
+                type="password"
+                class="form-control"
+                id="password"
+                name="password"
+                autocomplete="current-password"
+              />
+              <div class="form-text">
+                {{ _('برای اعمال هرگونه تغییر، وارد کردن رمز عبور فعلی الزامی است.') }}
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label" for="new_password">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M11.5 1h-7a1.5 1.5 0 0 0-1.5 1.5v11a1.5 1.5 0 0 0 1.5 1.5h7a1.5 1.5 0 0 0 1.5-1.5v-11A1.5 1.5 0 0 0 11.5 1zm-7-1a2.5 2.5 0 0 0-2.5 2.5v11A2.5 2.5 0 0 0 4.5 16h7a2.5 2.5 0 0 0 2.5-2.5v-11A2.5 2.5 0 0 0 11.5 0h-7z"
+                  />
+                  <path
+                    d="M7 5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1z"
+                  />
+                </svg>
+                {{ _('رمز عبور جدید') }}
+              </label>
+              <input
+                type="password"
+                class="form-control"
+                id="new_password"
+                name="new_password"
+                autocomplete="new-password"
+              />
+              <div class="form-text">
+                {{ _('فقط در صورتی که می‌خواهید رمز عبور خود را تغییر دهید، این فیلد را پر کنید.') }}
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label" for="confirm_password">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M11.5 1h-7a1.5 1.5 0 0 0-1.5 1.5v11a1.5 1.5 0 0 0 1.5 1.5h7a1.5 1.5 0 0 0 1.5-1.5v-11A1.5 1.5 0 0 0 11.5 1zm-7-1a2.5 2.5 0 0 0-2.5 2.5v11A2.5 2.5 0 0 0 4.5 16h7a2.5 2.5 0 0 0 2.5-2.5v-11A2.5 2.5 0 0 0 11.5 0h-7z"
+                  />
+                  <path
+                    d="M10.854 8.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.793l2.646-2.647a.5.5 0 0 1 .708 0z"
+                  />
+                </svg>
+                {{ _('تکرار رمز عبور جدید') }}
+              </label>
+              <input
+                type="password"
+                class="form-control"
+                id="confirm_password"
+                name="confirm_password"
+                autocomplete="new-password"
+              />
+            </div>
+
+            <div class="d-flex gap-3 mt-5">
+              <button type="submit" class="btn btn-submit flex-grow-1">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"
+                  />
+                </svg>
+                {{ _('ذخیره تغییرات') }}
+              </button>
+              <a href="/profile/dashboard" class="btn btn-cancel flex-grow-1">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"
+                  />
+                </svg>
+                {{ _('انصراف') }}
+              </a>
+            </div>
+
+            <div class="terms-modal-overlay" id="termsModal">
+              <div class="terms-modal">
+                <div class="terms-modal-header">
+                  <div class="terms-modal-icon">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      fill="currentColor"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
+                      />
+                      <path
+                        d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"
+                      />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 class="terms-modal-title">
+                      {{ _('تأیید شرایط و قوانین') }}
+                    </h3>
+                    <p class="terms-modal-subtitle">
+                      {{ _('برای فعال‌سازی نمایش در صفحه اصلی، لطفاً موارد زیر را مطالعه و تأیید کنید.') }}
+                    </p>
+                  </div>
+                </div>
+
+                <div class="terms-checkbox-group">
+                  <label class="terms-checkbox-item" id="termsItem1">
+                    <input
+                      type="checkbox"
+                      id="termsCheckbox1"
+                      name="terms_accepted"
+                      {% if current_user.is_public %}checked{% endif %}
+                    />
+                    <span class="terms-checkbox-label">
+                      {{
+                        _('''من
+                        <a href="/terms" target="_blank"
+                          >شرایط و ضوابط</a
+                        >
+                        بازار فلو را به دقت مطالعه کرده‌ام و با تمام مفاد آن موافقم.''')
+                      }}
+                    </span>
+                  </label>
+
+                  <label class="terms-checkbox-item" id="termsItem2">
+                    <input
+                      type="checkbox"
+                      id="termsCheckbox2"
+                      name="privacy_accepted"
+                      {% if current_user.is_public %}checked{% endif %}
+                    />
+                    <span class="terms-checkbox-label">
+                      {{
+                        _('''من
+                        <a href="/privacy" target="_blank"
+                          >سیاست حفظ حریم خصوصی</a
+                        >
+                        را مطالعه کرده‌ام و با نحوه استفاده از اطلاعات شخصی خود موافقم.''')
+                      }}
+                    </span>
+                  </label>
+                </div>
+
+                <div class="terms-modal-footer">
+                  <button
+                    type="button"
+                    class="btn-terms-confirm"
+                    id="confirmTermsBtn"
+                    disabled
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="18"
+                      height="18"
+                      fill="currentColor"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"
+                      />
+                    </svg>
+                    {{ _('تأیید و فعال‌سازی') }}
+                  </button>
+                  <button
+                    type="button"
+                    class="btn-terms-cancel"
+                    id="cancelTermsBtn"
+                  >
+                    {{ _('انصراف') }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}

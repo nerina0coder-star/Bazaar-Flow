@@ -1,66 +1,147 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm sticky-top nav-glass-effect" dir="rtl">
-    <div class="container">
-        <!-- Brand / Logo -->
-        <a class="navbar-brand fw-bold d-flex align-items-center gap-2 navbar-brand-text" href="/">
-            <span class="border-end border-secondary pe-2 navbar-star-icon" id="navbar-star">✦</span> 
-            <span id="app-name">بازارفلو</span>
-        </a>
-        
-        <!-- Mobile toggler button -->
-        <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMainContent"
-                aria-controls="navbarMainContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        
-        <!-- Collapsible navbar content -->
-        <div class="collapse navbar-collapse" id="navbarMainContent">
-            <!-- Navigation links -->
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-1">
-                {% if not current_user.is_authenticated %}
-                <li class="nav-item">
-                    <a class="nav-link fw-semibold px-3 py-2 rounded-3 nav-link-auth" aria-current="page" href="/auth/login" id="login">ورود یا ثبت‌نام</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link px-3 py-2 rounded-3" id="terms-and-conditions">شرایط و ضوابط</a>
-                </li>
-                {% else %}
-                <li class="nav-item">
-                    <a href="/profile/dashboard" class="nav-link px-3 py-2 rounded-3" id="user-dashboard">خاطر</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link px-3 py-2 rounded-3" href="/chamber/dashboard" id="chamber-dashboard">تالارها</a>
-                </li>
-                {% endif %}
-                
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle px-3 py-2 rounded-3" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        منابع
-                    </a>
-                    <ul class="dropdown-menu border-0 shadow-lg rounded-3 mt-2 dropdown-menu-animated">
-                        <li><a class="dropdown-item rounded-2 py-2" href="#">مستندات</a></li>
-                        <li><a class="dropdown-item rounded-2 py-2" href="#">نمونه‌ها</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item rounded-2 py-2" href="#">پشتیبانی</a></li>
-                    </ul>
-                </li>
-                
-                <li class="nav-item">
-                    <a class="nav-link disabled px-3 py-2 nav-link-disabled-custom" href="#" tabindex="-1" aria-disabled="true">نقشه راه</a>
-                </li>
-            </ul>
-            
-            <!-- Right side: modern search form -->
-            <form class="d-flex" role="search">
-                <div class="position-relative">
-                    <input class="form-control rounded-pill ps-5 search-input-modern" type="search" placeholder="جستجو..." aria-label="Search">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#94a3b8" class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 search-icon-no-pointer" viewBox="0 0 16 16">
-                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-                    </svg>
-                    <button class="btn btn-primary rounded-pill position-absolute top-50 end-0 translate-middle-y me-1 search-submit-btn" type="submit">
-                        برو
-                    </button>
-                </div>
-            </form>
+<nav
+  class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm sticky-top nav-glass-effect"
+  dir="rtl"
+>
+  <div class="container">
+    <!-- Brand / Logo -->
+    <a
+      class="navbar-brand fw-bold d-flex align-items-center gap-2 navbar-brand-text"
+      href="/"
+    >
+      <span
+        class="border-end border-secondary pe-2 navbar-star-icon"
+        id="navbar-star"
+        >✦</span
+      >
+      <span id="app-name">{{ _('بازارفلو') }}</span>
+    </a>
+
+    <!-- Mobile toggler button -->
+    <button
+      class="navbar-toggler border-0 shadow-none"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarMainContent"
+      aria-controls="navbarMainContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Collapsible navbar content -->
+    <div class="collapse navbar-collapse" id="navbarMainContent">
+      <!-- Navigation links -->
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-1">
+        {% if not current_user.is_authenticated %}
+          <li class="nav-item">
+            <a
+              class="nav-link fw-semibold px-3 py-2 rounded-3 nav-link-auth"
+              aria-current="page"
+              href="/auth/login"
+              id="login"
+              >{{ _('ورود یا ثبت‌نام') }}</a
+            >
+          </li>
+          <li class="nav-item">
+            <a
+              href="#"
+              class="nav-link px-3 py-2 rounded-3"
+              id="terms-and-conditions"
+              >{{ _('شرایط و ضوابط') }}</a
+            >
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a
+              href="/profile/dashboard"
+              class="nav-link px-3 py-2 rounded-3"
+              id="user-dashboard"
+              >{{ _('خاطر') }}</a
+            >
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link px-3 py-2 rounded-3"
+              href="/chamber/dashboard"
+              id="chamber-dashboard"
+              >{{ _('تالارها') }}</a
+            >
+          </li>
+        {% endif %}
+
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle px-3 py-2 rounded-3"
+            href="#"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            {{ _('منابع') }}
+          </a>
+          <ul
+            class="dropdown-menu border-0 shadow-lg rounded-3 mt-2 dropdown-menu-animated"
+          >
+            <li>
+              <a class="dropdown-item rounded-2 py-2" href="#"
+                >{{ _('مستندات') }}</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item rounded-2 py-2" href="#"
+                >{{ _('نمونه‌ها') }}</a
+              >
+            </li>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+              <a class="dropdown-item rounded-2 py-2" href="#"
+                >{{ _('پشتیبانی') }}</a
+              >
+            </li>
+          </ul>
+        </li>
+
+        <li class="nav-item">
+          <a
+            class="nav-link disabled px-3 py-2 nav-link-disabled-custom"
+            href="#"
+            tabindex="-1"
+            aria-disabled="true"
+            >{{ _('نقشه راه') }}</a
+          >
+        </li>
+      </ul>
+
+      <!-- Right side: modern search form -->
+      <form class="d-flex" role="search">
+        <div class="position-relative">
+          <input
+            class="form-control rounded-pill ps-5 search-input-modern"
+            type="search"
+            placeholder="{{ _('جستجو...') }}"
+            aria-label="Search"
+          />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            fill="#94a3b8"
+            class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 search-icon-no-pointer"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"
+            />
+          </svg>
+          <button
+            class="btn btn-primary rounded-pill position-absolute top-50 end-0 translate-middle-y me-1 search-submit-btn"
+            type="submit"
+          >
+            {{ _('برو') }}
+          </button>
         </div>
+      </form>
     </div>
+  </div>
 </nav>

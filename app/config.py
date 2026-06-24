@@ -26,9 +26,13 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     CORS_ORIGINS = [dotenv.get_key(key_to_get='ORIGIN', dotenv_path='.env')]
-
-    origin = dotenv.get_key(key_to_get='ORIGIN', dotenv_path='.env')
     use_captcha = False
+
+
+    BABEL_DEFAULT_LOCALE = 'fa'
+    BABEL_DEFAULT_TIMEZONE = 'Asia/Tehran'
+    BABEL_TRANSLATION_DIRECTORIES = '../translations'
+    SUPPORTED_LOCALES = ['en', 'fa']
 
 
 class DevelopmentConfig(Config):

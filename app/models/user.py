@@ -32,6 +32,9 @@ class User(UserMixin, db.Model):
 
     is_public = db.Column(db.Boolean, default=False)
 
+    lang = db.Column(db.String(120), default='fa')
+    timezone = db.Column(db.String(120), default='Asia/Tehran')
+
     # One-to-many
 
     messages = db.relationship('Message', backref='author', lazy='dynamic')

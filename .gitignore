@@ -7,3 +7,6 @@
 /instance/
 /vscode-workspaces/
 /venv/
+/app/static/node_modules/
+/app/static/package.json
+/app/static/package-lock.json

@@ -1,34 +1,59 @@
+<meta charset="UTF-8" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
+/>
+<meta name="csrf" content="{{ csrf_token() }}" />
+<link rel="stylesheet" href="/static/css/bootstrap.rtl.min.css" />
+<link rel="stylesheet" href="/static/css/Vazirmatn-font-face.css" />
+<link rel="stylesheet" href="/static/css/style.css" />
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <meta name="csrf" content="{{ csrf_token() }}">
-    <link rel="stylesheet" href="/static/css/bootstrap.rtl.min.css">
-    <link rel="stylesheet" href="/static/css/Vazirmatn-font-face.css">
-    <link rel="stylesheet" href="/static/css/style.css">
+<link
+  rel="icon"
+  type="image/png"
+  href="{{ url_for('static', filename='favicon/favicon-96x96.png') }}"
+  sizes="96x96"
+/>
+<link
+  rel="icon"
+  type="image/svg+xml"
+  href="{{ url_for('static', filename='favicon/favicon.svg') }}"
+/>
+<link
+  rel="shortcut icon"
+  href="{{ url_for('static', filename='favicon/favicon.ico') }}"
+/>
+<link
+  rel="apple-touch-icon"
+  sizes="180x180"
+  href="{{ url_for('static', filename='favicon/apple-touch-icon.png') }}"
+/>
+<meta name="apple-mobile-web-app-title" content="Bazaar Flow" />
+<link
+  rel="manifest"
+  href="{{ url_for('static', filename='favicon/site.webmanifest') }}"
+/>
+<meta
+  name="description"
+  content="{{ _('بازار فلو: پلتفرمی جامع برای فروش کالا، گپ و گفتگو با دوستان در تالارها و برگزاری جلسات مجازی.') }}"
+/>
+<meta name="author" content="Bazaar Flow Team" />
+<meta name="robots" content="index, follow" />
 
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon/favicon-96x96.png') }}" sizes="96x96">
-    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon/favicon.svg') }}">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon/favicon.ico') }}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='favicon/apple-touch-icon.png') }}">
-    <meta name="apple-mobile-web-app-title" content="Bazaar Flow">
-    <link rel="manifest" href="{{ url_for('static', filename='favicon/site.webmanifest')  }}">
-    <meta name="description" content="بازار فلو: پلتفرمی جامع برای فروش کالا، گپ و گفتگو با دوستان در تالارها و برگزاری جلسات مجازی.">
-    <meta name="keywords" content="بازار فلو, چت روم, تالار گفتگو, فروش آنلاین, جلسات مجازی, Bazaar Flow">
-    <meta name="author" content="Bazaar Flow Team">
-    <meta name="robots" content="index, follow">
+<!-- رنگ تم مرورگر در موبایل -->
+<meta name="theme-color" content="#3b82f6" />
+<meta name="msapplication-TileColor" content="#3b82f6" />
 
-    <!-- رنگ تم مرورگر در موبایل -->
-    <meta name="theme-color" content="#3b82f6">
-    <meta name="msapplication-TileColor" content="#3b82f6">
+<!-- تگ‌های Open Graph برای اشتراک‌گذاری زیبا در تلگرام، واتس‌اپ و... -->
+<meta property="og:locale" content="fa_IR" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="بازار فلو" />
+<meta
+  property="og:description"
+  content="از فروش کالا تا گپ زدنت با رفیقات و برگزاری جلسات مجازی‌ات با ما!"
+/>
+<meta property="og:site_name" content="بازار فلو" />
+<!-- اگر در آینده تصویری برای اشتراک‌گذاری ساختید، خط زیر را از حالت کامنت خارج کنید -->
 
-    <!-- تگ‌های Open Graph برای اشتراک‌گذاری زیبا در تلگرام، واتس‌اپ و... -->
-    <meta property="og:locale" content="fa_IR">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="بازار فلو">
-    <meta property="og:description" content="از فروش کالا تا گپ زدنت با رفیقات و برگزاری جلسات مجازی‌ات با ما!">
-    <meta property="og:site_name" content="بازار فلو">
-    <!-- اگر در آینده تصویری برای اشتراک‌گذاری ساختید، خط زیر را از حالت کامنت خارج کنید -->
-
-
-    <!-- بهینه‌سازی عملکرد و امنیت -->
-    <meta name="referrer" content="strict-origin-when-cross-origin">
+<!-- بهینه‌سازی عملکرد و امنیت -->
+<meta name="referrer" content="strict-origin-when-cross-origin" />

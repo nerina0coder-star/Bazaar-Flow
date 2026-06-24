@@ -35,12 +35,12 @@ main {
 
 .persian {
     font-family: Vazirmatn!important;
-    direction: rtl;
+    direction: rtl!important;
 }
 
 .english {
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
-  direction: ltr;
+  direction: ltr!important;
 }
 
 .none {

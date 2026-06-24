@@ -1,68 +1,120 @@
 {% extends 'base.html' %}
 
-{% block title %}خروج{% endblock %}
+{% block title %}{{ _(' از حسابخروج') }}{% endblock %}
 
 {% block style %}
-<link rel="stylesheet" href="{{ url_for('static', filename='/css/auth/logout.css') }}">
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='/css/auth/logout.css') }}"
+  />
 {% endblock %}
 
 {% block content %}
-<div class="row justify-content-center" dir="rtl">
+  <div class="row justify-content-center">
     <div class="col-md-6 col-lg-5">
-        <div class="card shadow-sm border-0 rounded-4 logout-card">
-            <div class="card-body p-5 text-center">
-                
-                <!-- آیکون خروج -->
-                <div class="logout-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
-                        <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
-                    </svg>
+      <div class="card shadow-sm border-0 rounded-4 logout-card">
+        <div class="card-body p-5 text-center">
+          <!-- آیکون خروج -->
+          <div class="logout-icon">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"
+              />
+              <path
+                fill-rule="evenodd"
+                d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"
+              />
+            </svg>
+          </div>
+
+          <!-- عنوان و توضیحات -->
+          <h3 class="h4 mb-2 fw-bold text-dark">
+            {{ _('خروج از حساب کاربری') }}
+          </h3>
+          <p class="text-muted mb-4">
+            {{ _('آیا مطمئن هستید که می‌خواهید از حساب خود خارج شوید؟') }}
+          </p>
+
+          <!-- فرم خروج -->
+          <form method="POST" action="{{ url_for('auth.logout') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+            <!-- پیام خطای CSRF -->
+            {% if CsrfError %}
+              <div class="csrf-alert" role="alert">
+                <div class="csrf-alert-icon">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"
+                    />
+                  </svg>
                 </div>
+                <div class="csrf-alert-content">
+                  <div class="csrf-alert-title">{{ _('خطای امنیتی') }}</div>
+                  <p class="csrf-alert-message">
+                    {{ _('به مدت طولانی آفلاین بودید، لطفاً دوباره تلاش کنید.') }}
+                  </p>
+                </div>
+              </div>
+            {% endif %}
 
-                <!-- عنوان و توضیحات -->
-                <h3 class="h4 mb-2 fw-bold text-dark">خروج از حساب کاربری</h3>
-                <p class="text-muted mb-4">آیا مطمئن هستید که می‌خواهید از حساب خود خارج شوید؟</p>
-
-                <!-- فرم خروج -->
-                <form method="POST" action="{{ url_for('auth.logout') }}">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    
-                    <!-- پیام خطای CSRF -->
-                    {% if CsrfError %}
-                        <div class="csrf-alert" role="alert">
-                            <div class="csrf-alert-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                                    <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
-                                </svg>
-                            </div>
-                            <div class="csrf-alert-content">
-                                <div class="csrf-alert-title">خطای امنیتی</div>
-                                <p class="csrf-alert-message">به مدت طولانی آفلاین بودید، لطفاً دوباره تلاش کنید.</p>
-                            </div>
-                        </div>
-                    {% endif %}
-
-                    <!-- دکمه‌ها -->
-                    <div class="d-grid gap-3">
-                        <button type="submit" class="btn btn-logout btn-lg w-100 rounded-pill">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
-                                <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
-                            </svg>
-                            بله، خارج شوم
-                        </button>
-                        <a href="{{ url_for('profile.dashboard') }}" class="btn btn-back btn-lg w-100 rounded-pill">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
-                            </svg>
-                            نه، بازگشت به خاطر
-                        </a>
-                    </div>
-                </form>
-
+            <!-- دکمه‌ها -->
+            <div class="d-grid gap-3">
+              <button
+                type="submit"
+                class="btn btn-logout btn-lg w-100 rounded-pill"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"
+                  />
+                  <path
+                    fill-rule="evenodd"
+                    d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"
+                  />
+                </svg>
+                {{ _('بله، خارج شوم') }}
+              </button>
+              <a
+                href="{{ url_for('profile.dashboard') }}"
+                class="btn btn-back btn-lg w-100 rounded-pill"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"
+                  />
+                </svg>
+                {{ _('نه، بازگشت به خاطر') }}
+              </a>
             </div>
+          </form>
         </div>
+      </div>
     </div>
-</div>
+  </div>
 {% endblock %}

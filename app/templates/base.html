@@ -1,31 +1,39 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+{% set language = str(current_locale()) %}
+<html lang="{{ current_locale() }}" dir="auto">
+  <head>
+    <title>{% block title %}{% endblock %}</title>
+    <meta
+      name="keywords"
+      content="بازار فلو, چت روم, تالار گفتگو, فروش آنلاین, جلسات مجازی, دیتابیس آنلاین, تحلیل فروش, خرید کالا, خرید برنامه, خرید فیلم, خرید عکس, خرید نقاشی, فروش, فروش کالا, فروش برنامه, فروش فیلم, فروش عکس, فروش هنر, فروش توانایی, فروش نقاشی, فریلنسری, ساپورت می, Bazaar Flow, Online DB, Supabase, Iran-accessible Database, Chat online, Chatapp, Chambers, Gathering, Sell, Analysis, Sell Analysis, Buy{% block keywords %}
+      {% endblock %}"
+    />
 
-<head>
-    <title>{% block title %} {% endblock %}</title>
     {% include 'includes/head.html' %}
-    {% block custom_headers %} {% endblock %}
-    {% block style %} {% endblock %}
-</head>
-<body class="d-flex flex-column min-vh-100 persian">
-  {% include 'includes/navbar.html' %}
-  
-  <main class="flex-grow-1">
-    {% block content %} {% endblock %}
-  </main>
-  
-  {% block footer %}
-  {% include 'includes/footer.html' %}
-  {% endblock %}
+    {% block custom_headers %}
+    {% endblock %}
+    {% block style %}
+    {% endblock %}
+  </head>
+  <body
+    class="d-flex flex-column min-vh-100 {% if language == 'fa' %}persian{% else %}english{% endif %}"
+  >
+    {% include 'includes/navbar.html' %}
 
-  <script src="{{ url_for('static', filename='/js/script.js') }}"></script>
-  <script src="{{ url_for('static', filename='/js/bootstrap.bundle.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='/js/socket.io.js') }}"></script>
-  {% if current_user.is_authenticated %}
-  <script src="{{ url_for('static', filename='/js/ping.js') }}"></script>
-  {% endif %}
+    <main class="flex-grow-1">{% block content %}{% endblock %}</main>
 
-  {% block script %}
-  {% endblock %}
-</body>
+    {% block footer %}
+      {% include 'includes/footer.html' %}
+    {% endblock %}
+
+    <script src="{{ url_for('static', filename='/js/script.js') }}"></script>
+    <script src="{{ url_for('static', filename='/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='/js/socket.io.js') }}"></script>
+    {% if current_user.is_authenticated %}
+      <script src="{{ url_for('static', filename='/js/ping.js') }}"></script>
+    {% endif %}
+
+    {% block script %}
+    {% endblock %}
+  </body>
 </html>

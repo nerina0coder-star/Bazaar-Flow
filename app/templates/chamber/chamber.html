@@ -1,57 +1,65 @@
 {% extends 'base.html' %}
 
-{% block title %} تالار {% endblock %}
+{% block title %}{{ _('تالار') }}{% endblock %}
 
 {% block custom_headers %}
-<meta name="T" content="{{ token }}">
-<meta name="VT" content="{{ vertoken }}">
+  <meta name="T" content="{{ token }}" />
+  <meta name="VT" content="{{ vertoken }}" />
 {% endblock %}
 
 {% block style %}
-<link rel="stylesheet" href="{{ url_for('static', filename='/css/chamber/chamber.css') }}">
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='/css/chamber/chamber.css') }}"
+  />
 {% endblock %}
 
 {% block content %}
-<div class="chamber-wrapper" dir="rtl">
-    
+  <div class="chamber-wrapper">
     <!-- هدر تالار -->
     <div class="chamber-header">
-        <div class="chamber-title">
-            <i class="bi bi-chat-square-dots-fill"></i>
-            <span>تالار گفتگو</span>
-        </div>
-        <div class="header-actions">
-            {% if copyEntryCode %}
-            <a id="copy" class="btn btn-outline-primary btn-header">
-                <i class="bi bi-clipboard"></i> کپی کد ورود
-            </a>
-            {% endif %}
-            <a href="/chamber/dashboard" class="btn btn-outline-danger btn-header">
-                <i class="bi bi-box-arrow-right"></i> خروج
-            </a>
-        </div>
+      <div class="chamber-title">
+        <i class="bi bi-chat-square-dots-fill"></i>
+        <span>{{ _('تالار گفتگو') }}</span>
+      </div>
+      <div class="header-actions">
+        {% if copyEntryCode %}
+          <a id="copy" class="btn btn-outline-primary btn-header">
+            <i class="bi bi-clipboard"></i> {{ _('کپی کد ورود') }}
+          </a>
+        {% endif %}
+        <a href="/chamber/dashboard" class="btn btn-outline-danger btn-header">
+          <i class="bi bi-box-arrow-right"></i> {{ _('خروج') }}
+        </a>
+      </div>
     </div>
 
     <!-- ناحیه پیام‌ها (اسکرول‌شونده) -->
     <div class="chat-messages" id="messages">
-        <!-- پیام‌ها توسط JavaScript در اینجا بارگذاری می‌شوند -->
+      <!-- پیام‌ها توسط JavaScript در اینجا بارگذاری می‌شوند -->
     </div>
 
     <!-- نوار ارسال پیام (ثابت در پایین) -->
     <div class="send-bar">
-        <form class="send-form" id="submittable">
-            <input type="text" class="form-control" id="submitting" name="message" placeholder="پیام خود را بنویسید..." autocomplete="off">
-            <button type="submit" class="btn btn-send">
-                <span>ارسال</span>
-                <i class="bi bi-send-fill"></i>
-            </button>
-        </form>
+      <form class="send-form" id="submittable">
+        <input
+          type="text"
+          class="form-control"
+          id="submitting"
+          name="message"
+          placeholder="{{ _('پیام خود را بنویسید...') }}"
+          autocomplete="off"
+        />
+        <button type="submit" class="btn btn-send">
+          <span>{{ _('ارسال') }}</span>
+          <i class="bi bi-send-fill"></i>
+        </button>
+      </form>
     </div>
-
-</div>
+  </div>
 {% endblock %}
 
 {% block script %}
-<script src="{{ url_for('static', filename='/js/chamber.js') }}"></script>
-<script src="{{ url_for('static', filename='/js/copyText.js') }}"></script>
+  <script src="{{ url_for('static', filename='/js/chamber.js') }}"></script>
+  <script src="{{ url_for('static', filename='/js/copyText.js') }}"></script>
 {% endblock %}
