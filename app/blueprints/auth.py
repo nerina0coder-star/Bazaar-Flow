@@ -1,101 +1,80 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app
+from email_validator import validate_email
+from flask import Blueprint, render_template, redirect, url_for, request, current_app
+from flask_babel import gettext as _
 from flask_login import login_user, logout_user, login_required
 from flask_wtf.csrf import validate_csrf, CSRFError
-from flask_babel import gettext as _
 
-from app.services.user_service import UserService
 from app.extensions import captcha
-from email_validator import validate_email, EmailNotValidError
+from app.forms import RegistrationForm, LoginForm
+from app.services.user_service import UserService
 
 auth_bp = Blueprint('auth', __name__)
 
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST':
+    form = LoginForm()
+
+    if request.method == 'POST' and form.validate_on_submit():
 
         try:
             validate_csrf(request.form.get('csrf_token'))
         except CSRFError:
-            return render_template('auth/login.html', csrfError=True)
+            return render_template('auth/login.html', csrfError=True, form=form)
 
         email = request.form.get('email')
         password = request.form.get('password')
         username = request.form.get('username')
 
-        if (email is None or password is None) or \
-                (email == '' or password == ''):
-            return render_template('auth/login.html', customMessage=
-            _("همم... به نظر می‌رسه ایمیل یا پسوردت خالیه..."))
-
         if current_app.config.get('use_captcha') and not captcha.verify():
-            return render_template('auth/login.html', CaptchaError=True)
+            return render_template('auth/login.html', CaptchaError=True, form=form)
 
         user = UserService.authenticate(username, email, password)
 
         if user:
             login_user(user)
-            flash('Logged in successfully.', 'success')
             next_page = request.args.get('next')
+            if next_page:
+                if next_page.startswith('http://') or \
+                        'bazaarflow.ir' not in next_page[:next_page.index('/', len('https://'))]:
+                    next_page = None
             return redirect(next_page or url_for('profile.dashboard'))
         else:
-            flash('Invalid email or password.', 'danger')
-            return render_template('auth/login.html', customMessage=
-            _("ولی یا رمزت یا ایمیلت یا هم نام کاربریت اشتباهه...")
+            return render_template('auth/login.html',
+                                   customMessage=_("ولی یا رمزت یا ایمیلت یا هم نام کاربریت اشتباهه..."),
+                                   form=form
                                    )
 
-    return render_template('auth/login.html')
+    return render_template('auth/login.html', form=form)
 
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
-    if request.method == 'POST':
+    form = RegistrationForm()
 
+    if request.method == 'POST' and form.validate_on_submit():
         try:
             validate_csrf(request.form.get('csrf_token'))
         except CSRFError:
-            return render_template('auth/register.html', csrfError=True)
-
+            return render_template('auth/register.html', csrfError=True, form=form)
         email = request.form.get('email')
         password = request.form.get('password')
         username = request.form.get('username')
-        terms_accepted = request.form.get('termsCheck', type=bool)
-
-        if (email is None or password is None or username is None or terms_accepted is None) or \
-                (email == '' or password == '' or username == '' or terms_accepted == ''):
-            return render_template("auth/register.html", passwordError=False,
-                                   userError=_("موفق نبود، به نظر می‌رسد یک یا چند مورد از گزینه ها خالی است"))
+        terms_accepted = request.form.get('termsCheck') == 'on'
 
         if not terms_accepted or terms_accepted is None:
-            return render_template("auth/register.html", passwordError=False,
-                                   userError=_("به دلیل موافقت نکردن با قوانین و مقررات شکست خورد"))
-
-        if password != request.form.get('confirmPassword'):
-            return render_template("auth/register.html", passwordError=False,
-                                   userError=_("شکست خورد، رمز عبور با رمز عبور تاییدی مطابقت ندارد"))
-
-        if len(username) > 63:
-            return render_template("auth/register.html", passwordError=False,
-                                   userError=_('شکست خورد، نام کاربری نباید بیشتر از ۶۳ کاراکتر باشد'))
-        if len(email) > 119:
-            return render_template('auth/register.html', passwordError=False,
-                                   userError=_('شکست خورد، طول ایمیل نباید بیشتر از ۱۱۹ کاراکتر باشد'))
+            return render_template("auth/register.html",
+                                   userError=_("به دلیل موافقت نکردن با قوانین و مقررات شکست خورد"),
+                                   form=form)
 
         try:
             validate_email(email)
             UserService.register_user(email, password, username)
-            flash('Registration successful. Please log in.', 'success')
             return redirect(url_for('auth.login'))
-        except EmailNotValidError:
-            return render_template('auth/register.html', passwordError=True,
-                                   userError=_("به دلیل غلط بودن ایمیل شکست خورد"))
         except ValueError:
-            if len(password) < 8:
-                return render_template('auth/register.html', passwordError=True)
-            else:
-                return render_template('auth/register.html', passwordError=False,
-                                       userError=_("شکست خورد، این ایمیل قبلا ثبت شده است"))
-    return render_template('auth/register.html')
+            return render_template('auth/register.html', form=form,
+                                   userError=_("شکست خورد، این ایمیل قبلا ثبت شده است"))
+    return render_template('auth/register.html', form=form)
 
 
 @auth_bp.route('/logout', methods=['GET', 'POST'])
@@ -109,6 +88,5 @@ def logout():
             return render_template('auth/logout.html', csrfError=True)
 
         logout_user()
-        flash('You have been logged out.', 'info')
         return redirect(url_for('home'))
     return render_template('auth/logout.html')

@@ -1,3 +1,4 @@
+<!-- chamber/chamber.html -->
 {% extends 'base.html' %}
 
 {% block title %}{{ _('تالار') }}{% endblock %}
@@ -14,52 +15,79 @@
   />
 {% endblock %}
 
+{% block navbar %}
+{% endblock %}
+{% block footer %}
+{% endblock %}
+
 {% block content %}
-  <div class="chamber-wrapper">
-    <!-- هدر تالار -->
-    <div class="chamber-header">
-      <div class="chamber-title">
-        <i class="bi bi-chat-square-dots-fill"></i>
-        <span>{{ _('تالار گفتگو') }}</span>
-      </div>
-      <div class="header-actions">
-        {% if copyEntryCode %}
-          <a id="copy" class="btn btn-outline-primary btn-header">
-            <i class="bi bi-clipboard"></i> {{ _('کپی کد ورود') }}
+  <main class="chamber-app">
+    <div class="chamber-wrapper">
+      <!-- هدر تالار -->
+      <header class="chamber-header">
+        <div class="chamber-title">
+          <i class="bi bi-chat-square-dots-fill" aria-hidden="true"></i>
+          <span>{{ _('تالار گفتگو') }}</span>
+        </div>
+        <div class="header-actions">
+          {% if copyEntryCode %}
+            <button
+              type="button"
+              id="copy"
+              class="btn btn-outline-primary btn-header"
+              aria-label="کپی کد ورود"
+            >
+              <i class="bi bi-clipboard" aria-hidden="true"></i>
+              <span>{{ _('کپی کد ورود') }}</span>
+            </button>
+          {% endif %}
+          <a
+            href="/chamber/dashboard"
+            class="btn btn-outline-danger btn-header"
+            aria-label="خروج از تالار"
+          >
+            <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
+            <span>{{ _('خروج') }}</span>
           </a>
-        {% endif %}
-        <a href="/chamber/dashboard" class="btn btn-outline-danger btn-header">
-          <i class="bi bi-box-arrow-right"></i> {{ _('خروج') }}
-        </a>
-      </div>
-    </div>
+        </div>
+      </header>
 
-    <!-- ناحیه پیام‌ها (اسکرول‌شونده) -->
-    <div class="chat-messages" id="messages">
-      <!-- پیام‌ها توسط JavaScript در اینجا بارگذاری می‌شوند -->
-    </div>
+      <!-- ناحیه پیام‌ها (اسکرول‌شونده) -->
+      <section
+        class="chat-messages"
+        id="messages"
+        role="log"
+        aria-live="polite"
+        aria-relevant="additions"
+      >
+        <!-- پیام‌ها توسط جاوااسکریپت در اینجا تزریق می‌شوند -->
+      </section>
 
-    <!-- نوار ارسال پیام (ثابت در پایین) -->
-    <div class="send-bar">
-      <form class="send-form" id="submittable">
-        <input
-          type="text"
-          class="form-control"
-          id="submitting"
-          name="message"
-          placeholder="{{ _('پیام خود را بنویسید...') }}"
-          autocomplete="off"
-        />
-        <button type="submit" class="btn btn-send">
-          <span>{{ _('ارسال') }}</span>
-          <i class="bi bi-send-fill"></i>
-        </button>
-      </form>
+      <!-- نوار ارسال پیام (ثابت در پایین) -->
+      <footer class="send-bar">
+        <form class="send-form" id="submittable" autocomplete="off">
+          <label for="submitting" class="visually-hidden"
+            >{{ _('پیام خود را بنویسید') }}</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            id="submitting"
+            name="message"
+            placeholder="{{ _('پیام خود را بنویسید...') }}"
+            autocomplete="off"
+            aria-label="متن پیام"
+          />
+          <button type="submit" class="btn btn-send" aria-label="ارسال پیام">
+            <span>{{ _('ارسال') }}</span>
+            <i class="bi bi-send-fill" aria-hidden="true"></i>
+          </button>
+        </form>
+      </footer>
     </div>
-  </div>
+  </main>
 {% endblock %}
 
 {% block script %}
   <script src="{{ url_for('static', filename='/js/chamber.js') }}"></script>
-  <script src="{{ url_for('static', filename='/js/copyText.js') }}"></script>
 {% endblock %}

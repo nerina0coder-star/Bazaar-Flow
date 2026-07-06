@@ -1,5 +1,6 @@
 from app.extensions import db
 
+
 # for many-to-many relationship of users and chambers
 class Participant(db.Model):
     __tablename__ = 'participant'

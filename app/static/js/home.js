@@ -1,31 +1,52 @@
+// home_guest.js
+/**
+ * Handles DOM manipulation and UI interactions for the Guest Landing Page.
+ */
+class UIManager {
+    constructor() {
+        this.featureCards = document.querySelectorAll('.feature-card');
+    }
 
-        // تابع جابجایی بین تب‌ها
-function switchTab(tabName) {
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-      
-    document.getElementById('tab-' + tabName).classList.add('active');
-    document.getElementById('content-' + tabName).classList.add('active');
-            
-    document.getElementById('globalSearch').value = '';
-    filterContent();
-}
+    init() {
+        this.setupScrollAnimations();
+    }
 
-        // تابع فیلتر کردن لحظه‌ای
-function filterContent() {
-    const query = document.getElementById('globalSearch').value.toLowerCase();
-    const activeTab = document.querySelector('.tab-content.active');
-    const items = activeTab.querySelectorAll('.filter-item');
-    
-    items.forEach(item => {
-        const name = item.getAttribute('data-name').toLowerCase();
-        if (name.includes(query)) {
-            item.style.display = 'flex';
+    setupScrollAnimations() {
+        // Intersection Observer for smooth fade-in on scroll
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            this.featureCards.forEach(card => observer.observe(card));
         } else {
-            item.style.display = 'none';
+            // Fallback for older browsers
+            this.featureCards.forEach(card => card.classList.add('visible'));
         }
-    });
+    }
 }
-document.getElementById('globalSearch').addEventListener('keyup', () => { filterContent(); })
-document.getElementById('tab-chambers').addEventListener('click', () => { switchTab('chambers'); })
-document.getElementById('tab-users').addEventListener('click', () => { switchTab('users'); })
+
+/**
+ * Main application entry point.
+ */
+class App {
+    constructor() {
+        this.ui = new UIManager();
+        this.init();
+    }
+
+    init() {
+        this.ui.init();
+        console.log('BazarFlow Guest UI initialized.');
+    }
+}
+
+// Safe execution wrapper
+document.addEventListener('DOMContentLoaded', () => {
+    new App();
+});

@@ -36,8 +36,8 @@ class ChamberRepository:
                      name: str,
                      entrance_code: str,
                      description: str,
-                     is_primary: bool|None = None,
-                     is_public: bool|None = None) -> Chamber:
+                     is_primary: bool | None = None,
+                     is_public: bool | None = None) -> Chamber:
         chamber = Chamber.query.get(chamber_id)
         chamber.name = name
         chamber.entrance_code = entrance_code
@@ -67,6 +67,7 @@ class ChamberRepository:
         chamber.users.append(user)
         db.session.commit()
         return chamber
+
     @staticmethod
     def messages(chamber_id: int, limit: int = 50):
         return ChamberRepository.find_by_id(chamber_id).messages.order_by(Message.timestamp.desc()).limit(limit).all()

@@ -9,13 +9,12 @@ from .blueprints.profile import profile_bp
 from .config import config
 from .extensions import (db, login_manager, socket_io, csrf,
                          captcha, talisman, cors, limiter, paranoid,
-                         babel, get_locale, get_timezone)
+                         babel, babeljs, get_locale, get_timezone, redis)
 from .filters import *
 from .processors import locale, repositories, necessaries
 
 
 def create_app(config_name='default'):
-
     # Initialize App
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(config[config_name])
@@ -23,9 +22,17 @@ def create_app(config_name='default'):
     # Optionally load instance config
     app.config.from_pyfile('app.cfg', silent=True)
 
+    # Making development vs. production changes 
+    if app.config.get('DEVELOPMENT', False):
+        csp = app.config['CONTENT_SECURITY_POLICY']
+        csp.pop('upgrade-insecure-requests')
+        csp['font-src'].remove('http:')
+        csp['media-src'].remove('http:')
+        csp['img-src'].remove('http:')
+
     # Initializing socketio app
     socket_io.init_app(app)
-    
+
     # Initialize extensions
     db.init_app(app)
     login_manager.init_app(app)
@@ -36,7 +43,9 @@ def create_app(config_name='default'):
     captcha.init_app(app)
     limiter.init_app(app)
     paranoid.init_app(app)
+    redis.init_app(app)
     babel.init_app(app, locale_selector=get_locale, timezone_selector=get_timezone)
+    babeljs.init_app(app)
     # starting db
 
     with app.app_context():

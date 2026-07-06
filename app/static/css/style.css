@@ -12,6 +12,11 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vm;
+    background-color: var(--background-color);
+    color: var(--text-primary);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 nav {
@@ -142,4 +147,30 @@ main {
 .search-submit-btn {
     padding: 0.4rem 1rem;
     font-size: 0.85rem;
+}
+
+/* پیام‌های خطا */
+.custom-alert {
+    border-radius: 0.75rem;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+.alert-danger-custom {
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+}
+
+.alert-danger-custom svg {
+    color: #dc2626;
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
 }

@@ -1,10 +1,9 @@
 import datetime
 
-from app.extensions import db, login_manager
 from flask_login import UserMixin
-from .participant import Participant
-
 from werkzeug.security import generate_password_hash, check_password_hash
+
+from app.extensions import db, login_manager
 
 
 @login_manager.user_loader
@@ -25,7 +24,7 @@ class User(UserMixin, db.Model):
     last_seen = db.Column(db.DateTime, default=datetime.datetime.now)
 
     is_active = db.Column(db.Boolean, default=True)
- 
+
     description = db.Column(db.String(200))
 
     credits = db.Column(db.Integer, default=0, nullable=False)
@@ -70,7 +69,7 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
     def is_online(self):
-        if self.last_seen - datetime.datetime.now(datetime.UTC).replace(tzinfo=None) < datetime.timedelta(minutes=5):
+        if datetime.datetime.now(datetime.UTC).replace(tzinfo=None) - self.last_seen < datetime.timedelta(minutes=5):
             return True
         return False
 

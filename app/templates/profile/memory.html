@@ -1,3 +1,4 @@
+<!-- profile/memory.html -->
 {% extends 'base.html' %}
 
 {% block title %}{{ _('خاطر') }}{% endblock %}
@@ -10,144 +11,182 @@
 {% endblock %}
 
 {% block content %}
-  <div class="row g-4">
-    <!-- بخش ۱: اطلاعات خود -->
-    <div class="col-md-4">
-      <div class="card h-100 shadow-sm border-0 rounded-4 dashboard-card">
-        <div class="card-body p-4">
-          <div class="card-header-custom">
-            <div class="icon-box bg-primary">
-              <i class="bi bi-person-circle"></i>
+  <main class="profile-dashboard-main">
+    <div class="container">
+      <div class="row g-4">
+        <!-- بخش ۱: اطلاعات خود -->
+        <div class="col-md-4">
+          <article
+            class="card h-100 shadow-sm border-0 rounded-4 dashboard-card"
+            aria-labelledby="info-title"
+          >
+            <div class="card-body p-4">
+              <div class="card-header-custom">
+                <div class="icon-box bg-primary" aria-hidden="true">
+                  <i class="bi bi-person-circle"></i>
+                </div>
+                <h5 id="info-title" class="text-dark">
+                  {{ _('اطلاعات حساب') }}
+                </h5>
+              </div>
+              <ul
+                class="list-group list-group-flush info-list pe-2"
+                role="list"
+              >
+                <li
+                  class="list-group-item d-flex justify-content-between align-items-center"
+                >
+                  <span class="label">
+                    <i class="bi bi-person" aria-hidden="true"></i>
+                    {{ _('نام') }}
+                  </span>
+                  <span class="value">{{ current_user.username }}</span>
+                </li>
+                <li
+                  class="list-group-item d-flex justify-content-between align-items-center"
+                >
+                  <span class="label">
+                    <i class="bi bi-envelope" aria-hidden="true"></i>
+                    {{ _('ایمیل') }}
+                  </span>
+                  <span class="value">{{ current_user.email }}</span>
+                </li>
+                <li
+                  class="list-group-item d-flex justify-content-between align-items-center"
+                >
+                  <span class="label">
+                    <i class="bi bi-hash" aria-hidden="true"></i>
+                    {{ _('شناسه') }}
+                  </span>
+                  <span class="value">{{ current_user.id }}</span>
+                </li>
+                <li
+                  class="list-group-item d-flex justify-content-between align-items-center"
+                >
+                  <span class="label">
+                    <i class="bi bi-wallet2" aria-hidden="true"></i>
+                    {{ _('اعتبار') }}
+                  </span>
+                  <span class="value text-success">
+                    {{ current_user.credits }} {{ _('تومان') }}
+                  </span>
+                </li>
+                <li
+                  class="list-group-item d-flex justify-content-between align-items-center"
+                >
+                  <span class="label">
+                    <i class="bi bi-calendar-check" aria-hidden="true"></i>
+                    {{ _('تاریخ ورود') }}
+                  </span>
+                  <span class="value">
+                    {{ current_user.time_joined|dateformat('medium') }}
+                  </span>
+                </li>
+              </ul>
             </div>
-            <h5 class="text-dark">{{ _('اطلاعات حساب') }}</h5>
-          </div>
-          <ul class="list-group list-group-flush info-list">
-            <li
-              class="list-group-item d-flex justify-content-between align-items-center"
-            >
-              <span class="label"
-                ><i class="bi bi-person"></i> {{ _('نام') }}</span
-              >
-              <span class="value">{{ current_user.username }}</span>
-            </li>
-            <li
-              class="list-group-item d-flex justify-content-between align-items-center"
-            >
-              <span class="label"
-                ><i class="bi bi-envelope"></i> {{ _('ایمیل') }}</span
-              >
-              <span class="value">{{ current_user.email }}</span>
-            </li>
-            <li
-              class="list-group-item d-flex justify-content-between align-items-center"
-            >
-              <span class="label"
-                ><i class="bi bi-hash"></i> {{ _('شناسه') }}</span
-              >
-              <span class="value">{{ current_user.id }}</span>
-            </li>
-            <li
-              class="list-group-item d-flex justify-content-between align-items-center"
-            >
-              <span class="label"
-                ><i class="bi bi-wallet2"></i> {{ _('اعتبار') }}</span
-              >
-              <span class="value text-success"
-                >{{ current_user.credits }} {{ _('تومان') }}</span
-              >
-            </li>
-            <li
-              class="list-group-item d-flex justify-content-between align-items-center"
-            >
-              <span class="label"
-                ><i class="bi bi-calendar-check"></i>
-                {{ _('تاریخ ورود') }}</span
-              >
-              <span class="value"
-                >{{ current_user.time_joined|dateformat('medium') }}</span
-              >
-            </li>
-          </ul>
+          </article>
         </div>
-      </div>
-    </div>
 
-    <!-- بخش ۲: تحلیل / نمودارها -->
-    <div class="col-md-4">
-      <div class="card h-100 shadow-sm border-0 rounded-4 dashboard-card">
-        <div class="card-body p-4">
-          <div class="card-header-custom">
-            <div class="icon-box bg-info">
-              <i class="bi bi-graph-up"></i>
+        <!-- بخش ۲: تحلیل / نمودارها -->
+        <div class="col-md-4">
+          <article
+            class="card h-100 shadow-sm border-0 rounded-4 dashboard-card"
+            aria-labelledby="chart-title"
+          >
+            <div class="card-body p-4">
+              <div class="card-header-custom">
+                <div class="icon-box bg-info" aria-hidden="true">
+                  <i class="bi bi-graph-up"></i>
+                </div>
+                <h5 id="chart-title" class="text-dark">
+                  {{ _('تحلیل فعالیت') }}
+                </h5>
+              </div>
+              <div class="text-center py-2">
+                <canvas
+                  id="activityChart"
+                  width="200"
+                  height="200"
+                  class="activity-chart-responsive"
+                  aria-label="{{ _('نمودار خطی فعالیت ۷ روز اخیر') }}"
+                  role="img"
+                ></canvas>
+                <p class="text-muted small mt-3 mb-0">
+                  <i class="bi bi-info-circle me-1" aria-hidden="true"></i>
+                  {{ _('نمودار فعالیت ۷ روز اخیر') }}
+                </p>
+              </div>
             </div>
-            <h5 class="text-dark">{{ _('تحلیل فعالیت') }}</h5>
-          </div>
-          <div class="text-center py-2">
-            <canvas
-              id="activityChart"
-              width="200"
-              height="200"
-              class="activity-chart-responsive"
-            ></canvas>
-            <p class="text-muted small mt-3 mb-0">
-              <i class="bi bi-info-circle me-1"></i>
-              {{ _('نمودار فعالیت ۷ روز اخیر') }}
-            </p>
-          </div>
+          </article>
         </div>
-      </div>
-    </div>
 
-    <!-- بخش ۳: دکمه‌ها -->
-    <div class="col-md-4">
-      <div class="card h-100 shadow-sm border-0 rounded-4 dashboard-card">
-        <div class="card-body p-4">
-          <div class="card-header-custom">
-            <div class="icon-box bg-success">
-              <i class="bi bi-grid-3x3-gap-fill"></i>
+        <!-- بخش ۳: دکمه‌ها -->
+        <div class="col-md-4">
+          <article
+            class="card h-100 shadow-sm border-0 rounded-4 dashboard-card"
+            aria-labelledby="actions-title"
+          >
+            <div class="card-body p-4">
+              <div class="card-header-custom">
+                <div class="icon-box bg-success" aria-hidden="true">
+                  <i class="bi bi-grid-3x3-gap-fill"></i>
+                </div>
+                <h5 id="actions-title" class="text-dark">
+                  {{ _('عملیات سریع') }}
+                </h5>
+              </div>
+              <div
+                class="d-grid gap-3"
+                role="navigation"
+                aria-label="عملیات سریع"
+              >
+                <a
+                  href="/chamber/dashboard"
+                  class="btn btn-outline-primary action-btn rounded-3"
+                >
+                  <i class="bi bi-columns-gap" aria-hidden="true"></i>
+                  <span>{{ _('ورود به مدیریت تالار') }}</span>
+                </a>
+                <a
+                  href="/chamber/join"
+                  class="btn btn-outline-info action-btn rounded-3"
+                >
+                  <i class="bi bi-plus-circle" aria-hidden="true"></i>
+                  <span>{{ _('عضویت در یک تالار') }}</span>
+                </a>
+                <a
+                  href="/profile/edit"
+                  class="btn btn-outline-secondary action-btn rounded-3"
+                >
+                  <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                  <span>{{ _('تنظیمات پرونده') }}</span>
+                </a>
+                <a
+                  href="#"
+                  class="btn btn-outline-success action-btn rounded-3"
+                >
+                  <i class="bi bi-coin" aria-hidden="true"></i>
+                  <span>{{ _('کیف پول') }}</span>
+                </a>
+                <a
+                  href="/auth/logout"
+                  class="btn btn-outline-danger action-btn rounded-3 mt-2"
+                >
+                  <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
+                  <span>{{ _('خروج از حساب') }}</span>
+                </a>
+              </div>
             </div>
-            <h5 class="text-dark">{{ _('عملیات سریع') }}</h5>
-          </div>
-          <div class="d-grid gap-3">
-            <a
-              href="/chamber/dashboard"
-              class="btn btn-outline-primary action-btn rounded-3"
-            >
-              <i class="bi bi-columns-gap"></i>
-              <span>{{ _('ورود به مدیریت تالار') }}</span>
-            </a>
-            <a
-              href="/chamber/join"
-              class="btn btn-outline-info action-btn rounded-3"
-            >
-              <i class="bi bi-plus-circle"></i>
-              <span>{{ _('عضویت در یک تالار') }}</span>
-            </a>
-            <a
-              href="/profile/edit"
-              class="btn btn-outline-secondary action-btn rounded-3"
-            >
-              <i class="bi bi-pencil-square"></i>
-              <span>{{ _('تنظیمات پرونده') }}</span>
-            </a>
-            <a href="#" class="btn btn-outline-success action-btn rounded-3">
-              <i class="bi bi-coin"></i>
-              <span>{{ _('کیف پول') }}</span>
-            </a>
-            <a
-              href="/auth/logout"
-              class="btn btn-outline-danger action-btn rounded-3 mt-2"
-            >
-              <i class="bi bi-box-arrow-right"></i>
-              <span>{{ _('خروج از حساب') }}</span>
-            </a>
-          </div>
+          </article>
         </div>
       </div>
     </div>
-  </div>
+  </main>
 {% endblock %}
 
 {% block script %}
-  <script src="{{ url_for('static', filename='/js/memory.js') }}"></script>
+  <script
+    type="module"
+    src="{{ url_for('static', filename='/js/memory.js') }}"
+  ></script>
 {% endblock %}

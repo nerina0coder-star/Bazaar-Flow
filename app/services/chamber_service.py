@@ -33,7 +33,6 @@ class ChamberService:
         usr_not_found = not UserRepository.find_by_id(user_id)
         chm_not_found = not ChamberRepository.find_by_id(chamber_id)
 
-
         if usr_not_found:
             raise ValueError("User not found")
         if chm_not_found:

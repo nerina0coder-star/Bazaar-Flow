@@ -88,32 +88,6 @@
     gap: 6px;
 }
 
-/* پیام خطای CSRF */
-.custom-alert {
-    border-radius: 0.75rem;
-    padding: 1rem 1.25rem;
-    margin-bottom: 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    line-height: 1.5;
-}
-
-.alert-danger-custom {
-    background-color: #fef2f2;
-    border: 1px solid #fecaca;
-    color: #991b1b;
-}
-
-.alert-danger-custom svg {
-    color: #dc2626;
-    flex-shrink: 0;
-    width: 20px;
-    height: 20px;
-}
-
 /* دکمه‌ها */
 .btn-submit {
     background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);

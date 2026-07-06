@@ -1,5 +1,6 @@
 from app.extensions import db
 
+
 class BannedUser(db.Model):
     __tablename__ = 'banned_user'
 

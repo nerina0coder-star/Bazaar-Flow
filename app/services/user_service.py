@@ -9,7 +9,6 @@ class UserService:
         if existing:
             raise ValueError("Email already registered")
 
-
         # Validate password strength
         if len(password) < 8:
             raise ValueError("Password must be at least 8 characters")
@@ -23,15 +22,17 @@ class UserService:
 
         if user_mail and user_mail.check_password(password) and user_mail.is_active and username == user_mail.username:
             return user_mail
-        
+
         return None
 
     @staticmethod
-    def update_profile(user_id: int, username: str, password: str | None = None, description: str | None = None, is_public: bool=False, lang: str = 'fa', timezone: str = 'Asia/Tehran'):
+    def update_profile(user_id: int, username: str, password: str | None = None, description: str | None = None,
+                       is_public: bool = False, lang: str = 'fa', timezone: str = 'Asia/Tehran'):
         user = UserRepository.find_by_id(user_id)
         if not user:
             raise ValueError("User not found")
         if password is not None and password != "":
             user.set_password(password)
-        UserRepository.update(user, username=username, description=description, is_public=is_public, lang=lang, timezone=timezone)
+        UserRepository.update(user, username=username, description=description, is_public=is_public, lang=lang,
+                              timezone=timezone)
         return user

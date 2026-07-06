@@ -1,8 +1,10 @@
 import flask_babel
 
-from app.repositories.user_repository import UserRepository
-from app.repositories.participant_repository import ParticipantRepository
 from app.repositories.chamber_repository import ChamberRepository
+from app.repositories.participant_repository import ParticipantRepository
+from app.repositories.user_repository import UserRepository
+from app.utils import jinja_safe_print
+
 
 def repositories():
     return {
@@ -10,17 +12,21 @@ def repositories():
         "UserRepository": UserRepository,
         "ParticipantRepository": ParticipantRepository,
     }
+
+
 def locale():
     return {
-        'current_locale' : flask_babel.get_locale,
-        'current_timezone' : flask_babel.get_timezone,
+        'current_locale': flask_babel.get_locale,
+        'current_timezone': flask_babel.get_timezone,
     }
+
 
 def necessaries():
     return {
-        'type' : type,
-        'print' : print,
-        'repr' : repr,
-        'str' : str,
-
+        'type': type,
+        'print': jinja_safe_print,
+        'repr': repr,
+        'str': str,
+        'list': list,
+        'getattr': getattr,
     }

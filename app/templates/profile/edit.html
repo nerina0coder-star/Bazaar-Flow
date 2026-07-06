@@ -53,30 +53,29 @@
             </div>
           {% endif %}
 
-          <p
-            id="higherPasswordMatch"
-            class="custom-alert alert-danger-custom {% if not passwordError %}d-none{% endif %}"
-            role="alert"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              viewBox="0 0 16 16"
-            >
-              <path
-                d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"
-              />
-            </svg>
-            <small id="passwordMatch"
-              >{% if passwordError %}{{ _('رمز عبور تأیید شده اشتباه است.') }}{% endif %}</small
-            >
-          </p>
+          {% if form.errors %}
+            {% set lst = list(form.errors.values()) %}
+            {% for error in lst %}
+              <p class="custom-alert alert-danger-custom" role="alert">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"
+                  />
+                </svg>
+                <small>{{ error[0] }}</small>
+              </p>
+            {% endfor %}
+          {% endif %}
 
-          <form method="POST" action="/profile/edit">
+          <form method="POST" action="/profile/edit" novalidate>
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
 
             <div class="mb-4">
-              <label class="form-label" for="username">
+              <label class="form-label" for="{{ form.username.id }}">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="18"
@@ -90,21 +89,13 @@
                     d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"
                   />
                 </svg>
-                {{ _('نام کاربری') }}
+                {{ form.username.label.text }}
               </label>
-              <input
-                type="text"
-                class="form-control"
-                id="username"
-                name="username"
-                value="{{ current_user.username }}"
-                required
-                autocomplete="username"
-              />
+              {{ form.username(value=current_user.username) }}
             </div>
 
             <div class="mb-4">
-              <label class="form-label" for="email">
+              <label class="form-label" for="{{ form.email.id }}">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="18"
@@ -116,16 +107,9 @@
                     d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"
                   />
                 </svg>
-                {{ _('ایمیل') }}
+                {{ form.email.label.text }}
               </label>
-              <input
-                id="email"
-                type="email"
-                class="form-control"
-                value="{{ current_user.email }}"
-                disabled
-                readonly
-              />
+              {{ form.email(value=current_user.email) }}
               <div class="form-text">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -143,7 +127,7 @@
             </div>
 
             <div class="mb-4">
-              <label class="form-label" for="description">
+              <label class="form-label" for="{{ form.description.id }}">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="18"
@@ -158,18 +142,9 @@
                     d="m2.165 15.803.02-.004c1.83-.363 2.948-.842 3.468-1.105A9.06 9.06 0 0 0 8 15c4.418 0 8-3.134 8-7s-3.582-7-8-7-8 3.134-8 7c0 1.76.743 3.37 1.97 4.6a10.437 10.437 0 0 1-.524 2.318l-.003.011a10.722 10.722 0 0 1-.244.637c-.079.186.074.394.273.362a21.673 21.673 0 0 0 .693-.125z"
                   />
                 </svg>
-                {{ _('توضیحات پروفایل') }}
+                {{ form.description.label.text }}
               </label>
-              <textarea
-                class="form-control"
-                id="description"
-                name="description"
-                rows="3"
-                maxlength="200"
-                placeholder="{{ _('چند جمله درباره خودتان بنویسید...') }}"
-              >
-{{ current_user.description or '' }}</textarea
-              >
+              {{ form.description(placeholder=_('چند جمله درباره خودتان بنویسید...')) }}
               <div class="d-flex justify-content-between align-items-center">
                 <div class="form-text mb-0">
                   <svg
@@ -191,98 +166,78 @@
               </div>
             </div>
 
-            <!-- بخش تنظیمات حساب کاربری -->
-            <div class="account-settings-section persian">
-              <h3 class="settings-section-title">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  fill="currentColor"
-                  viewBox="0 0 16 16"
+            <div>
+              <!-- بخش تنظیمات حساب کاربری -->
+              <div
+                class="account-settings-section {% if language == 'fa' %}persian{% else %}english{% endif %}"
+              >
+                <h3 class="settings-section-title">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    fill="currentColor"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"
+                    />
+                    <path
+                      d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z"
+                    />
+                  </svg>
+                  {{ _('تنظیمات حساب کاربری') }}
+                </h3>
+
+                <!-- Language Select -->
+                <div
+                  class="mb-4 {% if language == 'fa' %}persian{% else %}english{% endif %}"
                 >
-                  <path
-                    d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"
-                  />
-                  <path
-                    d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z"
-                  />
-                </svg>
-                تنظیمات حساب کاربری
-              </h3>
+                  <label class="form-label" for="{{ form.language.id }}">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="18"
+                      height="18"
+                      fill="currentColor"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        d="M4.545 6.714 4.11 8H3l1.862-5h1.284L8 8H6.833l-.435-1.286H4.545zm1.634-.736L5.5 3.956h-.049l-.679 2.022H6.18z"
+                      />
+                      <path
+                        d="M0 2a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v3h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-3H2a2 2 0 0 1-2-2V2zm2-1a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H2zm7.178 11c.213 0 .39.059.531.178l.007.006c.118.106.184.245.184.412 0 .167-.066.306-.184.412l-.007.006c-.141.119-.318.178-.531.178-.213 0-.39-.059-.531-.178l-.007-.006c-.118-.106-.184-.245-.184-.412 0-.167.066-.306.184-.412l.007-.006c.141-.119.318-.178.531-.178z"
+                      />
+                    </svg>
+                    {{ form.language.label.text }}
+                  </label>
+                  {{ form.language(dir='rtl') }}
+                </div>
 
-              <!-- Language Select -->
-              <div class="mb-4 persian">
-                <label class="form-label" for="language">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="18"
-                    height="18"
-                    fill="currentColor"
-                    viewBox="0 0 16 16"
-                  >
-                    <path
-                      d="M4.545 6.714 4.11 8H3l1.862-5h1.284L8 8H6.833l-.435-1.286H4.545zm1.634-.736L5.5 3.956h-.049l-.679 2.022H6.18z"
-                    />
-                    <path
-                      d="M0 2a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v3h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-3H2a2 2 0 0 1-2-2V2zm2-1a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H2zm7.178 11c.213 0 .39.059.531.178l.007.006c.118.106.184.245.184.412 0 .167-.066.306-.184.412l-.007.006c-.141.119-.318.178-.531.178-.213 0-.39-.059-.531-.178l-.007-.006c-.118-.106-.184-.245-.184-.412 0-.167.066-.306.184-.412l.007-.006c.141-.119.318-.178.531-.178z"
-                    />
-                  </svg>
-                  زبان / Language
-                </label>
-                <select class="form-select" id="language" name="language">
-                  <option
-                    value="en"
-                    {% if language == 'en' %}selected{% endif %}
-                  >
-                    English / اینگلیسی
-                  </option>
-                  <option
-                    value="fa"
-                    {% if language == 'fa' %}selected{% endif %}
-                  >
-                    Persian / فارسی
-                  </option>
-                </select>
-              </div>
-
-              <!-- Timezone Select -->
-              {% set tz = str(current_timezone()) %}
-              <div class="mb-4 persian">
-                <label class="form-label" for="timezone">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="18"
-                    height="18"
-                    fill="currentColor"
-                    viewBox="0 0 16 16"
-                  >
-                    <path
-                      d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"
-                    />
-                    <path
-                      d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"
-                    />
-                  </svg>
-                  منطقه زمانی / Timezone
-                </label>
-                <select class="form-select" id="timezone" name="timezone">
-                  <option
-                    value="Asia/Tehran"
-                    {% if tz == 'Asia/Tehran' %}selected{% endif %}
-                  >
-                    Asia/Tehran - آسیا/تهران
-                  </option>
-                  <option
-                    value="US/Eastern"
-                    {% if tz == 'US/Eastern' %}selected{% endif %}
-                  >
-                    US/Eastern - ایالات متحده/جنوبی
-                  </option>
-                </select>
+                <!-- Timezone Select -->
+                <div
+                  class="mb-4 {% if language == 'fa' %}persian{% else %}english{% endif %}"
+                >
+                  <label class="form-label" for="{{ form.timezone.id }}">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="18"
+                      height="18"
+                      fill="currentColor"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"
+                      />
+                      <path
+                        d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"
+                      />
+                    </svg>
+                    {{ form.timezone.label.text }}
+                  </label>
+                  {{ form.timezone(dir='rtl') }}
+                </div>
               </div>
             </div>
-
             <div class="visibility-section">
               <div class="visibility-header">
                 <div class="visibility-info">
@@ -340,12 +295,7 @@
                   </div>
                 </div>
                 <label class="custom-switch">
-                  <input
-                    type="checkbox"
-                    id="isPublic"
-                    name="is_public"
-                    {% if current_user.is_public %}checked{% endif %}
-                  />
+                  {{ form.is_public(id='isPublic', checked=current_user.is_public) }}
                   <span class="switch-slider"></span>
                 </label>
               </div>
@@ -368,7 +318,7 @@
             </p>
 
             <div class="mb-4">
-              <label class="form-label" for="password">
+              <label class="form-label" for="{{ form.password.id }}">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="18"
@@ -380,22 +330,16 @@
                     d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"
                   />
                 </svg>
-                {{ _('رمز عبور فعلی') }}
+                {{ form.password.label.text }}
               </label>
-              <input
-                type="password"
-                class="form-control"
-                id="password"
-                name="password"
-                autocomplete="current-password"
-              />
+              {{ form.password() }}
               <div class="form-text">
-                {{ _('برای اعمال هرگونه تغییر، وارد کردن رمز عبور فعلی الزامی است.') }}
+                {{ _('برای تعیین رمز عبور جدید، وارد کردن رمز عبور فعلی الزامی است.') }}
               </div>
             </div>
 
             <div class="mb-4">
-              <label class="form-label" for="new_password">
+              <label class="form-label" for="{{ form.new_password.id }}">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="18"
@@ -410,22 +354,16 @@
                     d="M7 5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1z"
                   />
                 </svg>
-                {{ _('رمز عبور جدید') }}
+                {{ form.new_password.label.text }}
               </label>
-              <input
-                type="password"
-                class="form-control"
-                id="new_password"
-                name="new_password"
-                autocomplete="new-password"
-              />
+              {{ form.new_password() }}
               <div class="form-text">
                 {{ _('فقط در صورتی که می‌خواهید رمز عبور خود را تغییر دهید، این فیلد را پر کنید.') }}
               </div>
             </div>
 
             <div class="mb-4">
-              <label class="form-label" for="confirm_password">
+              <label class="form-label" for="{{ form.confirm_password.id }}">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="18"
@@ -440,15 +378,9 @@
                     d="M10.854 8.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.793l2.646-2.647a.5.5 0 0 1 .708 0z"
                   />
                 </svg>
-                {{ _('تکرار رمز عبور جدید') }}
+                {{ form.confirm_password.label.text }}
               </label>
-              <input
-                type="password"
-                class="form-control"
-                id="confirm_password"
-                name="confirm_password"
-                autocomplete="new-password"
-              />
+              {{ form.confirm_password() }}
             </div>
 
             <div class="d-flex gap-3 mt-5">
@@ -585,4 +517,7 @@
       </div>
     </div>
   </div>
+{% endblock %}
+{% block script %}
+  <script src="{{ url_for('static', filename='/js/edit.js') }}"></script>
 {% endblock %}

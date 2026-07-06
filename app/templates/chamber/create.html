@@ -10,136 +10,162 @@
 {% endblock %}
 
 {% block content %}
-  <div class="create-chamber-container">
-    <div class="row justify-content-center">
-      <div class="col-md-8 col-lg-6">
-        <div class="card shadow-sm border-0 rounded-4 form-card">
-          <div class="card-body p-4">
-            <!-- هدر فرم -->
-            <div class="form-header">
-              <div class="form-header-title">
-                <div class="form-header-icon">
-                  <i class="bi bi-plus-circle"></i>
+  <main class="create-chamber-page">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+          <article
+            class="card shadow-sm border-0 rounded-4 form-card"
+            role="region"
+            aria-labelledby="form-title"
+          >
+            <div class="card-body p-4 p-md-5">
+              <!-- هدر فرم -->
+              <header class="form-header">
+                <div class="form-header-title">
+                  <div class="form-header-icon" aria-hidden="true">
+                    <i class="bi bi-plus-circle"></i>
+                  </div>
+                  <div>
+                    <h2 id="form-title">
+                      {{ custom_message }} {{ _('ایجاد تالار جدید') }}
+                    </h2>
+                    {% if not custom_message %}
+                      <p>
+                        {{ _('یک تالار گفتگوی جدید بسازید و اعضا را دعوت کنید.') }}
+                      </p>
+                    {% endif %}
+                  </div>
                 </div>
-                <div>
-                  <h2>{{ custom_message }} {{ _('ایجاد تالار جدید') }}</h2>
-                  {% if not custom_message %}
-                    <p>
-                      {{ _('یک تالار گفتگوی جدید بسازید و اعضا را دعوت کنید.') }}
-                    </p>
-                  {% endif %}
-                </div>
-              </div>
-              <a href="/chamber/dashboard" class="btn-back rounded-pill">
-                <i class="bi bi-arrow-right"></i> {{ _('بازگشت') }}
-              </a>
-            </div>
+                <a
+                  href="/chamber/dashboard"
+                  class="btn-back rounded-pill"
+                  aria-label="بازگشت به داشبورد تالارها"
+                >
+                  <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                  {{ _('بازگشت') }}
+                </a>
+              </header>
 
-            <!-- فرم -->
-            <form method="POST" action="/chamber/create">
-              <input
-                type="hidden"
-                name="csrf_token"
-                value="{{ csrf_token() }}"
-              />
+              <!-- فرم -->
+              <form
+                method="POST"
+                action="/chamber/create"
+                id="create-chamber-form"
+                novalidate
+              >
+                <input
+                  type="hidden"
+                  name="csrf_token"
+                  value="{{ csrf_token() }}"
+                />
 
-              <!-- پیام خطای CSRF -->
-              {% if CsrfError %}
-                <div class="csrf-alert" role="alert">
-                  <div class="csrf-alert-icon">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      fill="currentColor"
-                      viewBox="0 0 16 16"
+                <!-- پیام خطای CSRF -->
+                {% if CsrfError %}
+                  <div class="csrf-alert" role="alert" aria-live="assertive">
+                    <div class="csrf-alert-icon" aria-hidden="true">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="currentColor"
+                        viewBox="0 0 16 16"
+                      >
+                        <path
+                          d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"
+                        />
+                      </svg>
+                    </div>
+                    <div class="csrf-alert-content">
+                      <div class="csrf-alert-title">{{ _('خطای امنیتی') }}</div>
+                      <p class="csrf-alert-message">
+                        {{ _('به مدت طولانی آفلاین بودید، لطفاً دوباره تلاش کنید.') }}
+                      </p>
+                    </div>
+                  </div>
+                {% endif %}
+
+                {% if form.errors %}
+                  {% set lst = list(form.errors.values()) %}
+                  {% for error in lst[-2:] %}
+                    <div
+                      class="custom-alert alert-danger-custom"
+                      role="alert"
+                      aria-live="polite"
                     >
-                      <path
-                        d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"
-                      />
-                    </svg>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        viewBox="0 0 16 16"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"
+                        />
+                      </svg>
+                      <span>{{ error[0] }}</span>
+                    </div>
+                  {% endfor %}
+                {% endif %}
+
+                <!-- نام تالار -->
+                <div class="form-group">
+                  <label for="{{ form.name.id }}" class="form-label">
+                    <i class="bi bi-chat-square-text" aria-hidden="true"></i>
+                    {{ form.name.label.text }}
+                    <span class="required" aria-hidden="true">*</span>
+                  </label>
+                  {{ form.name(placeholder=_('مثال: تالار رفع اشکال جاوااسکریپت')) }}
+                  <div class="form-text">
+                    {{ _('نام تالار باید گویا و مرتبط با موضوع گفتگو باشد.') }}
                   </div>
-                  <div class="csrf-alert-content">
-                    <div class="csrf-alert-title">{{ _('خطای امنیتی') }}</div>
-                    <p class="csrf-alert-message">
-                      {{ _('به مدت طولانی آفلاین بودید، لطفاً دوباره تلاش کنید.') }}
-                    </p>
+                </div>
+
+                <!-- کد ورود -->
+                <div class="form-group">
+                  <label for="{{ form.entrance_code.id }}" class="form-label">
+                    <i class="bi bi-key" aria-hidden="true"></i>
+                    {{ form.entrance_code.label.text }}
+                    <span class="required" aria-hidden="true">*</span>
+                  </label>
+                  {{ form.entrance_code(placeholder=_('مثال: JS2025')) }}
+                  <div class="form-text">
+                    {{ _('حداقل ۴ کاراکتر. این کد برای ورود اعضا به تالار استفاده می‌شود.') }}
                   </div>
                 </div>
-              {% endif %}
 
-              <!-- نام تالار -->
-              <div class="form-group">
-                <label for="name" class="form-label">
-                  <i class="bi bi-chat-square-text"></i>
-                  {{ _('نام تالار') }}
-                  <span class="required">*</span>
-                </label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="name"
-                  name="name"
-                  placeholder="{{ _('مثال: تالار رفع اشکال جاوااسکریپت') }}"
-                  required
-                  autofocus
-                />
-                <div class="form-text">
-                  {{ _('نام تالار باید گویا و مرتبط با موضوع گفتگو باشد.') }}
+                <!-- توضیحات -->
+                <div class="form-group">
+                  <label for="{{ form.description.id }}" class="form-label">
+                    <i class="bi bi-card-text" aria-hidden="true"></i>
+                    {{ form.description.label.text }}
+                    <span class="required" aria-hidden="true">*</span>
+                  </label>
+                  {{ form.description(placeholder=_('توضیح کوتاهی درباره هدف و موضوع تالار بنویسید...')) }}
+                  <div class="form-text">
+                    {{ _('توضیحات به اعضا کمک می‌کند تا با هدف تالار آشنا شوند.') }}
+                  </div>
                 </div>
-              </div>
 
-              <!-- کد ورود -->
-              <div class="form-group">
-                <label for="entrance_code" class="form-label">
-                  <i class="bi bi-key"></i>
-                  {{ _('کد ورود') }}
-                  <span class="required">*</span>
-                </label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="entrance_code"
-                  name="entrance_code"
-                  placeholder="{{ _('مثال: JS2025') }}"
-                  required
-                />
-                <div class="form-text">
-                  {{ _('حداقل ۴ کاراکتر. این کد برای ورود اعضا به تالار استفاده می‌شود.') }}
+                <!-- دکمه ارسال -->
+                <div class="d-grid mt-4">
+                  <button type="submit" class="btn btn-submit btn-lg w-100">
+                    <i class="bi bi-plus-circle" aria-hidden="true"></i>
+                    <span>{{ _('ایجاد تالار') }}</span>
+                  </button>
                 </div>
-              </div>
-
-              <!-- توضیحات -->
-              <div class="form-group">
-                <label for="description" class="form-label">
-                  <i class="bi bi-card-text"></i>
-                  {{ _('توضیحات') }}
-                  <span class="required">*</span>
-                </label>
-                <textarea
-                  class="form-control"
-                  id="description"
-                  name="description"
-                  rows="3"
-                  placeholder="{{ _('توضیح کوتاهی درباره هدف و موضوع تالار بنویسید...') }}"
-                  required
-                ></textarea>
-                <div class="form-text">
-                  {{ _('توضیحات به اعضا کمک می‌کند تا با هدف تالار آشنا شوند.') }}
-                </div>
-              </div>
-
-              <!-- دکمه ارسال -->
-              <div class="d-grid mt-4">
-                <button type="submit" class="btn btn-submit btn-lg w-100">
-                  <i class="bi bi-plus-circle"></i>
-                  {{ _('ایجاد تالار') }}
-                </button>
-              </div>
-            </form>
-          </div>
+              </form>
+            </div>
+          </article>
         </div>
       </div>
     </div>
-  </div>
+  </main>
+{% endblock %}
+
+{% block script %}
+  <script
+    type="module"
+    src="{{ url_for('static', filename='/js/create.js') }}"
+  ></script>
 {% endblock %}

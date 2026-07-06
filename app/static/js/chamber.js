@@ -25,70 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let canPrepend = true;
 
-    socketio.on("message_from_server", (e) => {
-
-        const dt_message = e.message;
-        const dt_author = e.author;
-        const dt_timehourminute = e.timehourminute;
-        const dt_timemonthday = e.timemonthday;
-        const dt_token = e.token;
-
-        const message = document.createElement('div');
-        const messageHeader = document.createElement('div');
-        const messageText = document.createElement('div');
-
-        const author = document.createElement('span');
-        const timestamp = document.createElement('span');
-        const timehourminute = document.createElement('bdi');
-        const timemonthday = document.createElement('bdi');
-
-        if (dt_token === token) {
-            message.className = 'message message-self';
-        } else { message.className = 'message'; }
-
-        messageHeader.className = 'message-header';
-        messageText.className = 'message-text';
-
-        author.className = 'author';
-        timestamp.className = 'timestamp mx-6';
-
-        author.innerText = dt_author;
-        messageText.innerText = dt_message;
-
-        if (e.reverse_time) {
-            timehourminute.innerText = dt_timemonthday;
-            timemonthday.innerText = dt_timehourminute;
-        } else {
-            timehourminute.innerText = dt_timehourminute;
-            timemonthday.innerText = dt_timemonthday;
-        }
-        if (startsWithPersian(dt_message)) {
-            messageText.dir = 'rtl';
-        } else {
-            messageText.dir = 'ltr';
-        }
-
-        timestamp.appendChild(timemonthday);
-        timestamp.appendChild(timehourminute);
-
-        messageHeader.appendChild(author);
-        messageHeader.appendChild(timestamp);
-
-        message.appendChild(messageHeader);
-        message.appendChild(messageText);
-
-        messages.appendChild(message);
-
-        messages.scrollTop = messages.scrollHeight;
-        added += 1;
-    });
-    socketio.on("server_send_more", (e) => {
-
-        const dt_nomore = e.nomore;
-        if (dt_nomore) { canPrepend = false; return; isPrepending = false; }
-
-        isPrepending = true
-
+    function get_message(e) {
         const dt_message = e.message;
         const dt_author = e.author;
         const dt_timehourminute = e.timehourminute;
@@ -110,8 +47,10 @@ document.addEventListener('DOMContentLoaded', () => {
         } else { message.className = 'message'; }
         if (startsWithPersian(dt_message)) {
             messageText.dir = 'rtl';
+            messageText.classList.add('persian')
         } else {
             messageText.dir = 'ltr';
+            messageText.classList.add('english')
         }
 
         messageHeader.className = 'message-header';
@@ -138,6 +77,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
         message.appendChild(messageHeader);
         message.appendChild(messageText);
+        return message;
+    }
+
+    socketio.on("message_from_server", (e) => {
+
+        message = get_message(e)
+
+        messages.appendChild(message);
+
+        messages.scrollTop = messages.scrollHeight;
+        added += 1;
+    });
+    socketio.on("server_send_more", (e) => {
+
+        const dt_nomore = e.nomore;
+        if (dt_nomore) { canPrepend = false; return; isPrepending = false; }
+
+        isPrepending = true
+
+        message = get_message(e)
         
         const beforePrepend = messages.scrollHeight;
         const topBeforePrepend = messages.scrollTop;
@@ -153,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
             isPrepending = false;
         }
         added += 1;
-    })
+    });
 
     submittable.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -183,4 +142,23 @@ document.addEventListener('DOMContentLoaded', () => {
             );
         }
     });
+
+    // Copying text
+    async function copyText(text) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(text);
+        }
+    }
+
+    copybtn = document.getElementById('copy');
+
+    if (copybtn !== null) {
+        copybtn.addEventListener('click', () => {
+            socketio.emit('get_entrance_code')
+        });
+
+        socketio.on('entrance_code', (e) => {
+            copyText(e.code)
+        });
+    }
 });

@@ -1,0 +1,265 @@
+/* ==========================================
+    * Design System: CSS Custom Properties
+    * ========================================== */
+:root {
+    /* Modern Color Palette (Indigo/Slate theme) */
+    --primary-color: #4f46e5;       /* Indigo 600 */
+    --primary-hover: #4338ca;       /* Indigo 700 */
+    --primary-light: rgba(79, 70, 229, 0.08);
+    --primary-light-hover: rgba(79, 70, 229, 0.15);
+    
+    --surface-color: #ffffff;
+    --background-color: #f8fafc;    /* Slate 50 */
+    
+    --text-primary: #0f172a;        /* Slate 900 */
+    --text-secondary: #475569;      /* Slate 600 */
+    --text-muted: #94a3b8;          /* Slate 400 */
+    
+    --border-color: #e2e8f0;        /* Slate 200 */
+    --border-focus: #c7d2fe;        /* Indigo 200 */
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.04);
+    
+    /* Transitions */
+    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Typography */
+    --font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    
+    /* Spacing & Radii */
+    --radius-sm: 0.375rem;
+    --radius-md: 0.625rem;
+    --radius-lg: 0.875rem;
+    --radius-pill: 50rem;
+}
+
+/* ==========================================
+    * Navbar & Glassmorphism
+    * ========================================== */
+.nav-glass-effect {
+    background: rgba(255, 255, 255, 0.85) !important;
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    border-bottom: 1px solid var(--border-color) !important;
+    box-shadow: var(--shadow-sm);
+    padding: 0.875rem 0;
+    transition: all var(--transition-base);
+}
+
+/* Brand / Logo */
+.navbar-brand-text {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary) !important;
+    letter-spacing: -0.02em;
+    transition: color var(--transition-fast);
+}
+
+.navbar-brand-text:hover {
+    color: var(--primary-color) !important;
+}
+
+.navbar-star-icon {
+    color: var(--primary-color);
+    font-size: 1.4rem;
+    line-height: 1;
+    transition: transform var(--transition-base);
+}
+
+/* ==========================================
+    * Navigation Links
+    * ========================================== */
+.nav-link {
+    color: var(--text-secondary) !important;
+    font-weight: 500;
+    font-size: 0.9375rem;
+    transition: all var(--transition-fast);
+    border-radius: var(--radius-md);
+    margin: 0 0.125rem;
+}
+
+.nav-link:hover, 
+.nav-link:focus {
+    color: var(--primary-color) !important;
+    background-color: var(--primary-light);
+    transform: translateY(-1px);
+}
+
+.nav-link-auth {
+    color: var(--primary-color) !important;
+    background-color: var(--primary-light);
+    font-weight: 600;
+}
+
+.nav-link-auth:hover {
+    background-color: var(--primary-light-hover);
+    color: var(--primary-hover) !important;
+}
+
+.nav-link-disabled-custom {
+    color: var(--text-muted) !important;
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+/* ==========================================
+    * Dropdown Menu
+    * ========================================== */
+.dropdown-menu-animated {
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color) !important;
+    box-shadow: var(--shadow-lg) !important;
+    border-radius: var(--radius-lg) !important;
+    padding: 0.5rem;
+    min-width: 12rem;
+    animation: dropdownFadeIn 0.25s ease-out;
+    transform-origin: top right; /* RTL adjustment */
+}
+
+@keyframes dropdownFadeIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(-8px) scale(0.98); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0) scale(1); 
+    }
+}
+
+.dropdown-item {
+    border-radius: var(--radius-sm);
+    padding: 0.625rem 1rem !important;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    transition: all var(--transition-fast);
+}
+
+.dropdown-item:hover, 
+.dropdown-item:focus {
+    background-color: var(--primary-light);
+    color: var(--primary-color);
+    transform: translateX(-2px); /* RTL hover effect */
+}
+
+.dropdown-divider {
+    margin: 0.375rem 0;
+    border-color: var(--border-color);
+}
+
+/* ==========================================
+    * Search Form
+    * ========================================== */
+.search-input-modern {
+    border: 1.5px solid var(--border-color);
+    background-color: var(--background-color);
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: var(--text-primary);
+    transition: all var(--transition-base);
+    width: 220px;
+    height: 42px;
+    /* Ensure text doesn't overlap icon (right) or button (left) in RTL */
+    padding-inline-start: 2.5rem !important; 
+    padding-inline-end: 4.5rem !important; 
+}
+
+.search-input-modern::placeholder {
+    color: var(--text-muted);
+}
+
+.search-input-modern:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px var(--primary-light);
+    background-color: var(--surface-color);
+    width: 260px;
+}
+
+.search-icon-no-pointer {
+    pointer-events: none;
+    transition: color var(--transition-fast);
+}
+
+.search-input-modern:focus ~ .search-icon-no-pointer {
+    color: var(--primary-color) !important;
+}
+
+.search-submit-btn {
+    background-color: var(--primary-color) !important;
+    border: none !important;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    padding: 0.375rem 1rem !important;
+    height: 34px;
+    transition: all var(--transition-fast);
+    box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
+}
+
+.search-submit-btn:hover {
+    background-color: var(--primary-hover) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(79, 70, 229, 0.25);
+}
+
+.search-submit-btn:active {
+    transform: translateY(0);
+}
+
+/* ==========================================
+    * Mobile Responsive Adjustments
+    * ========================================== */
+@media (max-width: 991.98px) {
+    .navbar-collapse {
+        background-color: var(--surface-color);
+        border-radius: var(--radius-lg);
+        padding: 1.25rem;
+        margin-top: 1rem;
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--border-color);
+    }
+    
+    .nav-link {
+        padding: 0.75rem 1rem !important;
+        margin: 0.125rem 0;
+    }
+    
+    .search-input-modern,
+    .search-input-modern:focus {
+        width: 100%;
+    }
+    
+    .search-form-wrapper {
+        width: 100%;
+        margin-top: 1rem;
+    }
+    
+    .dropdown-menu-animated {
+        transform-origin: top center;
+    }
+}
+
+/* ==========================================
+    * Accessibility & Utilities
+    * ========================================== */
+*:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}

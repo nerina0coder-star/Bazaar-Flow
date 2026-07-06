@@ -1,9 +1,5 @@
-from dns.resolver import query
-
 from app.extensions import db
 from app.models.participant import Participant
-from app.models.user import User
-from app.models.chamber import Chamber
 from app.repositories.chamber_repository import ChamberRepository
 from app.repositories.user_repository import UserRepository
 
@@ -33,7 +29,7 @@ class ParticipantRepository:
 
                 if ChamberRepository.find_by_id(cid) is None:
                     return None
-                exists = Participant.query.filter_by(chamber_id = cid, user_id = user_id[uid]).one_or_none()
+                exists = Participant.query.filter_by(chamber_id=cid, user_id=user_id[uid]).one_or_none()
                 if exists:
                     continue
 
@@ -44,9 +40,10 @@ class ParticipantRepository:
         return len(parts)
 
     @staticmethod
-    def get(user_id: int = None, chamber_id: int = None, role: str = None, is_primary: bool = None) -> Participant | None:
-        giving: dict = {'user_id' : user_id, 'chamber_id' : chamber_id, 'role' : role, 'is_primary' : is_primary}
-        giving = {k : v for k, v in giving.items() if v is not None}
+    def get(user_id: int = None, chamber_id: int = None, role: str = None,
+            is_primary: bool = None) -> Participant | None:
+        giving: dict = {'user_id': user_id, 'chamber_id': chamber_id, 'role': role, 'is_primary': is_primary}
+        giving = {k: v for k, v in giving.items() if v is not None}
         out = Participant.query.filter_by(**giving).first()
         return out
 
