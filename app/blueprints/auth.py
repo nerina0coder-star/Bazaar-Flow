@@ -3,12 +3,21 @@ from flask import Blueprint, render_template, redirect, url_for, request, curren
 from flask_babel import gettext as _
 from flask_login import login_user, logout_user, login_required
 from flask_wtf.csrf import validate_csrf, CSRFError
+from urllib.parse import urlparse
 
 from app.extensions import captcha
 from app.forms import RegistrationForm, LoginForm
 from app.services.user_service import UserService
 
 auth_bp = Blueprint('auth', __name__)
+
+
+def _is_safe_redirect_target(target):
+    if not target:
+        return False
+    normalized_target = target.replace('\\', '')
+    parsed_target = urlparse(normalized_target)
+    return not parsed_target.netloc and not parsed_target.scheme
 
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
@@ -34,10 +43,8 @@ def login():
         if user:
             login_user(user)
             next_page = request.args.get('next')
-            if next_page:
-                if next_page.startswith('http://') or \
-                        'bazaarflow.ir' not in next_page[:next_page.index('/', len('https://'))]:
-                    next_page = None
+            if not _is_safe_redirect_target(next_page):
+                next_page = None
             return redirect(next_page or url_for('profile.dashboard'))
         else:
             return render_template('auth/login.html',
